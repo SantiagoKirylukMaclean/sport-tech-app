@@ -1,0 +1,53 @@
+name: sport_tech_app
+description: A Flutter app for team sport management with Supabase backend
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Routing
+  go_router: ^14.2.0
+
+  # Supabase
+  supabase_flutter: ^2.5.6
+
+  # Localization
+  intl: ^0.19.0
+
+  # UI
+  flutter_svg: ^2.0.10
+
+  # Utilities
+  equatable: ^2.0.5
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  # Code generation
+  build_runner: ^2.4.9
+  riverpod_generator: ^2.4.0
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+
+flutter:
+  uses-material-design: true
+  generate: true # For localization
+
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/

@@ -1,0 +1,22 @@
+{
+  "@@locale": "es",
+  "appName": "Sport Tech",
+  "login": "Iniciar sesión",
+  "email": "Correo electrónico",
+  "password": "Contraseña",
+  "forgotPassword": "¿Olvidaste tu contraseña?",
+  "emailRequired": "El correo electrónico es obligatorio",
+  "passwordRequired": "La contraseña es obligatoria",
+  "invalidEmail": "Por favor ingrese un correo electrónico válido",
+  "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+  "dashboard": "Panel",
+  "matches": "Partidos",
+  "trainings": "Entrenamiento",
+  "championship": "Campeonato",
+  "evaluations": "Mis Evaluaciones",
+  "notes": "Notas",
+  "profile": "Perfil",
+  "logout": "Cerrar sesión",
+  "welcome": "Bienvenido",
+  "role": "Rol"
+}

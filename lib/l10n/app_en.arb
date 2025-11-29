@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "appName": "Sport Tech",
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "emailRequired": "Email is required",
+  "passwordRequired": "Password is required",
+  "invalidEmail": "Please enter a valid email",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "dashboard": "Dashboard",
+  "matches": "Matches",
+  "trainings": "Trainings",
+  "championship": "Championship",
+  "evaluations": "My Evaluations",
+  "notes": "Notes",
+  "profile": "Profile",
+  "logout": "Logout",
+  "welcome": "Welcome",
+  "role": "Role"
+}

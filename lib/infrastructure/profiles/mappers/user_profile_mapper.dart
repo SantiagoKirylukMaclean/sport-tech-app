@@ -10,9 +10,11 @@ class UserProfileMapper {
     return UserProfile(
       userId: json['id'] as String,
       role: UserRole.fromString(json['role'] as String),
-      displayName: json['display_name'] as String,
+      displayName: (json['display_name'] as String?) ?? '',
       createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
+          : DateTime.parse(json['created_at'] as String),
     );
   }
 

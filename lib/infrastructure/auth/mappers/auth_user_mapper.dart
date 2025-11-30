@@ -10,7 +10,9 @@ class AuthUserMapper {
     return AuthUser(
       id: user.id,
       email: user.email ?? '',
-      emailConfirmedAt: user.emailConfirmedAt,
+      emailConfirmedAt: user.emailConfirmedAt != null
+          ? DateTime.tryParse(user.emailConfirmedAt!)
+          : null,
     );
   }
 }

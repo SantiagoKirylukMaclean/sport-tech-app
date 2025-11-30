@@ -3,7 +3,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/core/error/failures.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
-import 'package:sport_tech_app/domain/auth/entities/auth_user.dart';
+import 'package:sport_tech_app/domain/auth/entities/auth_user.dart' as domain;
 import 'package:sport_tech_app/domain/auth/repositories/auth_repository.dart';
 import 'package:sport_tech_app/infrastructure/auth/mappers/auth_user_mapper.dart';
 
@@ -14,7 +14,7 @@ class SupabaseAuthRepository implements AuthRepository {
   SupabaseAuthRepository(this._client);
 
   @override
-  Future<Result<AuthUser>> signIn({
+  Future<Result<domain.AuthUser>> signIn({
     required String email,
     required String password,
   }) async {
@@ -51,7 +51,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthUser?>> getCurrentUser() async {
+  Future<Result<domain.AuthUser?>> getCurrentUser() async {
     try {
       final user = _client.auth.currentUser;
       if (user == null) {
@@ -64,7 +64,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Stream<AuthUser?> authStateChanges() {
+  Stream<domain.AuthUser?> authStateChanges() {
     return _client.auth.onAuthStateChange.map((state) {
       final user = state.session?.user;
       return user != null ? AuthUserMapper.fromSupabase(user) : null;
@@ -72,7 +72,7 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthUser>> signUp({
+  Future<Result<domain.AuthUser>> signUp({
     required String email,
     required String password,
   }) async {

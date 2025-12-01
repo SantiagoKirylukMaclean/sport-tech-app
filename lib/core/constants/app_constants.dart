@@ -27,6 +27,14 @@ class AppConstants {
   static const String notesRoute = '/notes';
   static const String profileRoute = '/profile';
 
+  // Admin routes
+  static const String sportsManagementRoute = '/admin/sports';
+  static const String clubsManagementRoute = '/admin/clubs';
+  static const String teamsManagementRoute = '/admin/teams';
+
+  // Auth routes
+  static const String setPasswordRoute = '/set-password';
+
   // Error messages
   static const String genericErrorMessage = 'An error occurred. Please try again.';
   static const String networkErrorMessage = 'No internet connection. Please check your network.';

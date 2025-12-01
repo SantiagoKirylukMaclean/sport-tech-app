@@ -13,9 +13,9 @@ class InvitePlayerDialog extends ConsumerStatefulWidget {
   final List<Position> positions;
 
   const InvitePlayerDialog({
-    super.key,
     required this.teamId,
     required this.positions,
+    super.key,
   });
 
   @override

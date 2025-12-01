@@ -10,8 +10,8 @@ class InviteStaffDialog extends ConsumerStatefulWidget {
   final String teamId;
 
   const InviteStaffDialog({
-    super.key,
     required this.teamId,
+    super.key,
   });
 
   @override
@@ -65,7 +65,7 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.badge),
               ),
-              value: _selectedRole,
+              initialValue: _selectedRole,
               items: const [
                 DropdownMenuItem(value: 'coach', child: Text('Coach')),
                 DropdownMenuItem(value: 'admin', child: Text('Admin')),

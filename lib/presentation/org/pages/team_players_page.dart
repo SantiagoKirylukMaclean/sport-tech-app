@@ -12,9 +12,9 @@ class TeamPlayersPage extends ConsumerStatefulWidget {
   final String sportId;
 
   const TeamPlayersPage({
-    super.key,
     required this.teamId,
     required this.sportId,
+    super.key,
   });
 
   @override
@@ -103,14 +103,13 @@ class _TeamPlayersPageState extends ConsumerState<TeamPlayersPage> {
       builder: (context) => PlayerFormDialog(
         positions: positions,
         onSubmit: (fullName, jerseyNumber, positionId) async {
-          final success = await ref
-              .read(playersNotifierProvider.notifier)
-              .createPlayer(
-                teamId: widget.teamId,
-                fullName: fullName,
-                jerseyNumber: jerseyNumber,
-                positionId: positionId,
-              );
+          final success =
+              await ref.read(playersNotifierProvider.notifier).createPlayer(
+                    teamId: widget.teamId,
+                    fullName: fullName,
+                    jerseyNumber: jerseyNumber,
+                    positionId: positionId,
+                  );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();
@@ -196,14 +195,13 @@ class _PlayerListItem extends ConsumerWidget {
         initialPositionId: player.positionId,
         positions: playersState.positions,
         onSubmit: (fullName, jerseyNumber, positionId) async {
-          final success = await ref
-              .read(playersNotifierProvider.notifier)
-              .updatePlayer(
-                id: player.id,
-                fullName: fullName,
-                jerseyNumber: jerseyNumber,
-                positionId: positionId,
-              );
+          final success =
+              await ref.read(playersNotifierProvider.notifier).updatePlayer(
+                    id: player.id,
+                    fullName: fullName,
+                    jerseyNumber: jerseyNumber,
+                    positionId: positionId,
+                  );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();
@@ -237,7 +235,8 @@ class _PlayerListItem extends ConsumerWidget {
                 Navigator.of(context).pop();
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Player deleted successfully')),
+                    const SnackBar(
+                        content: Text('Player deleted successfully')),
                   );
                 }
               }

@@ -189,6 +189,36 @@ class AppScaffold extends ConsumerWidget {
       ]);
     }
 
+    // Admin management pages
+    if (role.isAdmin) {
+      items.add(
+        const NavigationItem(
+          label: 'Equipos',
+          route: AppConstants.teamsManagementRoute,
+          iconOutlined: Icons.groups_outlined,
+          iconFilled: Icons.groups,
+        ),
+      );
+    }
+
+    // Super admin pages
+    if (role.isSuperAdmin) {
+      items.addAll([
+        const NavigationItem(
+          label: 'Clubes',
+          route: AppConstants.clubsManagementRoute,
+          iconOutlined: Icons.business_outlined,
+          iconFilled: Icons.business,
+        ),
+        const NavigationItem(
+          label: 'Deportes',
+          route: AppConstants.sportsManagementRoute,
+          iconOutlined: Icons.sports_outlined,
+          iconFilled: Icons.sports,
+        ),
+      ]);
+    }
+
     // Player-facing items
     items.addAll([
       const NavigationItem(
@@ -230,6 +260,9 @@ class AppScaffold extends ConsumerWidget {
       AppConstants.evaluationsRoute => 'Mis Evaluaciones',
       AppConstants.notesRoute => 'Notes',
       AppConstants.profileRoute => 'Profile',
+      AppConstants.teamsManagementRoute => 'Gestión de Equipos',
+      AppConstants.clubsManagementRoute => 'Gestión de Clubes',
+      AppConstants.sportsManagementRoute => 'Gestión de Deportes',
       _ => 'Sport Tech',
     };
   }

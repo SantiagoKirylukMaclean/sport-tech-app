@@ -1,7 +1,6 @@
 // lib/domain/org/entities/user_team_role.dart
 
 import 'package:equatable/equatable.dart';
-import 'package:sport_tech_app/core/constants/app_constants.dart';
 
 /// Represents a user's role assignment to a team
 /// Maps to the public.user_team_roles table in Supabase

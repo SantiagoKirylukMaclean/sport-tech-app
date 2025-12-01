@@ -7,9 +7,9 @@ class SportFormDialog extends StatefulWidget {
   final Future<void> Function(String name) onSubmit;
 
   const SportFormDialog({
+    required this.onSubmit,
     super.key,
     this.initialName,
-    required this.onSubmit,
   });
 
   @override

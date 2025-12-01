@@ -12,7 +12,8 @@ class SuperAdminClubsPage extends ConsumerStatefulWidget {
   const SuperAdminClubsPage({super.key});
 
   @override
-  ConsumerState<SuperAdminClubsPage> createState() => _SuperAdminClubsPageState();
+  ConsumerState<SuperAdminClubsPage> createState() =>
+      _SuperAdminClubsPageState();
 }
 
 class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
@@ -39,12 +40,14 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                       labelText: 'Select Sport',
                       border: OutlineInputBorder(),
                     ),
-                    value: _selectedSport,
+                    initialValue: _selectedSport,
                     items: sportsState.sports
-                        .map((sport) => DropdownMenuItem(
-                              value: sport,
-                              child: Text(sport.name),
-                            ))
+                        .map(
+                          (sport) => DropdownMenuItem(
+                            value: sport,
+                            child: Text(sport.name),
+                          ),
+                        )
                         .toList(),
                     onChanged: (sport) {
                       setState(() => _selectedSport = sport);
@@ -71,14 +74,17 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                                     children: [
                                       Text(
                                         'Error: ${clubsState.error}',
-                                        style: const TextStyle(color: Colors.red),
+                                        style:
+                                            const TextStyle(color: Colors.red),
                                       ),
                                       const SizedBox(height: 16),
                                       ElevatedButton(
                                         onPressed: () {
                                           ref
-                                              .read(clubsNotifierProvider.notifier)
-                                              .loadClubsBySport(_selectedSport!.id);
+                                              .read(clubsNotifierProvider
+                                                  .notifier)
+                                              .loadClubsBySport(
+                                                  _selectedSport!.id);
                                         },
                                         child: const Text('Retry'),
                                       ),
@@ -88,7 +94,8 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                               : clubsState.clubs.isEmpty
                                   ? const Center(
                                       child: Text(
-                                          'No clubs found. Create one to get started!'),
+                                        'No clubs found. Create one to get started!',
+                                      ),
                                     )
                                   : ListView.builder(
                                       padding: const EdgeInsets.all(16),

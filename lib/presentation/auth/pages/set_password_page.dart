@@ -12,8 +12,8 @@ class SetPasswordPage extends ConsumerStatefulWidget {
   final String inviteToken;
 
   const SetPasswordPage({
-    super.key,
     required this.inviteToken,
+    super.key,
   });
 
   @override
@@ -194,7 +194,9 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                       ),
                       onPressed: () {
                         setState(
-                            () => _obscureConfirmPassword = !_obscureConfirmPassword);
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        );
                       },
                     ),
                   ),

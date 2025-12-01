@@ -9,15 +9,16 @@ class PlayerFormDialog extends StatefulWidget {
   final int? initialJerseyNumber;
   final String? initialPositionId;
   final List<Position> positions;
-  final Future<void> Function(String fullName, int? jerseyNumber, String? positionId) onSubmit;
+  final Future<void> Function(
+      String fullName, int? jerseyNumber, String? positionId) onSubmit;
 
   const PlayerFormDialog({
+    required this.positions,
+    required this.onSubmit,
     super.key,
     this.initialFullName,
     this.initialJerseyNumber,
     this.initialPositionId,
-    required this.positions,
-    required this.onSubmit,
   });
 
   @override
@@ -90,16 +91,19 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
                   labelText: 'Position (Optional)',
                   border: OutlineInputBorder(),
                 ),
-                value: _selectedPositionId,
+                initialValue: _selectedPositionId,
                 items: [
                   const DropdownMenuItem<String>(
                     value: null,
                     child: Text('None'),
                   ),
-                  ...widget.positions.map((position) => DropdownMenuItem(
-                        value: position.id,
-                        child: Text('${position.name} (${position.abbreviation})'),
-                      )),
+                  ...widget.positions.map(
+                    (position) => DropdownMenuItem(
+                      value: position.id,
+                      child:
+                          Text('${position.name} (${position.abbreviation})'),
+                    ),
+                  ),
                 ],
                 onChanged: (value) {
                   setState(() => _selectedPositionId = value);

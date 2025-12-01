@@ -46,12 +46,14 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
                           labelText: 'Select Sport',
                           border: OutlineInputBorder(),
                         ),
-                        value: _selectedSport,
+                        initialValue: _selectedSport,
                         items: sportsState.sports
-                            .map((sport) => DropdownMenuItem(
-                                  value: sport,
-                                  child: Text(sport.name),
-                                ))
+                            .map(
+                              (sport) => DropdownMenuItem(
+                                value: sport,
+                                child: Text(sport.name),
+                              ),
+                            )
                             .toList(),
                         onChanged: (sport) {
                           setState(() {
@@ -72,12 +74,14 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
                           labelText: 'Select Club',
                           border: OutlineInputBorder(),
                         ),
-                        value: _selectedClub,
+                        initialValue: _selectedClub,
                         items: clubsState.clubs
-                            .map((club) => DropdownMenuItem(
-                                  value: club,
-                                  child: Text(club.name),
-                                ))
+                            .map(
+                              (club) => DropdownMenuItem(
+                                value: club,
+                                child: Text(club.name),
+                              ),
+                            )
                             .toList(),
                         onChanged: _selectedSport == null
                             ? null
@@ -97,7 +101,8 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
                 Expanded(
                   child: _selectedClub == null
                       ? const Center(
-                          child: Text('Please select a sport and club to view teams'),
+                          child: Text(
+                              'Please select a sport and club to view teams'),
                         )
                       : teamsState.isLoading
                           ? const Center(child: CircularProgressIndicator())
@@ -108,14 +113,17 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
                                     children: [
                                       Text(
                                         'Error: ${teamsState.error}',
-                                        style: const TextStyle(color: Colors.red),
+                                        style:
+                                            const TextStyle(color: Colors.red),
                                       ),
                                       const SizedBox(height: 16),
                                       ElevatedButton(
                                         onPressed: () {
                                           ref
-                                              .read(teamsNotifierProvider.notifier)
-                                              .loadTeamsByClub(_selectedClub!.id);
+                                              .read(teamsNotifierProvider
+                                                  .notifier)
+                                              .loadTeamsByClub(
+                                                  _selectedClub!.id);
                                         },
                                         child: const Text('Retry'),
                                       ),
@@ -125,7 +133,8 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
                               : teamsState.teams.isEmpty
                                   ? const Center(
                                       child: Text(
-                                          'No teams found. Create one to get started!'),
+                                        'No teams found. Create one to get started!',
+                                      ),
                                     )
                                   : ListView.builder(
                                       padding: const EdgeInsets.all(16),

@@ -16,11 +16,11 @@ class Player extends Equatable {
   const Player({
     required this.id,
     required this.teamId,
-    this.userId,
     required this.fullName,
+    required this.createdAt,
+    this.userId,
     this.jerseyNumber,
     this.positionId,
-    required this.createdAt,
   });
 
   @override

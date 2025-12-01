@@ -22,13 +22,13 @@ class PendingInvite extends Equatable {
     required this.email,
     required this.teamId,
     required this.role,
-    this.playerName,
-    this.jerseyNumber,
     required this.invitedBy,
     required this.inviteToken,
     required this.accepted,
     required this.createdAt,
     required this.expiresAt,
+    this.playerName,
+    this.jerseyNumber,
   });
 
   /// Check if the invite has expired

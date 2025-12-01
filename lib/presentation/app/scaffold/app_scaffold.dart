@@ -164,59 +164,28 @@ class AppScaffold extends ConsumerWidget {
       ),
     ];
 
-    // Add role-based items
-    if (role.canManageTeams) {
-      // Admin, coach, super_admin can see these
-      items.addAll([
-        const NavigationItem(
-          label: 'Partidos',
-          route: AppConstants.matchesRoute,
-          iconOutlined: Icons.sports_soccer_outlined,
-          iconFilled: Icons.sports_soccer,
-        ),
-        const NavigationItem(
-          label: 'Entrenamiento',
-          route: AppConstants.trainingsRoute,
-          iconOutlined: Icons.fitness_center_outlined,
-          iconFilled: Icons.fitness_center,
-        ),
-        const NavigationItem(
-          label: 'Campeonato',
-          route: AppConstants.championshipRoute,
-          iconOutlined: Icons.emoji_events_outlined,
-          iconFilled: Icons.emoji_events,
-        ),
-      ]);
-    }
-
-    // Admin management pages
-    if (role.isAdmin) {
+    // Coach panel (grouped modules for coaches and super admins)
+    if (role == UserRole.coach || role.isSuperAdmin) {
       items.add(
         const NavigationItem(
-          label: 'Equipos',
-          route: AppConstants.teamsManagementRoute,
-          iconOutlined: Icons.groups_outlined,
-          iconFilled: Icons.groups,
+          label: 'Coach',
+          route: AppConstants.coachPanelRoute,
+          iconOutlined: Icons.sports_outlined,
+          iconFilled: Icons.sports,
         ),
       );
     }
 
-    // Super admin pages
+    // Super admin panel (only for super admins)
     if (role.isSuperAdmin) {
-      items.addAll([
+      items.add(
         const NavigationItem(
-          label: 'Clubes',
-          route: AppConstants.clubsManagementRoute,
-          iconOutlined: Icons.business_outlined,
-          iconFilled: Icons.business,
+          label: 'Super Admin',
+          route: AppConstants.superAdminPanelRoute,
+          iconOutlined: Icons.admin_panel_settings_outlined,
+          iconFilled: Icons.admin_panel_settings,
         ),
-        const NavigationItem(
-          label: 'Deportes',
-          route: AppConstants.sportsManagementRoute,
-          iconOutlined: Icons.sports_outlined,
-          iconFilled: Icons.sports,
-        ),
-      ]);
+      );
     }
 
     // Player-facing items
@@ -260,6 +229,8 @@ class AppScaffold extends ConsumerWidget {
       AppConstants.evaluationsRoute => 'Mis Evaluaciones',
       AppConstants.notesRoute => 'Notes',
       AppConstants.profileRoute => 'Profile',
+      AppConstants.coachPanelRoute => 'Panel Coach',
+      AppConstants.superAdminPanelRoute => 'Panel de Administración',
       AppConstants.teamsManagementRoute => 'Gestión de Equipos',
       AppConstants.clubsManagementRoute => 'Gestión de Clubes',
       AppConstants.sportsManagementRoute => 'Gestión de Deportes',

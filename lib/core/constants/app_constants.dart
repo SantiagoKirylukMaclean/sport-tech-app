@@ -28,9 +28,13 @@ class AppConstants {
   static const String profileRoute = '/profile';
 
   // Admin routes
+  static const String superAdminPanelRoute = '/admin/panel';
   static const String sportsManagementRoute = '/admin/sports';
   static const String clubsManagementRoute = '/admin/clubs';
   static const String teamsManagementRoute = '/admin/teams';
+
+  // Coach routes
+  static const String coachPanelRoute = '/coach/panel';
 
   // Auth routes
   static const String setPasswordRoute = '/set-password';

@@ -15,10 +15,12 @@ import 'package:sport_tech_app/presentation/championship/pages/championship_page
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
 import 'package:sport_tech_app/presentation/profile/pages/profile_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/super_admin_panel_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_sports_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_clubs_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/admin_teams_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/team_players_page.dart';
+import 'package:sport_tech_app/presentation/coach/pages/coach_panel_page.dart';
 import 'package:sport_tech_app/presentation/auth/pages/set_password_page.dart';
 
 /// Provider for the GoRouter instance
@@ -137,7 +139,24 @@ final routerProvider = Provider<GoRouter>((ref) {
               child: const ProfilePage(),
             ),
           ),
+          // Coach routes
+          GoRoute(
+            path: AppConstants.coachPanelRoute,
+            name: 'coach-panel',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const CoachPanelPage(),
+            ),
+          ),
           // Admin routes
+          GoRoute(
+            path: AppConstants.superAdminPanelRoute,
+            name: 'super-admin-panel',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SuperAdminPanelPage(),
+            ),
+          ),
           GoRoute(
             path: AppConstants.sportsManagementRoute,
             name: 'sports-management',

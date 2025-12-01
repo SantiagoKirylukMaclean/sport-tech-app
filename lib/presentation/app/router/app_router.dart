@@ -15,6 +15,11 @@ import 'package:sport_tech_app/presentation/championship/pages/championship_page
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
 import 'package:sport_tech_app/presentation/profile/pages/profile_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/super_admin_sports_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/super_admin_clubs_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/admin_teams_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/team_players_page.dart';
+import 'package:sport_tech_app/presentation/auth/pages/set_password_page.dart';
 
 /// Provider for the GoRouter instance
 final routerProvider = Provider<GoRouter>((ref) {
@@ -26,6 +31,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isAuthenticated = authState is AuthStateAuthenticated;
       final isLoggingIn = state.matchedLocation == AppConstants.loginRoute;
+      final isSettingPassword = state.matchedLocation.startsWith(AppConstants.setPasswordRoute);
+
+      // Allow access to set password page without authentication
+      if (isSettingPassword) {
+        return null;
+      }
 
       // If not authenticated and not on login page, redirect to login
       if (!isAuthenticated && !isLoggingIn) {
@@ -49,6 +60,19 @@ final routerProvider = Provider<GoRouter>((ref) {
           key: state.pageKey,
           child: const LoginPage(),
         ),
+      ),
+
+      // Set password route (no scaffold, no auth required)
+      GoRoute(
+        path: '${AppConstants.setPasswordRoute}/:token',
+        name: 'set-password',
+        pageBuilder: (context, state) {
+          final token = state.pathParameters['token'] ?? '';
+          return MaterialPage(
+            key: state.pageKey,
+            child: SetPasswordPage(inviteToken: token),
+          );
+        },
       ),
 
       // Shell route for authenticated pages (with scaffold)
@@ -112,6 +136,43 @@ final routerProvider = Provider<GoRouter>((ref) {
               key: state.pageKey,
               child: const ProfilePage(),
             ),
+          ),
+          // Admin routes
+          GoRoute(
+            path: AppConstants.sportsManagementRoute,
+            name: 'sports-management',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SuperAdminSportsPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.clubsManagementRoute,
+            name: 'clubs-management',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SuperAdminClubsPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.teamsManagementRoute,
+            name: 'teams-management',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const AdminTeamsPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/teams/:teamId/players',
+            name: 'team-players',
+            pageBuilder: (context, state) {
+              final teamId = state.pathParameters['teamId'] ?? '';
+              final sportId = state.uri.queryParameters['sportId'] ?? '';
+              return NoTransitionPage(
+                key: state.pageKey,
+                child: TeamPlayersPage(teamId: teamId, sportId: sportId),
+              );
+            },
           ),
         ],
       ),

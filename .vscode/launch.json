@@ -35,6 +35,17 @@
       "toolArgs": [
         "--dart-define-from-file=.env.json"
       ]
+    },
+    {
+      // Pixel 9a Android Emulator
+      "name": "Debug Pixel 9a (local Supabase)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "deviceId": "emulator-5554",
+      "toolArgs": [
+        "--dart-define-from-file=.env.android.json"
+      ]
     }
   ]
 }

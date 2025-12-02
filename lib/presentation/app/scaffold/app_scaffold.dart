@@ -5,9 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/navigation_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppScaffold extends ConsumerWidget {
   final Widget child;
@@ -54,6 +56,15 @@ class AppScaffold extends ConsumerWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // Language toggle button
+                        IconButton(
+                          icon: const Icon(Icons.language_outlined),
+                          onPressed: () {
+                            ref.read(localeProvider.notifier).toggleLocale();
+                          },
+                          tooltip: AppLocalizations.of(context)?.language ?? 'Language',
+                        ),
+                        const SizedBox(height: 8),
                         // Theme toggle button
                         IconButton(
                           icon: Icon(
@@ -64,7 +75,7 @@ class AppScaffold extends ConsumerWidget {
                           onPressed: () {
                             ref.read(themeModeProvider.notifier).toggle();
                           },
-                          tooltip: 'Toggle theme',
+                          tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
                         ),
                         const SizedBox(height: 8),
                         // Logout button
@@ -73,7 +84,7 @@ class AppScaffold extends ConsumerWidget {
                           onPressed: () {
                             ref.read(authNotifierProvider.notifier).signOut();
                           },
-                          tooltip: 'Logout',
+                          tooltip: AppLocalizations.of(context)?.logout ?? 'Logout',
                         ),
                       ],
                     ),
@@ -105,6 +116,14 @@ class AppScaffold extends ConsumerWidget {
       appBar: AppBar(
         title: Text(_getPageTitle(currentLocation)),
         actions: [
+          // Language toggle
+          IconButton(
+            icon: const Icon(Icons.language_outlined),
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+            },
+            tooltip: AppLocalizations.of(context)?.language ?? 'Language',
+          ),
           // Theme toggle
           IconButton(
             icon: Icon(
@@ -115,6 +134,7 @@ class AppScaffold extends ConsumerWidget {
             onPressed: () {
               ref.read(themeModeProvider.notifier).toggle();
             },
+            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
           ),
           // Logout
           IconButton(
@@ -122,6 +142,7 @@ class AppScaffold extends ConsumerWidget {
             onPressed: () {
               ref.read(authNotifierProvider.notifier).signOut();
             },
+            tooltip: AppLocalizations.of(context)?.logout ?? 'Logout',
           ),
         ],
       ),

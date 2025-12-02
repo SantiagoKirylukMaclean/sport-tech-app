@@ -25,7 +25,7 @@ class AppScaffold extends ConsumerWidget {
     final currentLocation = GoRouterState.of(context).matchedLocation;
 
     // Get navigation items based on user role
-    final navigationItems = _getNavigationItems(authState);
+    final navigationItems = _getNavigationItems(authState, context);
 
     if (isWideScreen) {
       return Scaffold(
@@ -114,7 +114,7 @@ class AppScaffold extends ConsumerWidget {
     // Mobile layout with bottom navigation
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getPageTitle(currentLocation)),
+        title: Text(_getPageTitle(currentLocation, context)),
         actions: [
           // Language toggle
           IconButton(
@@ -168,17 +168,18 @@ class AppScaffold extends ConsumerWidget {
   }
 
   /// Get navigation items based on user role
-  List<NavigationItem> _getNavigationItems(AuthState authState) {
+  List<NavigationItem> _getNavigationItems(AuthState authState, BuildContext context) {
     if (authState is! AuthStateAuthenticated) {
       return [];
     }
 
     final role = authState.profile.role;
+    final l10n = AppLocalizations.of(context)!;
 
     // Base items for all users
     final items = <NavigationItem>[
-      const NavigationItem(
-        label: 'Dashboard',
+      NavigationItem(
+        label: l10n.dashboard,
         route: AppConstants.dashboardRoute,
         iconOutlined: Icons.dashboard_outlined,
         iconFilled: Icons.dashboard,
@@ -188,8 +189,8 @@ class AppScaffold extends ConsumerWidget {
     // Coach panel (grouped modules for coaches and super admins)
     if (role == UserRole.coach || role.isSuperAdmin) {
       items.add(
-        const NavigationItem(
-          label: 'Coach',
+        NavigationItem(
+          label: l10n.coach,
           route: AppConstants.coachPanelRoute,
           iconOutlined: Icons.sports_outlined,
           iconFilled: Icons.sports,
@@ -200,8 +201,8 @@ class AppScaffold extends ConsumerWidget {
     // Super admin panel (only for super admins)
     if (role.isSuperAdmin) {
       items.add(
-        const NavigationItem(
-          label: 'Super Admin',
+        NavigationItem(
+          label: l10n.superAdmin,
           route: AppConstants.superAdminPanelRoute,
           iconOutlined: Icons.admin_panel_settings_outlined,
           iconFilled: Icons.admin_panel_settings,
@@ -211,20 +212,20 @@ class AppScaffold extends ConsumerWidget {
 
     // Player-facing items
     items.addAll([
-      const NavigationItem(
-        label: 'Evaluaciones',
+      NavigationItem(
+        label: l10n.evaluations,
         route: AppConstants.evaluationsRoute,
         iconOutlined: Icons.assessment_outlined,
         iconFilled: Icons.assessment,
       ),
-      const NavigationItem(
-        label: 'Notes',
+      NavigationItem(
+        label: l10n.notes,
         route: AppConstants.notesRoute,
         iconOutlined: Icons.note_outlined,
         iconFilled: Icons.note,
       ),
-      const NavigationItem(
-        label: 'Profile',
+      NavigationItem(
+        label: l10n.profile,
         route: AppConstants.profileRoute,
         iconOutlined: Icons.person_outline,
         iconFilled: Icons.person,
@@ -241,21 +242,22 @@ class AppScaffold extends ConsumerWidget {
   }
 
   /// Get page title based on current location
-  String _getPageTitle(String location) {
+  String _getPageTitle(String location, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return switch (location) {
-      AppConstants.dashboardRoute => 'Dashboard',
-      AppConstants.matchesRoute => 'Partidos',
-      AppConstants.trainingsRoute => 'Entrenamiento',
-      AppConstants.championshipRoute => 'Campeonato',
-      AppConstants.evaluationsRoute => 'Mis Evaluaciones',
-      AppConstants.notesRoute => 'Notes',
-      AppConstants.profileRoute => 'Profile',
-      AppConstants.coachPanelRoute => 'Panel Coach',
-      AppConstants.superAdminPanelRoute => 'Panel de Administración',
-      AppConstants.teamsManagementRoute => 'Gestión de Equipos',
-      AppConstants.clubsManagementRoute => 'Gestión de Clubes',
-      AppConstants.sportsManagementRoute => 'Gestión de Deportes',
-      _ => 'Sport Tech',
+      AppConstants.dashboardRoute => l10n.dashboard,
+      AppConstants.matchesRoute => l10n.matches,
+      AppConstants.trainingsRoute => l10n.trainings,
+      AppConstants.championshipRoute => l10n.championship,
+      AppConstants.evaluationsRoute => l10n.evaluations,
+      AppConstants.notesRoute => l10n.notes,
+      AppConstants.profileRoute => l10n.profile,
+      AppConstants.coachPanelRoute => l10n.coachPanel,
+      AppConstants.superAdminPanelRoute => l10n.superAdminPanel,
+      AppConstants.teamsManagementRoute => l10n.teamsManagement,
+      AppConstants.clubsManagementRoute => l10n.clubsManagement,
+      AppConstants.sportsManagementRoute => l10n.sportsManagement,
+      _ => l10n.appName,
     };
   }
 }

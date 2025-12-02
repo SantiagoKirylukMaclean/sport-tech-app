@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -38,6 +39,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     // Show error if there's an error state
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
@@ -73,7 +75,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Sport Tech',
+                    l10n.appName,
                     style: theme.textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
@@ -82,7 +84,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Team Sport Management',
+                    l10n.teamSportManagement,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),
@@ -96,17 +98,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     enabled: !isLoading,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Enter your email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.email,
+                      hintText: l10n.enterEmail,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Email is required';
+                        return l10n.emailRequired;
                       }
                       if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return l10n.invalidEmail;
                       }
                       return null;
                     },
@@ -120,8 +122,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     textInputAction: TextInputAction.done,
                     enabled: !isLoading,
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Enter your password',
+                      labelText: l10n.password,
+                      hintText: l10n.enterPassword,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -138,10 +140,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password is required';
+                        return l10n.passwordRequired;
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return l10n.passwordTooShort;
                       }
                       return null;
                     },
@@ -162,9 +164,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : const Text(
-                              'Login',
-                              style: TextStyle(fontSize: 16),
+                          : Text(
+                              l10n.login,
+                              style: const TextStyle(fontSize: 16),
                             ),
                     ),
                   ),
@@ -177,12 +179,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         : () {
                             // TODO: Implement forgot password
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Forgot password feature coming soon'),
+                              SnackBar(
+                                content: Text(l10n.forgotPasswordComingSoon),
                               ),
                             );
                           },
-                    child: const Text('Forgot password?'),
+                    child: Text(l10n.forgotPassword),
                   ),
                 ],
               ),

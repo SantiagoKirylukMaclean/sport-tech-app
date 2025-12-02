@@ -85,5 +85,19 @@
   "@_LANGUAGE": {},
   "language": "Idioma",
   "english": "Inglés",
-  "spanish": "Español"
+  "spanish": "Español",
+
+  "@_NOTES": {},
+  "myNotes": "Mis Notas",
+  "addNote": "Agregar Nota",
+  "editNote": "Editar Nota",
+  "deleteNote": "Eliminar Nota",
+  "noteContent": "Contenido de la nota",
+  "enterNoteContent": "Ingrese su nota...",
+  "noteContentRequired": "El contenido de la nota es obligatorio",
+  "noteCreated": "Nota creada exitosamente",
+  "noteUpdated": "Nota actualizada exitosamente",
+  "noteDeleted": "Nota eliminada exitosamente",
+  "confirmDeleteNote": "¿Está seguro de que desea eliminar esta nota?",
+  "noNotes": "Aún no hay notas. ¡Crea tu primera nota!"
 }

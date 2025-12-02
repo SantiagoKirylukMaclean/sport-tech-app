@@ -7,5 +7,6 @@ import 'package:sport_tech_app/infrastructure/notes/supabase_notes_repository.da
 
 /// Provider for notes repository
 final notesRepositoryProvider = Provider<NotesRepository>((ref) {
+  final supabaseClient = ref.watch(supabaseClientProvider);
   return SupabaseNotesRepository(supabaseClient);
 });

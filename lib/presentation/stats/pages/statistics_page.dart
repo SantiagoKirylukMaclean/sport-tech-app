@@ -20,27 +20,18 @@ class StatisticsPage extends ConsumerStatefulWidget {
 class _StatisticsPageState extends ConsumerState<StatisticsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _hasLoadedStats = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _loadStats();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  void _loadStats() {
-    final activeTeamState = ref.read(activeTeamNotifierProvider);
-    if (activeTeamState.activeTeam != null) {
-      ref
-          .read(statsNotifierProvider.notifier)
-          .loadTeamStats(activeTeamState.activeTeam!.id);
-    }
   }
 
   Future<void> _refresh() async {
@@ -56,6 +47,19 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
   Widget build(BuildContext context) {
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final statsState = ref.watch(statsNotifierProvider);
+
+    // Load stats on first build when we have a team
+    if (!_hasLoadedStats && activeTeamState.activeTeam != null) {
+      _hasLoadedStats = true;
+      // Use addPostFrameCallback to load after build is complete
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(statsNotifierProvider.notifier)
+              .loadTeamStats(activeTeamState.activeTeam!.id);
+        }
+      });
+    }
 
     if (activeTeamState.activeTeam == null) {
       return Scaffold(

@@ -118,7 +118,7 @@ class CoachPanelPage extends ConsumerWidget {
             title: 'Evaluaciones',
             subtitle: 'Evaluar el rendimiento de los jugadores',
             onTap: () {
-              context.go(AppConstants.evaluationsRoute);
+              context.go('/coach-evaluations');
             },
           ),
           const SizedBox(height: 12),

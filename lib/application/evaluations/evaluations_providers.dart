@@ -1,13 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/evaluations/repositories/evaluation_categories_repository.dart';
 import '../../domain/evaluations/repositories/player_evaluations_repository.dart';
 import '../../infrastructure/evaluations/supabase_evaluation_categories_repository.dart';
 import '../../infrastructure/evaluations/supabase_player_evaluations_repository.dart';
-import '../auth/auth_providers.dart';
 import 'evaluation_categories_notifier.dart';
 import 'evaluation_categories_state.dart';
 import 'player_evaluations_notifier.dart';
 import 'player_evaluations_state.dart';
+
+// Supabase client provider
+final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  return Supabase.instance.client;
+});
 
 // Repository providers
 final evaluationCategoriesRepositoryProvider =

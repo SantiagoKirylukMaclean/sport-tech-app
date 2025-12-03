@@ -10,7 +10,6 @@ class Player extends Equatable {
   final String? userId; // Optional link to auth user
   final String fullName;
   final int? jerseyNumber;
-  final String? positionId;
   final DateTime createdAt;
 
   const Player({
@@ -20,7 +19,6 @@ class Player extends Equatable {
     required this.createdAt,
     this.userId,
     this.jerseyNumber,
-    this.positionId,
   });
 
   @override
@@ -30,7 +28,6 @@ class Player extends Equatable {
         userId,
         fullName,
         jerseyNumber,
-        positionId,
         createdAt,
       ];
 
@@ -44,7 +41,6 @@ class Player extends Equatable {
     String? userId,
     String? fullName,
     int? jerseyNumber,
-    String? positionId,
     DateTime? createdAt,
   }) {
     return Player(
@@ -53,7 +49,6 @@ class Player extends Equatable {
       userId: userId ?? this.userId,
       fullName: fullName ?? this.fullName,
       jerseyNumber: jerseyNumber ?? this.jerseyNumber,
-      positionId: positionId ?? this.positionId,
       createdAt: createdAt ?? this.createdAt,
     );
   }

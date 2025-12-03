@@ -9,17 +9,16 @@ class PlayerMapper {
     try {
       print('DEBUG PlayerMapper: Converting JSON: $json');
       print('DEBUG PlayerMapper: team_id value: ${json['team_id']} (type: ${json['team_id'].runtimeType})');
-      
+
       final player = Player(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         teamId: json['team_id'].toString(),
-        userId: json['user_id'] as String?,
+        userId: json['user_id']?.toString(),
         fullName: json['full_name'] as String,
         jerseyNumber: json['jersey_number'] as int?,
-        positionId: json['position_id'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
       );
-      
+
       print('DEBUG PlayerMapper: Successfully created player: ${player.fullName}');
       return player;
     } catch (e, stackTrace) {
@@ -37,7 +36,6 @@ class PlayerMapper {
       'user_id': player.userId,
       'full_name': player.fullName,
       'jersey_number': player.jerseyNumber,
-      'position_id': player.positionId,
       'created_at': player.createdAt.toIso8601String(),
     };
   }

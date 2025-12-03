@@ -8,7 +8,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/presentation/auth/pages/login_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 // Mock classes
 class MockAuthNotifier extends Mock implements AuthNotifier {}

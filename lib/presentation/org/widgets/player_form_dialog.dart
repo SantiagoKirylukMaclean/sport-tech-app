@@ -2,23 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sport_tech_app/domain/org/entities/position.dart';
 
 class PlayerFormDialog extends StatefulWidget {
   final String? initialFullName;
   final int? initialJerseyNumber;
-  final String? initialPositionId;
-  final List<Position> positions;
-  final Future<void> Function(
-      String fullName, int? jerseyNumber, String? positionId) onSubmit;
+  final Future<void> Function(String fullName, int? jerseyNumber) onSubmit;
 
   const PlayerFormDialog({
-    required this.positions,
     required this.onSubmit,
     super.key,
     this.initialFullName,
     this.initialJerseyNumber,
-    this.initialPositionId,
   });
 
   @override
@@ -30,7 +24,6 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
   late final TextEditingController _jerseyController;
   final _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
-  String? _selectedPositionId;
 
   @override
   void initState() {
@@ -39,7 +32,6 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
     _jerseyController = TextEditingController(
       text: widget.initialJerseyNumber?.toString(),
     );
-    _selectedPositionId = widget.initialPositionId;
   }
 
   @override
@@ -85,30 +77,6 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Position (Optional)',
-                  border: OutlineInputBorder(),
-                ),
-                initialValue: _selectedPositionId,
-                items: [
-                  const DropdownMenuItem<String>(
-                    value: null,
-                    child: Text('None'),
-                  ),
-                  ...widget.positions.map(
-                    (position) => DropdownMenuItem(
-                      value: position.id,
-                      child:
-                          Text('${position.name} (${position.abbreviation})'),
-                    ),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() => _selectedPositionId = value);
-                },
-              ),
             ],
           ),
         ),
@@ -145,7 +113,6 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
       await widget.onSubmit(
         _nameController.text.trim(),
         jerseyNumber,
-        _selectedPositionId,
       );
     } finally {
       if (mounted) {

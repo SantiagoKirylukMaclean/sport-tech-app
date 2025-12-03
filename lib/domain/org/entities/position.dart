@@ -6,40 +6,35 @@ import 'package:equatable/equatable.dart';
 /// Maps to the public.positions table in Supabase
 class Position extends Equatable {
   final String id;
-  final String sportId;
   final String name;
-  final String abbreviation;
-  final String? fieldZone;
+  final int displayOrder;
+  final DateTime createdAt;
 
   const Position({
     required this.id,
-    required this.sportId,
     required this.name,
-    required this.abbreviation,
-    this.fieldZone,
+    required this.displayOrder,
+    required this.createdAt,
   });
 
   @override
-  List<Object?> get props => [id, sportId, name, abbreviation, fieldZone];
+  List<Object?> get props => [id, name, displayOrder, createdAt];
 
   @override
-  String toString() =>
-      'Position(id: $id, name: $name, abbreviation: $abbreviation)';
+  String toString() => 'Position(id: $id, name: $name)';
 
   /// Create a copy with updated fields
   Position copyWith({
     String? id,
-    String? sportId,
     String? name,
-    String? abbreviation,
-    String? fieldZone,
+    int? displayOrder,
+    DateTime? createdAt,
   }) {
     return Position(
       id: id ?? this.id,
-      sportId: sportId ?? this.sportId,
       name: name ?? this.name,
-      abbreviation: abbreviation ?? this.abbreviation,
-      fieldZone: fieldZone ?? this.fieldZone,
+      displayOrder: displayOrder ?? this.displayOrder,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

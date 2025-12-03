@@ -13,7 +13,7 @@ import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/domain/auth/entities/auth_user.dart';
 import 'package:sport_tech_app/domain/profiles/entities/user_profile.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/app_scaffold.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 // Mock classes
 class MockAuthNotifier extends Mock implements AuthNotifier {}

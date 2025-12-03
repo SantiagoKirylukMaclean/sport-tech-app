@@ -92,13 +92,11 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     required String teamId,
     required String fullName,
     int? jerseyNumber,
-    String? positionId,
   }) async {
     final result = await _playersRepository.createPlayer(
       teamId: teamId,
       fullName: fullName,
       jerseyNumber: jerseyNumber,
-      positionId: positionId,
     );
 
     return result.when(
@@ -120,13 +118,11 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     required String id,
     String? fullName,
     int? jerseyNumber,
-    String? positionId,
   }) async {
     final result = await _playersRepository.updatePlayer(
       id: id,
       fullName: fullName,
       jerseyNumber: jerseyNumber,
-      positionId: positionId,
     );
 
     return result.when(

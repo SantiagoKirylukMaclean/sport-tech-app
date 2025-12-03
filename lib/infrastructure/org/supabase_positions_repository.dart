@@ -16,11 +16,13 @@ class SupabasePositionsRepository implements PositionsRepository {
   @override
   Future<Result<List<Position>>> getPositionsBySport(String sportId) async {
     try {
+      // Note: positions table doesn't have sport_id column
+      // Positions are generic and shared across all sports
+      // The sportId parameter is kept for interface compatibility
       final response = await _client
           .from('positions')
           .select()
-          .eq('sport_id', sportId)
-          .order('name', ascending: true);
+          .order('display_order', ascending: true);
 
       final positions = (response as List)
           .map((json) => PositionMapper.fromJson(json as Map<String, dynamic>))

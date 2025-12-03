@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/notes/notes_notifier.dart';
 import 'package:sport_tech_app/application/notes/notes_state.dart';
 import 'package:sport_tech_app/domain/notes/entities/note.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class NotesPage extends ConsumerStatefulWidget {

@@ -6,12 +6,10 @@ import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/domain/org/repositories/players_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/mappers/player_mapper.dart';
-import 'package:uuid/uuid.dart';
 
 /// Supabase implementation of [PlayersRepository]
 class SupabasePlayersRepository implements PlayersRepository {
   final SupabaseClient _client;
-  final _uuid = const Uuid();
 
   SupabasePlayersRepository(this._client);
 
@@ -71,18 +69,15 @@ class SupabasePlayersRepository implements PlayersRepository {
     required String fullName,
     String? userId,
     int? jerseyNumber,
-    String? positionId,
   }) async {
     try {
-      final now = DateTime.now().toIso8601String();
+      // Don't specify 'id' - let PostgreSQL's bigserial auto-generate it
+      // Don't specify 'created_at' - let PostgreSQL default handle it
       final response = await _client.from('players').insert({
-        'id': _uuid.v4(),
         'team_id': int.tryParse(teamId) ?? teamId,
         'user_id': userId,
         'full_name': fullName.trim(),
         'jersey_number': jerseyNumber,
-        'position_id': positionId,
-        'created_at': now,
       }).select().single();
 
       return Success(PlayerMapper.fromJson(response));
@@ -98,7 +93,6 @@ class SupabasePlayersRepository implements PlayersRepository {
     required String id,
     String? fullName,
     int? jerseyNumber,
-    String? positionId,
   }) async {
     try {
       final updates = <String, dynamic>{};
@@ -108,9 +102,6 @@ class SupabasePlayersRepository implements PlayersRepository {
       }
       if (jerseyNumber != null) {
         updates['jersey_number'] = jerseyNumber;
-      }
-      if (positionId != null) {
-        updates['position_id'] = positionId;
       }
 
       final response = await _client

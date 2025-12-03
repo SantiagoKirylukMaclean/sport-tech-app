@@ -21,7 +21,6 @@ abstract class PlayersRepository {
     required String fullName,
     String? userId,
     int? jerseyNumber,
-    String? positionId,
   });
 
   /// Update an existing player
@@ -30,7 +29,6 @@ abstract class PlayersRepository {
     required String id,
     String? fullName,
     int? jerseyNumber,
-    String? positionId,
   });
 
   /// Delete a player

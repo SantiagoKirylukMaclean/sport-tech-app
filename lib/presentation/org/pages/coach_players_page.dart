@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
+import 'package:sport_tech_app/domain/org/entities/position.dart';
 import 'package:sport_tech_app/presentation/org/widgets/player_form_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dart';
 
@@ -132,19 +133,15 @@ class _CoachPlayersPageState extends ConsumerState<CoachPlayersPage> {
   }
 
   void _showCreateDialog(BuildContext context, String teamId) {
-    final positions = ref.read(playersNotifierProvider).positions;
-
     showDialog(
       context: context,
       builder: (context) => PlayerFormDialog(
-        positions: positions,
-        onSubmit: (fullName, jerseyNumber, positionId) async {
+        onSubmit: (fullName, jerseyNumber) async {
           final success =
               await ref.read(playersNotifierProvider.notifier).createPlayer(
                     teamId: teamId,
                     fullName: fullName,
                     jerseyNumber: jerseyNumber,
-                    positionId: positionId,
                   );
 
           if (success && context.mounted) {
@@ -184,11 +181,6 @@ class _PlayerListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final position = positions.firstWhere(
-      (p) => p.id == player.positionId,
-      orElse: () => null,
-    );
-
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
@@ -199,9 +191,6 @@ class _PlayerListItem extends ConsumerWidget {
           ),
         ),
         title: Text(player.fullName),
-        subtitle: position != null
-            ? Text('${position.name} (${position.abbreviation})')
-            : null,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -221,22 +210,17 @@ class _PlayerListItem extends ConsumerWidget {
   }
 
   void _showEditDialog(BuildContext context, WidgetRef ref) {
-    final playersState = ref.read(playersNotifierProvider);
-
     showDialog(
       context: context,
       builder: (context) => PlayerFormDialog(
         initialFullName: player.fullName,
         initialJerseyNumber: player.jerseyNumber,
-        initialPositionId: player.positionId,
-        positions: playersState.positions,
-        onSubmit: (fullName, jerseyNumber, positionId) async {
+        onSubmit: (fullName, jerseyNumber) async {
           final success =
               await ref.read(playersNotifierProvider.notifier).updatePlayer(
                     id: player.id,
                     fullName: fullName,
                     jerseyNumber: jerseyNumber,
-                    positionId: positionId,
                   );
 
           if (success && context.mounted) {

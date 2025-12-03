@@ -10,7 +10,7 @@ import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/navigation_item.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class AppScaffold extends ConsumerWidget {
   final Widget child;

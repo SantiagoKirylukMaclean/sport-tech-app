@@ -7,11 +7,10 @@ class PositionMapper {
   /// Convert from Supabase JSON to Position entity
   static Position fromJson(Map<String, dynamic> json) {
     return Position(
-      id: json['id'] as String,
-      sportId: json['sport_id'] as String,
+      id: json['id'].toString(),
       name: json['name'] as String,
-      abbreviation: json['abbreviation'] as String,
-      fieldZone: json['field_zone'] as String?,
+      displayOrder: json['display_order'] as int,
+      createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
 
@@ -19,10 +18,9 @@ class PositionMapper {
   static Map<String, dynamic> toJson(Position position) {
     return {
       'id': position.id,
-      'sport_id': position.sportId,
       'name': position.name,
-      'abbreviation': position.abbreviation,
-      'field_zone': position.fieldZone,
+      'display_order': position.displayOrder,
+      'created_at': position.createdAt.toIso8601String(),
     };
   }
 }

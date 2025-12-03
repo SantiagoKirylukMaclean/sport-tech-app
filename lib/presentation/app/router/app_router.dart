@@ -12,6 +12,7 @@ import 'package:sport_tech_app/presentation/dashboard/pages/dashboard_page.dart'
 import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
+import 'package:sport_tech_app/presentation/trainings/pages/training_attendance_page.dart';
 import 'package:sport_tech_app/presentation/championship/pages/championship_page.dart';
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
@@ -211,6 +212,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 key: state.pageKey,
                 child: MatchLineupPage(matchId: matchId),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/trainings/:sessionId/attendance',
+            name: 'training-attendance',
+            pageBuilder: (context, state) {
+              final sessionId = state.pathParameters['sessionId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: TrainingAttendancePage(sessionId: sessionId),
               );
             },
           ),

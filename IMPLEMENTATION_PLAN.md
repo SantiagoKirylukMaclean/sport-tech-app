@@ -5,10 +5,10 @@
 **✅ COMPLETADO:**
 - Módulo 1: Arquitectura + Setup + Auth + Navegación (100%)
 - Módulo 2: Organización + Usuarios (Sports/Clubs/Teams/Players/Invites) (100%)
-- **Módulo 3: Partidos, Convocatorias, Minutos, Cambios, Goles (100%)**
+- Módulo 3: Partidos, Convocatorias, Minutos, Cambios, Goles (100%)
+- **Módulo 4: Entrenamientos y Asistencia (100%)**
 
 **⚠️ PENDIENTE:**
-- Módulo 4: Entrenamientos y Asistencia
 - Módulo 5: Estadísticas + Campeonato
 - Módulo 6: Evaluaciones de Jugadores
 - Módulo 7: Cross-cutting (i18n completo, testing)

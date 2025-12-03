@@ -41,7 +41,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
       final response = await _client
           .from('teams')
           .select()
-          .eq('club_id', clubId)
+          .eq('club_id', int.tryParse(clubId) ?? clubId)
           .order('name', ascending: true);
 
       final teams = (response as List)
@@ -86,7 +86,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
       final response = await _client
           .from('teams')
           .select()
-          .eq('id', id)
+          .eq('id', int.tryParse(id) ?? id)
           .single();
 
       return Success(TeamMapper.fromJson(response));
@@ -131,7 +131,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
       final response = await _client
           .from('teams')
           .update({'name': name.trim()})
-          .eq('id', id)
+          .eq('id', int.tryParse(id) ?? id)
           .select()
           .single();
 
@@ -149,7 +149,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
   @override
   Future<Result<void>> deleteTeam(String id) async {
     try {
-      await _client.from('teams').delete().eq('id', id);
+      await _client.from('teams').delete().eq('id', int.tryParse(id) ?? id);
       return const Success(null);
     } on PostgrestException catch (e) {
       return Failed(ServerFailure(e.message, code: e.code));

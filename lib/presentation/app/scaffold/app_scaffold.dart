@@ -9,6 +9,7 @@ import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/navigation_item.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppScaffold extends ConsumerWidget {
@@ -114,8 +115,21 @@ class AppScaffold extends ConsumerWidget {
     // Mobile layout with bottom navigation
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getPageTitle(currentLocation, context)),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_getPageTitle(currentLocation, context)),
+            if (authState is AuthStateAuthenticated && 
+                (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
+              _ActiveTeamSubtitle(),
+          ],
+        ),
         actions: [
+          // Team selector button for coaches
+          if (authState is AuthStateAuthenticated && 
+              (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
+            _TeamSelectorButton(),
           // Language toggle
           IconButton(
             icon: const Icon(Icons.language_outlined),
@@ -259,5 +273,78 @@ class AppScaffold extends ConsumerWidget {
       AppConstants.sportsManagementRoute => l10n.sportsManagement,
       _ => l10n.appName,
     };
+  }
+}
+
+/// Widget to display active team name as subtitle
+class _ActiveTeamSubtitle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeTeamState = ref.watch(activeTeamNotifierProvider);
+    
+    if (activeTeamState.activeTeam != null) {
+      return Text(
+        activeTeamState.activeTeam!.name,
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+        ),
+      );
+    }
+    
+    return const SizedBox.shrink();
+  }
+}
+
+/// Button to open team selector dialog
+class _TeamSelectorButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return IconButton(
+      icon: const Icon(Icons.groups_outlined),
+      tooltip: 'Select Team',
+      onPressed: () => _showTeamSelectorDialog(context, ref),
+    );
+  }
+
+  void _showTeamSelectorDialog(BuildContext context, WidgetRef ref) {
+    final activeTeamState = ref.read(activeTeamNotifierProvider);
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Team'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: activeTeamState.teams.isEmpty
+              ? const Text('No teams available')
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: activeTeamState.teams.length,
+                  itemBuilder: (context, index) {
+                    final team = activeTeamState.teams[index];
+                    final isSelected = activeTeamState.activeTeam?.id == team.id;
+                    
+                    return ListTile(
+                      title: Text(team.name),
+                      leading: Icon(
+                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                        color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                      ),
+                      onTap: () {
+                        ref.read(activeTeamNotifierProvider.notifier).selectTeam(team.id);
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 }

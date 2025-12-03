@@ -1,17 +1,14 @@
-// lib/presentation/matches/pages/matches_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_tech_app/application/matches/matches_notifier.dart';
 import 'package:sport_tech_app/application/matches/matches_state.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/match_form_dialog.dart';
 
 class MatchesPage extends ConsumerStatefulWidget {
-  final String teamId;
-
-  const MatchesPage({required this.teamId, super.key});
+  const MatchesPage({super.key});
 
   @override
   ConsumerState<MatchesPage> createState() => _MatchesPageState();
@@ -21,14 +18,55 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
   @override
   void initState() {
     super.initState();
+    // Load matches when team is selected
     Future.microtask(() {
-      ref.read(matchesNotifierProvider(widget.teamId).notifier).loadMatches();
+      final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
+      if (activeTeam != null) {
+        ref.read(matchesNotifierProvider(activeTeam.id).notifier).loadMatches();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(matchesNotifierProvider(widget.teamId));
+    final activeTeamState = ref.watch(activeTeamNotifierProvider);
+    final activeTeam = activeTeamState.activeTeam;
+
+    // Show message if no team is selected
+    if (activeTeam == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Matches'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.sports_soccer,
+                size: 80,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'No Team Selected',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  'Please select a team from the Dashboard to view and manage matches.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final state = ref.watch(matchesNotifierProvider(activeTeam.id));
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +91,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                 ElevatedButton.icon(
                   onPressed: () {
                     ref
-                        .read(matchesNotifierProvider(widget.teamId).notifier)
+                        .read(matchesNotifierProvider(activeTeam.id).notifier)
                         .loadMatches();
                   },
                   icon: const Icon(Icons.refresh),
@@ -85,7 +123,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
             : RefreshIndicator(
                 onRefresh: () async {
                   await ref
-                      .read(matchesNotifierProvider(widget.teamId).notifier)
+                      .read(matchesNotifierProvider(activeTeam.id).notifier)
                       .loadMatches();
                 },
                 child: ListView.builder(
@@ -141,7 +179,10 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                                 ],
                               ),
                               onTap: () {
-                                context.push('/matches/${match.id}/lineup');
+                                Future.delayed(
+                                  Duration.zero,
+                                  () => context.push('/matches/${match.id}/lineup'),
+                                );
                               },
                             ),
                             PopupMenuItem(
@@ -157,7 +198,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => MatchFormDialog(
-                                      teamId: widget.teamId,
+                                      teamId: activeTeam.id,
                                       matchToEdit: match,
                                     ),
                                   );
@@ -196,7 +237,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (context) => MatchFormDialog(teamId: widget.teamId),
+            builder: (context) => MatchFormDialog(teamId: activeTeam.id),
           );
         },
         icon: const Icon(Icons.add),
@@ -206,6 +247,9 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
   }
 
   void _showDeleteConfirmation(BuildContext context, String matchId) {
+    final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
+    if (activeTeam == null) return;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -221,7 +265,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
           FilledButton(
             onPressed: () {
               ref
-                  .read(matchesNotifierProvider(widget.teamId).notifier)
+                  .read(matchesNotifierProvider(activeTeam.id).notifier)
                   .deleteMatch(matchId);
               Navigator.pop(context);
             },

@@ -33,6 +33,9 @@ class MatchLineupState {
   final String? selectedPlayerOut;
   final String? selectedPlayerIn;
 
+  // All team players (for selection in call-up)
+  final List<Player> teamPlayers;
+
   const MatchLineupState({
     this.isLoading = false,
     this.error,
@@ -48,6 +51,7 @@ class MatchLineupState {
     this.currentQuarterGoals = const [],
     this.selectedPlayerOut,
     this.selectedPlayerIn,
+    this.teamPlayers = const [],
   });
 
   /// Check if minimum call-ups requirement is met (7 players)
@@ -91,6 +95,7 @@ class MatchLineupState {
     bool clearSelectedPlayerOut = false,
     String? selectedPlayerIn,
     bool clearSelectedPlayerIn = false,
+    List<Player>? teamPlayers,
   }) {
     return MatchLineupState(
       isLoading: isLoading ?? this.isLoading,
@@ -113,6 +118,7 @@ class MatchLineupState {
       selectedPlayerIn: clearSelectedPlayerIn
           ? null
           : (selectedPlayerIn ?? this.selectedPlayerIn),
+      teamPlayers: teamPlayers ?? this.teamPlayers,
     );
   }
 }

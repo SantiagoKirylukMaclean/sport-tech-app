@@ -1,14 +1,16 @@
-// lib/presentation/coach/pages/coach_panel_page.dart
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 
-class CoachPanelPage extends StatelessWidget {
+class CoachPanelPage extends ConsumerWidget {
   const CoachPanelPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeTeamState = ref.watch(activeTeamNotifierProvider);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel Coach'),
@@ -22,12 +24,74 @@ class CoachPanelPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // Active team display
+          if (activeTeamState.activeTeam != null)
+            Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.groups,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Active Team',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
+                            ),
+                          ),
+                          Text(
+                            activeTeamState.activeTeam!.name,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Card(
+              color: Theme.of(context).colorScheme.errorContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.warning,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'No team selected. Please select a team from the Dashboard.',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onErrorContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 16),
           _CoachOptionTile(
             icon: Icons.groups_outlined,
             title: 'Jugadores',
             subtitle: 'Gestionar jugadores del equipo',
             onTap: () {
-              context.go(AppConstants.teamsManagementRoute);
+              context.go('/coach-players');
             },
           ),
           const SizedBox(height: 12),

@@ -1,11 +1,13 @@
-// lib/presentation/org/pages/admin_teams_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sport_tech_app/application/auth/auth_notifier.dart';
+import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/clubs_notifier.dart';
 import 'package:sport_tech_app/application/org/sports_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
+import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/domain/org/entities/team.dart';
@@ -21,6 +23,24 @@ class AdminTeamsPage extends ConsumerStatefulWidget {
 class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
   Sport? _selectedSport;
   Club? _selectedClub;
+
+  @override
+  void initState() {
+    super.initState();
+    // Redirect coaches to their active team's players page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = ref.read(authNotifierProvider);
+      if (authState is AuthStateAuthenticated && 
+          authState.profile.role == UserRole.coach) {
+        final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
+        if (activeTeam != null) {
+          // Redirect to players page for the active team
+          // We need to get the sport ID for this team
+          context.go('/coach-players');
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

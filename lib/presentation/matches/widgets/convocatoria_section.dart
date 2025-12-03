@@ -32,6 +32,12 @@ class ConvocatoriaSection extends ConsumerWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () => _showManageCallUpDialog(context, ref),
+                  tooltip: 'Manage Call-Up',
+                ),
+                const SizedBox(width: 8),
                 Chip(
                   label: Text('${state.callUps.length} / 7 min'),
                   backgroundColor: state.hasMinimumCallUps
@@ -87,6 +93,62 @@ class ConvocatoriaSection extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showManageCallUpDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => _ManageCallUpDialog(matchId: matchId),
+    );
+  }
+}
+
+class _ManageCallUpDialog extends ConsumerWidget {
+  final String matchId;
+
+  const _ManageCallUpDialog({required this.matchId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(matchLineupNotifierProvider(matchId));
+    final notifier = ref.read(matchLineupNotifierProvider(matchId).notifier);
+
+    return AlertDialog(
+      title: const Text('Manage Call-Up'),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: state.teamPlayers.isEmpty
+            ? const Center(child: Text('No players found for this team.'))
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.teamPlayers.length,
+                itemBuilder: (context, index) {
+                  final player = state.teamPlayers[index];
+                  final isCalledUp =
+                      state.callUps.any((c) => c.playerId == player.id);
+
+                  return CheckboxListTile(
+                    title: Text(player.fullName),
+                    subtitle: Text('Jersey: ${player.jerseyNumber ?? "?"}'),
+                    value: isCalledUp,
+                    onChanged: (bool? value) {
+                      if (value == true) {
+                        notifier.addPlayerToCallUp(player.id);
+                      } else {
+                        notifier.removePlayerFromCallUp(player.id);
+                      }
+                    },
+                  );
+                },
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Done'),
+        ),
+      ],
     );
   }
 }

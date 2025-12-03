@@ -18,11 +18,18 @@ class SupabasePlayersRepository implements PlayersRepository {
   @override
   Future<Result<List<Player>>> getPlayersByTeam(String teamId) async {
     try {
+      print('DEBUG SupabasePlayersRepository: getPlayersByTeam called with teamId: $teamId (type: ${teamId.runtimeType})');
+      final parsedTeamId = int.tryParse(teamId) ?? teamId;
+      print('DEBUG SupabasePlayersRepository: parsedTeamId: $parsedTeamId (type: ${parsedTeamId.runtimeType})');
+      
       final response = await _client
           .from('players')
           .select()
-          .eq('team_id', teamId)
+          .eq('team_id', parsedTeamId)
           .order('full_name', ascending: true);
+
+      print('DEBUG SupabasePlayersRepository: response type: ${response.runtimeType}');
+      print('DEBUG SupabasePlayersRepository: response: $response');
 
       final players = (response as List)
           .map((json) => PlayerMapper.fromJson(json as Map<String, dynamic>))
@@ -30,8 +37,10 @@ class SupabasePlayersRepository implements PlayersRepository {
 
       return Success(players);
     } on PostgrestException catch (e) {
+      print('DEBUG SupabasePlayersRepository: PostgrestException: ${e.message}');
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
+      print('DEBUG SupabasePlayersRepository: Exception: $e');
       return Failed(ServerFailure('Error getting players: $e'));
     }
   }
@@ -68,7 +77,7 @@ class SupabasePlayersRepository implements PlayersRepository {
       final now = DateTime.now().toIso8601String();
       final response = await _client.from('players').insert({
         'id': _uuid.v4(),
-        'team_id': teamId,
+        'team_id': int.tryParse(teamId) ?? teamId,
         'user_id': userId,
         'full_name': fullName.trim(),
         'jersey_number': jerseyNumber,

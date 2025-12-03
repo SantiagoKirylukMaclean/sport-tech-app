@@ -8,6 +8,8 @@ import 'package:sport_tech_app/domain/matches/repositories/match_goals_repositor
 import 'package:sport_tech_app/domain/matches/repositories/match_player_periods_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_quarter_results_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_substitutions_repository.dart';
+import 'package:sport_tech_app/domain/matches/repositories/matches_repository.dart';
+import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/domain/org/repositories/players_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/providers/matches_repositories_providers.dart';
 import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
@@ -22,6 +24,7 @@ final matchLineupNotifierProvider = StateNotifierProvider.family<
     final resultsRepo = ref.watch(matchQuarterResultsRepositoryProvider);
     final goalsRepo = ref.watch(matchGoalsRepositoryProvider);
     final playersRepo = ref.watch(playersRepositoryProvider);
+    final matchesRepo = ref.watch(matchesRepositoryProvider);
 
     return MatchLineupNotifier(
       matchId: matchId,
@@ -31,6 +34,7 @@ final matchLineupNotifierProvider = StateNotifierProvider.family<
       resultsRepository: resultsRepo,
       goalsRepository: goalsRepo,
       playersRepository: playersRepo,
+      matchesRepository: matchesRepo,
     );
   },
 );
@@ -44,6 +48,7 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
   final MatchQuarterResultsRepository _resultsRepository;
   final MatchGoalsRepository _goalsRepository;
   final PlayersRepository _playersRepository;
+  final MatchesRepository _matchesRepository;
 
   MatchLineupNotifier({
     required this.matchId,
@@ -53,12 +58,14 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     required MatchQuarterResultsRepository resultsRepository,
     required MatchGoalsRepository goalsRepository,
     required PlayersRepository playersRepository,
+    required MatchesRepository matchesRepository,
   })  : _callUpsRepository = callUpsRepository,
         _periodsRepository = periodsRepository,
         _substitutionsRepository = substitutionsRepository,
         _resultsRepository = resultsRepository,
         _goalsRepository = goalsRepository,
         _playersRepository = playersRepository,
+        _matchesRepository = matchesRepository,
         super(const MatchLineupState());
 
   /// Load all data for the match
@@ -66,6 +73,23 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
+      // Load match details to get teamId
+      final matchResult = await _matchesRepository.getMatchById(matchId);
+      if (matchResult.isFailure) {
+        state = state.copyWith(
+          isLoading: false,
+          error: matchResult.failureOrNull?.message ?? 'Failed to load match details',
+        );
+        return;
+      }
+      final match = matchResult.dataOrNull!;
+
+      // Load all team players
+      print('Fetching players for teamId: ${match.teamId}');
+      final teamPlayersResult = await _playersRepository.getPlayersByTeam(match.teamId);
+      final teamPlayers = teamPlayersResult.dataOrNull ?? [];
+      print('Fetched ${teamPlayers.length} players');
+      
       // Load call-ups
       final callUpsResult = await _callUpsRepository.getCallUpsByMatch(matchId);
       if (callUpsResult.isFailure) {
@@ -82,12 +106,19 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       final playerIds = callUps.map((c) => c.playerId).toSet();
 
       // For each player ID, fetch the player
-      final calledUpPlayers = [];
+      final calledUpPlayers = <Player>[];
       for (final playerId in playerIds) {
-        final playerResult = await _playersRepository.getPlayerById(playerId);
-        final player = playerResult.dataOrNull;
-        if (player != null) {
-          calledUpPlayers.add(player);
+        // First check if player is in teamPlayers to avoid extra API call
+        final existingPlayer = teamPlayers.where((p) => p.id == playerId).firstOrNull;
+        if (existingPlayer != null) {
+          calledUpPlayers.add(existingPlayer);
+        } else {
+          // If not in team list (maybe transferred?), fetch individually
+          final playerResult = await _playersRepository.getPlayerById(playerId);
+          final player = playerResult.dataOrNull;
+          if (player != null) {
+            calledUpPlayers.add(player);
+          }
         }
       }
 
@@ -126,13 +157,15 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       state = state.copyWith(
         isLoading: false,
         callUps: callUps,
-        calledUpPlayers: List.from(calledUpPlayers),
+        calledUpPlayers: calledUpPlayers,
         allPeriods: allPeriods,
         currentQuarterPeriods: currentQuarterPeriods,
         quarterResults: quarterResults,
         currentQuarterResult: currentQuarterResult,
         allGoals: allGoals,
         currentQuarterGoals: currentQuarterGoals,
+
+        teamPlayers: teamPlayers,
         clearError: true,
       );
     } catch (e) {

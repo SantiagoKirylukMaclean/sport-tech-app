@@ -10,6 +10,7 @@ import 'package:sport_tech_app/presentation/app/scaffold/app_scaffold.dart';
 import 'package:sport_tech_app/presentation/auth/pages/login_page.dart';
 import 'package:sport_tech_app/presentation/dashboard/pages/dashboard_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
 import 'package:sport_tech_app/presentation/championship/pages/championship_page.dart';
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
@@ -20,6 +21,7 @@ import 'package:sport_tech_app/presentation/org/pages/super_admin_sports_page.da
 import 'package:sport_tech_app/presentation/org/pages/super_admin_clubs_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/admin_teams_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/team_players_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/coach_players_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/coach_panel_page.dart';
 import 'package:sport_tech_app/presentation/auth/pages/set_password_page.dart';
 
@@ -148,6 +150,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               child: const CoachPanelPage(),
             ),
           ),
+          GoRoute(
+            path: '/coach-players',
+            name: 'coach-players',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const CoachPlayersPage(),
+            ),
+          ),
           // Admin routes
           GoRoute(
             path: AppConstants.superAdminPanelRoute,
@@ -190,6 +200,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               return NoTransitionPage(
                 key: state.pageKey,
                 child: TeamPlayersPage(teamId: teamId, sportId: sportId),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/matches/:matchId/lineup',
+            name: 'match-lineup',
+            pageBuilder: (context, state) {
+              final matchId = state.pathParameters['matchId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: MatchLineupPage(matchId: matchId),
               );
             },
           ),

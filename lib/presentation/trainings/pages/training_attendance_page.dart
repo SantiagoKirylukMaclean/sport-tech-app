@@ -209,6 +209,7 @@ class _TrainingAttendancePageState
                 ),
               ],
               selected: currentStatus != null ? {currentStatus} : {},
+              emptySelectionAllowed: true,
               onSelectionChanged: (Set<AttendanceStatus> newSelection) {
                 if (newSelection.isNotEmpty) {
                   _updateAttendance(player.id, newSelection.first);

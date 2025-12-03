@@ -14,8 +14,7 @@ class SupabaseTrainingAttendanceRepository
     final response = await _client
         .from('training_attendance')
         .select()
-        .eq('session_id', sessionId)
-        .order('created_at', ascending: true);
+        .eq('training_id', sessionId);
 
     return (response as List)
         .map((json) => TrainingAttendanceMapper.fromJson(json))
@@ -30,7 +29,7 @@ class SupabaseTrainingAttendanceRepository
     final response = await _client
         .from('training_attendance')
         .select()
-        .eq('session_id', sessionId)
+        .eq('training_id', sessionId)
         .eq('player_id', playerId)
         .maybeSingle();
 
@@ -46,17 +45,16 @@ class SupabaseTrainingAttendanceRepository
     String? notes,
   }) async {
     final json = TrainingAttendanceMapper.toUpsertJson(
-      sessionId: sessionId,
+      trainingId: sessionId,
       playerId: playerId,
       status: status,
-      notes: notes,
     );
 
     final response = await _client
         .from('training_attendance')
         .upsert(
           json,
-          onConflict: 'session_id,player_id',
+          onConflict: 'training_id,player_id',
         )
         .select()
         .single();
@@ -66,7 +64,9 @@ class SupabaseTrainingAttendanceRepository
 
   @override
   Future<void> delete(String id) async {
-    await _client.from('training_attendance').delete().eq('id', id);
+    // La tabla no tiene columna id, usa composite key
+    // Este método no debería ser usado, pero lo dejamos por compatibilidad
+    throw UnimplementedError('Use delete by training_id and player_id instead');
   }
 
   @override
@@ -74,8 +74,7 @@ class SupabaseTrainingAttendanceRepository
     final response = await _client
         .from('training_attendance')
         .select()
-        .eq('player_id', playerId)
-        .order('created_at', ascending: false);
+        .eq('player_id', playerId);
 
     return (response as List)
         .map((json) => TrainingAttendanceMapper.fromJson(json))

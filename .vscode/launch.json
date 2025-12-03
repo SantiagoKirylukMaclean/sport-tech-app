@@ -8,10 +8,13 @@
       "request": "launch",
       "program": "lib/main.dart",
       // Usa el deviceId que te da `flutter devices`
-      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
+      // MacBook Pro
+      //"deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
+      // Mini Mac
+      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
       // Carga las vars desde .env.json
       "toolArgs": [
-        "--dart-define-from-file=.env.json"
+        "--dart-define-from-file=.env.ios.json"
       ]
     },
     {
@@ -33,7 +36,7 @@
       "program": "lib/main.dart",
       "deviceId": "macos",
       "toolArgs": [
-        "--dart-define-from-file=.env.json"
+        "--dart-define-from-file=.env.ios.json"
       ]
     },
     {

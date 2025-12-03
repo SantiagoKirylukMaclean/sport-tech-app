@@ -17,52 +17,32 @@ enum AttendanceStatus {
 }
 
 class TrainingAttendance extends Equatable {
-  final String id;
-  final String sessionId;
+  final String trainingId;
   final String playerId;
   final AttendanceStatus status;
-  final String? notes;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
 
   const TrainingAttendance({
-    required this.id,
-    required this.sessionId,
+    required this.trainingId,
     required this.playerId,
     required this.status,
-    this.notes,
-    required this.createdAt,
-    this.updatedAt,
   });
 
   TrainingAttendance copyWith({
-    String? id,
-    String? sessionId,
+    String? trainingId,
     String? playerId,
     AttendanceStatus? status,
-    String? notes,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) {
     return TrainingAttendance(
-      id: id ?? this.id,
-      sessionId: sessionId ?? this.sessionId,
+      trainingId: trainingId ?? this.trainingId,
       playerId: playerId ?? this.playerId,
       status: status ?? this.status,
-      notes: notes ?? this.notes,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   @override
   List<Object?> get props => [
-        id,
-        sessionId,
+        trainingId,
         playerId,
         status,
-        notes,
-        createdAt,
-        updatedAt,
       ];
 }

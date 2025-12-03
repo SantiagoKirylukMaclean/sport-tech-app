@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../application/org/active_team_notifier.dart';
-import '../../../application/org/players_notifier.dart';
+import '../../../application/trainings/training_attendance_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
 import '../../../domain/org/entities/player.dart';
 import '../../../domain/trainings/entities/training_attendance.dart';
@@ -180,23 +180,11 @@ class _TrainingAttendancePageState
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${player.firstName} ${player.lastName}',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      if (player.position != null)
-                        Text(
-                          player.position!,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                  child: Text(
+                    player.fullName,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                    ],
                   ),
                 ),
               ],

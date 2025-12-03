@@ -27,6 +27,7 @@ dependencies:
 
   # UI
   flutter_svg: ^2.0.10
+  fl_chart: ^0.69.0
 
   # Utilities
   equatable: ^2.0.5

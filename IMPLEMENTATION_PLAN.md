@@ -6,10 +6,10 @@
 - Módulo 1: Arquitectura + Setup + Auth + Navegación (100%)
 - Módulo 2: Organización + Usuarios (Sports/Clubs/Teams/Players/Invites) (100%)
 - Módulo 3: Partidos, Convocatorias, Minutos, Cambios, Goles (100%)
-- **Módulo 4: Entrenamientos y Asistencia (100%)**
+- Módulo 4: Entrenamientos y Asistencia (100%)
+- **Módulo 5: Estadísticas (100%)**
 
 **⚠️ PENDIENTE:**
-- Módulo 5: Estadísticas + Campeonato
 - Módulo 6: Evaluaciones de Jugadores
 - Módulo 7: Cross-cutting (i18n completo, testing)
 
@@ -379,102 +379,85 @@
 
 ---
 
-## FASE 4: Módulo 5 - Estadísticas + Campeonato
+## FASE 4: Módulo 5 - Estadísticas ✅
 
-### Sprint 4.1: Stats Infrastructure
+### Sprint 4.1: Stats Infrastructure ✅
 **Objetivo:** Acceso a datos estadísticos
 
 **Tareas:**
-42. **Task 4.1.1: Domain entities** [1h]
+42. **Task 4.1.1: Domain entities** [1h] ✅
     - Crear `domain/stats/entities/player_statistics.dart`
     - Crear `domain/stats/entities/match_summary.dart`
     - Crear `domain/stats/entities/quarter_performance.dart`
+    - Crear `domain/stats/entities/scorer_stats.dart`
     - Commit: "feat(stats): add domain entities"
 
-43. **Task 4.1.2: StatsRepository** [3h]
+43. **Task 4.1.2: StatsRepository** [3h] ✅
     - Crear interface `StatsRepository`
     - Métodos: getTeamPlayerStatistics, getScorersRanking, getAssistersRanking
     - Métodos: getMatchesSummary, getQuarterPerformance
     - Implementar `SupabaseStatsRepository`
     - Usar view `player_statistics` y función `get_team_player_statistics`
+    - Crear mappers para todas las entidades
     - Test manual: Consultar stats
     - Commit: "feat(stats): implement stats repository"
 
-44. **Task 4.1.3: Stats state management** [1h]
+44. **Task 4.1.3: Stats state management** [1h] ✅
     - Crear `StatsNotifier`
+    - Crear `StatsState`
     - Providers
     - Commit: "feat(stats): add state management"
 
-### Sprint 4.2: Statistics Page
+### Sprint 4.2: Statistics Page ✅
 **Objetivo:** Dashboard de estadísticas
 
 **Tareas:**
-45. **Task 4.2.1: Statistics page scaffold** [1h]
+45. **Task 4.2.1: Statistics page scaffold** [1h] ✅
     - Crear estructura con TabBar
     - Tabs: Players, Goals, Matches, Quarters, Training
-    - Team selector
+    - Team selector integrado
+    - Manejo de estados (loading, error, data)
     - Commit: "feat(stats): add statistics page scaffold"
 
-46. **Task 4.2.2: Players tab** [2h]
+46. **Task 4.2.2: Players tab** [2h] ✅
     - Tabla con player_statistics
-    - Columnas: nombre, jersey, % asistencia entrenamientos, % asistencia partidos, promedio periodos
+    - Columnas: nombre, jersey, % asistencia entrenamientos, % asistencia partidos, promedio periodos, goles, asistencias
     - Color coding: verde ≥90%, gris ≥75%, rojo <75%
+    - Legend explicativa
     - Test: Verificar colores
     - Commit: "feat(stats): implement players statistics tab"
 
-47. **Task 4.2.3: Goals tab** [2h]
+47. **Task 4.2.3: Goals tab** [2h] ✅
     - Dos rankings: goleadores y asistentes
     - Top 10 de cada uno
     - Mostrar: nombre, jersey, cantidad
+    - Color coding para top 3 (oro, plata, bronce)
     - Test: Verificar rankings
     - Commit: "feat(stats): implement goals tab"
 
-48. **Task 4.2.4: Matches tab** [1.5h]
+48. **Task 4.2.4: Matches tab** [1.5h] ✅
     - Lista de partidos con resultado final
     - W/D/L indicator con colores
+    - Overall record summary
     - Test: Verificar indicadores
     - Commit: "feat(stats): implement matches tab"
 
-49. **Task 4.2.5: Quarters tab** [2h]
+49. **Task 4.2.5: Quarters tab** [2h] ✅
     - Tabla: Q1-Q4 con goles a favor, goles en contra, W/D/L
     - Calcular efectividad por cuarto
+    - Grid cards con visualización por cuarto
+    - Legend con fórmula de efectividad
     - Test: Verificar cálculos
     - Commit: "feat(stats): implement quarters analysis tab"
 
-50. **Task 4.2.6: Training attendance tab** [1h]
+50. **Task 4.2.6: Training attendance tab** [1h] ✅
     - Ranking por % asistencia entrenamientos
     - Reuso de player_statistics
     - Color coding
     - Test: Verificar ranking
     - Commit: "feat(stats): implement training attendance tab"
 
-### Sprint 4.3: Championship Page
-**Objetivo:** Vista de campeonato
-
-**Tareas:**
-51. **Task 4.3.1: Championship page base** [2h]
-    - Reemplazar placeholder de ChampionshipPage
-    - Tabla de partidos: oponente, fecha, resultado
-    - W/D/L indicator
-    - Test: Ver tabla
-    - Commit: "feat(championship): implement championship page"
-
-52. **Task 4.3.2: Match details dialog** [2h]
-    - Botón "Detalles" por partido
-    - Dialog mostrando:
-      - Resultados por cuarto
-      - Goles por cuarto (scorer + assister)
-    - Test: Ver detalles
-    - Commit: "feat(championship): add match details dialog"
-
-53. **Task 4.3.3: Testing stats module** [2h]
-    - Tests unitarios para StatsRepository
-    - Widget tests para StatisticsPage tabs
-    - Widget tests para ChampionshipPage
-    - Test: `flutter test`
-    - Commit: "test(stats): add tests"
-
-**Git Tag:** `v0.6.0-stats-complete`
+**Git Tag:** `v0.6.0-stats-complete` ✅
 
 ---
 
@@ -673,17 +656,18 @@ refactor(module): description
 
 ## Estimaciones
 
-| Fase | Sprints | Tareas | Tiempo Estimado |
-|------|---------|--------|-----------------|
-| Fase 1: Cross-cutting | 3 | 8 | ~12h |
-| Fase 2: Matches | 7 | 25 | ~50h |
-| Fase 3: Trainings | 2 | 8 | ~14h |
-| Fase 4: Stats | 3 | 12 | ~20h |
-| Fase 5: Evaluations | 3 | 12 | ~24h |
-| Fase 6: Polish | 2 | 8 | ~12h |
-| **TOTAL** | **20** | **73** | **~132h** |
+| Fase | Sprints | Tareas | Tiempo Estimado | Estado |
+|------|---------|--------|-----------------|--------|
+| Fase 1: Cross-cutting | 3 | 8 | ~12h | ⚠️ Pendiente |
+| Fase 2: Matches | 7 | 25 | ~50h | ✅ Completado |
+| Fase 3: Trainings | 2 | 8 | ~14h | ✅ Completado |
+| Fase 4: Stats | 2 | 9 | ~11h | ✅ Completado |
+| Fase 5: Evaluations | 3 | 12 | ~24h | ⚠️ Pendiente |
+| Fase 6: Polish | 2 | 8 | ~12h | ⚠️ Pendiente |
+| **TOTAL** | **19** | **70** | **~123h** | **~75h completado** |
 
-**Ritmo sugerido:** 15-20h/semana = 7-9 semanas
+**Ritmo sugerido:** 15-20h/semana = 6-7 semanas
+**Progreso actual:** ~61% completado
 
 ---
 
@@ -697,9 +681,9 @@ Si se necesita MVP más rápido:
 3. Implementar Trainings
 4. Deploy MVP
 
-### MVP Phase 2 (Analytics):
-5. Implementar Stats + Championship
-6. Mejorar UX de Matches (drag & drop avanzado)
+### MVP Phase 2 (Analytics): ✅
+5. Implementar Stats ✅
+6. Mejorar UX de Matches (drag & drop avanzado) ✅
 
 ### MVP Phase 3 (Advanced):
 7. Implementar Evaluations

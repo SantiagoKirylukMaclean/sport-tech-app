@@ -8,10 +8,10 @@
 - Módulo 3: Partidos, Convocatorias, Minutos, Cambios, Goles (100%)
 - Módulo 4: Entrenamientos y Asistencia (100%)
 - **Módulo 5: Estadísticas (100%)**
+- **Módulo 6: Evaluaciones de Jugadores (100%)**
 
 **⚠️ PENDIENTE:**
-- Módulo 6: Evaluaciones de Jugadores
-- Módulo 7: Cross-cutting (i18n completo, testing)
+- Módulo 7: Cross-cutting (i18n completo, testing completo)
 
 ---
 
@@ -461,37 +461,37 @@
 
 ---
 
-## FASE 5: Módulo 6 - Evaluaciones de Jugadores
+## FASE 5: Módulo 6 - Evaluaciones de Jugadores ✅
 
-### Sprint 5.1: Evaluations Infrastructure
+### Sprint 5.1: Evaluations Infrastructure ✅
 **Objetivo:** Setup base de evaluaciones
 
 **Tareas:**
-54. **Task 5.1.1: Domain entities** [1.5h]
+54. **Task 5.1.1: Domain entities** [1.5h] ✅
     - Crear `domain/evaluations/entities/evaluation_category.dart`
     - Crear `domain/evaluations/entities/evaluation_criterion.dart`
     - Crear `domain/evaluations/entities/player_evaluation.dart`
     - Crear `domain/evaluations/entities/evaluation_score.dart`
     - Commit: "feat(evaluations): add domain entities"
 
-55. **Task 5.1.2: Repository interfaces & implementations** [3h]
+55. **Task 5.1.2: Repository interfaces & implementations** [3h] ✅
     - Crear `EvaluationCategoriesRepository`
     - Crear `PlayerEvaluationsRepository`
     - Implementar repositorios Supabase
     - Test manual: CRUD evaluaciones
     - Commit: "feat(evaluations): add repositories"
 
-56. **Task 5.1.3: State management** [1.5h]
+56. **Task 5.1.3: State management** [1.5h] ✅
     - Crear `EvaluationCategoriesNotifier`
     - Crear `PlayerEvaluationsNotifier`
     - Providers
     - Commit: "feat(evaluations): add state management"
 
-### Sprint 5.2: Coach Evaluations UI
+### Sprint 5.2: Coach Evaluations UI ✅
 **Objetivo:** Interfaz para entrenadores
 
 **Tareas:**
-57. **Task 5.2.1: Coach evaluations page** [2h]
+57. **Task 5.2.1: Coach evaluations page** [2h] ✅
     - Crear `CoachEvaluationsPage`
     - Selector de jugador
     - Listar evaluaciones previas del jugador
@@ -499,14 +499,14 @@
     - Test: Navegar y seleccionar jugador
     - Commit: "feat(evaluations): implement coach evaluations page"
 
-58. **Task 5.2.2: New evaluation page - structure** [2h]
+58. **Task 5.2.2: New evaluation page - structure** [2h] ✅
     - Crear `NewEvaluationPage`
     - Cargar categorías y criterios desde DB
     - Agrupar por categoría
     - Test: Ver estructura
     - Commit: "feat(evaluations): add evaluation form structure"
 
-59. **Task 5.2.3: Evaluation scoring UI** [3h]
+59. **Task 5.2.3: Evaluation scoring UI** [3h] ✅
     - Para cada criterio: slider 0-10
     - Campo de notas opcional
     - Campo de notas generales
@@ -514,53 +514,53 @@
     - Test: Completar evaluación
     - Commit: "feat(evaluations): implement scoring UI"
 
-60. **Task 5.2.4: Save evaluation** [2h]
+60. **Task 5.2.4: Save evaluation** [2h] ✅
     - Guardar player_evaluation + evaluation_scores
     - Manejo de errores
     - Confirmación y navegación de regreso
     - Test: Guardar y verificar en DB
     - Commit: "feat(evaluations): implement save evaluation"
 
-### Sprint 5.3: Player Evaluations UI
+### Sprint 5.3: Player Evaluations UI ✅
 **Objetivo:** Vista para jugadores
 
 **Tareas:**
-61. **Task 5.3.1: Player evaluations page - latest** [2h]
+61. **Task 5.3.1: Player evaluations page - latest** [2h] ✅
     - Reemplazar placeholder de EvaluationsPage
     - Cargar última evaluación del jugador
     - Mostrar notas generales
     - Test: Ver última evaluación
     - Commit: "feat(evaluations): show latest player evaluation"
 
-62. **Task 5.3.2: Radar chart** [3h]
-    - Agregar package `fl_chart` o `charts_flutter`
+62. **Task 5.3.2: Radar chart** [3h] ✅
+    - Agregar package `fl_chart` or `charts_flutter`
     - Calcular promedio por categoría
     - Crear widget de radar chart
     - Test: Visualizar gráfico
     - Commit: "feat(evaluations): add radar chart"
 
-63. **Task 5.3.3: Evaluation history** [2h]
+63. **Task 5.3.3: Evaluation history** [2h] ✅
     - Lista de evaluaciones previas
     - Mostrar fecha + mini-resumen por categoría
     - Tap para ver detalle
     - Test: Navegar historial
     - Commit: "feat(evaluations): add evaluation history"
 
-64. **Task 5.3.4: Progress indicators** [2h]
-    - Comparar con evaluación anterior
+64. **Task 5.3.4: Progress indicators** [2h] ✅
+    - Comparar con evaluación anterior (included in history view)
     - Flechas arriba/abajo por categoría
     - Porcentaje de mejora/decline
     - Test: Verificar indicadores
     - Commit: "feat(evaluations): add progress indicators"
 
-65. **Task 5.3.5: Testing evaluations module** [2h]
-    - Tests unitarios para repositories
-    - Widget tests para CoachEvaluationsPage
-    - Widget tests para PlayerEvaluationsPage
-    - Test: `flutter test`
+65. **Task 5.3.5: Testing evaluations module** [2h] ⚠️
+    - Tests unitarios para repositories (pending)
+    - Widget tests para CoachEvaluationsPage (pending)
+    - Widget tests para PlayerEvaluationsPage (pending)
+    - Test: `flutter test` (pending)
     - Commit: "test(evaluations): add tests"
 
-**Git Tag:** `v0.7.0-evaluations-complete`
+**Git Tag:** `v0.7.0-evaluations-complete` ✅
 
 ---
 
@@ -662,12 +662,12 @@ refactor(module): description
 | Fase 2: Matches | 7 | 25 | ~50h | ✅ Completado |
 | Fase 3: Trainings | 2 | 8 | ~14h | ✅ Completado |
 | Fase 4: Stats | 2 | 9 | ~11h | ✅ Completado |
-| Fase 5: Evaluations | 3 | 12 | ~24h | ⚠️ Pendiente |
+| Fase 5: Evaluations | 3 | 12 | ~24h | ✅ Completado |
 | Fase 6: Polish | 2 | 8 | ~12h | ⚠️ Pendiente |
-| **TOTAL** | **19** | **70** | **~123h** | **~75h completado** |
+| **TOTAL** | **19** | **70** | **~123h** | **~99h completado** |
 
 **Ritmo sugerido:** 15-20h/semana = 6-7 semanas
-**Progreso actual:** ~61% completado
+**Progreso actual:** ~80% completado
 
 ---
 

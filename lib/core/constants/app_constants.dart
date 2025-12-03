@@ -23,6 +23,7 @@ class AppConstants {
   static const String matchesRoute = '/matches';
   static const String trainingsRoute = '/trainings';
   static const String championshipRoute = '/championship';
+  static const String statisticsRoute = '/statistics';
   static const String evaluationsRoute = '/evaluations';
   static const String notesRoute = '/notes';
   static const String profileRoute = '/profile';

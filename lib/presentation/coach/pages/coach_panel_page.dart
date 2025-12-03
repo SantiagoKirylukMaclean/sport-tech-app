@@ -127,7 +127,7 @@ class CoachPanelPage extends ConsumerWidget {
             title: 'Estadísticas',
             subtitle: 'Ver estadísticas del equipo y jugadores',
             onTap: () {
-              context.go(AppConstants.championshipRoute);
+              context.go(AppConstants.statisticsRoute);
             },
           ),
         ],

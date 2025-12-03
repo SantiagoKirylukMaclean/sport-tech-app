@@ -14,6 +14,7 @@ import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_attendance_page.dart';
 import 'package:sport_tech_app/presentation/championship/pages/championship_page.dart';
+import 'package:sport_tech_app/presentation/stats/pages/statistics_page.dart';
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
 import 'package:sport_tech_app/presentation/profile/pages/profile_page.dart';
@@ -153,6 +154,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
               child: const ChampionshipPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.statisticsRoute,
+            name: 'statistics',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const StatisticsPage(),
             ),
           ),
           GoRoute(

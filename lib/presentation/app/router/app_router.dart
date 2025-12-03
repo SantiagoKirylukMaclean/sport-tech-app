@@ -33,10 +33,47 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: AppConstants.dashboardRoute,
     debugLogDiagnostics: true,
+    errorBuilder: (context, state) {
+      // Handle route errors by redirecting to dashboard or login
+      final isAuthenticated = authState is AuthStateAuthenticated;
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 80, color: Colors.red),
+              const SizedBox(height: 24),
+              const Text(
+                'Page Not Found',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Text('Could not find route: ${state.uri}'),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  if (isAuthenticated) {
+                    context.go(AppConstants.dashboardRoute);
+                  } else {
+                    context.go(AppConstants.loginRoute);
+                  }
+                },
+                child: const Text('Go to Home'),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
     redirect: (context, state) {
       final isAuthenticated = authState is AuthStateAuthenticated;
       final isLoggingIn = state.matchedLocation == AppConstants.loginRoute;
       final isSettingPassword = state.matchedLocation.startsWith(AppConstants.setPasswordRoute);
+
+      // Redirect root to dashboard or login
+      if (state.matchedLocation == '/') {
+        return isAuthenticated ? AppConstants.dashboardRoute : AppConstants.loginRoute;
+      }
 
       // Allow access to set password page without authentication
       if (isSettingPassword) {

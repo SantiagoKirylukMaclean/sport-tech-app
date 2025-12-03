@@ -3,8 +3,8 @@ import '../../../domain/trainings/entities/training_session.dart';
 class TrainingSessionMapper {
   static TrainingSession fromJson(Map<String, dynamic> json) {
     return TrainingSession(
-      id: json['id'] as String,
-      teamId: json['team_id'] as String,
+      id: json['id'].toString(),
+      teamId: json['team_id'].toString(),
       sessionDate: DateTime.parse(json['session_date'] as String),
       notes: json['notes'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),

@@ -33,14 +33,17 @@ class TrainingSessionsNotifier extends StateNotifier<TrainingSessionsState> {
       : super(const TrainingSessionsState());
 
   Future<void> loadSessions(String teamId) async {
+    print('TrainingSessionsNotifier: Loading sessions for team $teamId');
     state = state.copyWith(isLoading: true, error: null);
     try {
       final sessions = await _repository.getByTeamId(teamId);
+      print('TrainingSessionsNotifier: Loaded ${sessions.length} sessions');
       state = state.copyWith(
         sessions: sessions,
         isLoading: false,
       );
     } catch (e) {
+      print('TrainingSessionsNotifier: Error loading sessions: $e');
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),

@@ -25,10 +25,13 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
 
   void _loadSessions() {
     final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
+    print('TrainingsPage: Active team: ${activeTeam?.id} - ${activeTeam?.name}');
     if (activeTeam != null) {
       ref
           .read(trainingSessionsNotifierProvider.notifier)
           .loadSessions(activeTeam.id);
+    } else {
+      print('TrainingsPage: No active team found');
     }
   }
 

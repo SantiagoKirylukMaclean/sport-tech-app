@@ -1,0 +1,37 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/evaluations/repositories/evaluation_categories_repository.dart';
+import '../../domain/evaluations/repositories/player_evaluations_repository.dart';
+import '../../infrastructure/evaluations/supabase_evaluation_categories_repository.dart';
+import '../../infrastructure/evaluations/supabase_player_evaluations_repository.dart';
+import '../auth/auth_providers.dart';
+import 'evaluation_categories_notifier.dart';
+import 'evaluation_categories_state.dart';
+import 'player_evaluations_notifier.dart';
+import 'player_evaluations_state.dart';
+
+// Repository providers
+final evaluationCategoriesRepositoryProvider =
+    Provider<EvaluationCategoriesRepository>((ref) {
+  final supabase = ref.watch(supabaseClientProvider);
+  return SupabaseEvaluationCategoriesRepository(supabase);
+});
+
+final playerEvaluationsRepositoryProvider =
+    Provider<PlayerEvaluationsRepository>((ref) {
+  final supabase = ref.watch(supabaseClientProvider);
+  return SupabasePlayerEvaluationsRepository(supabase);
+});
+
+// State notifier providers
+final evaluationCategoriesNotifierProvider = StateNotifierProvider<
+    EvaluationCategoriesNotifier, EvaluationCategoriesState>((ref) {
+  final repository = ref.watch(evaluationCategoriesRepositoryProvider);
+  return EvaluationCategoriesNotifier(repository);
+});
+
+final playerEvaluationsNotifierProvider =
+    StateNotifierProvider<PlayerEvaluationsNotifier, PlayerEvaluationsState>(
+        (ref) {
+  final repository = ref.watch(playerEvaluationsRepositoryProvider);
+  return PlayerEvaluationsNotifier(repository);
+});

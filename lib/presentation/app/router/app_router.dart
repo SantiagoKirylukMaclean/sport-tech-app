@@ -27,6 +27,7 @@ import 'package:sport_tech_app/presentation/org/pages/coach_players_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/coach_panel_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/coach_evaluations_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/new_evaluation_page.dart';
+import 'package:sport_tech_app/presentation/coach/pages/evaluation_detail_page.dart';
 import 'package:sport_tech_app/presentation/auth/pages/set_password_page.dart';
 
 /// Provider for the GoRouter instance
@@ -223,6 +224,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 key: state.pageKey,
                 child: NewEvaluationPage(playerId: playerId),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/coach-evaluations/:evaluationId',
+            name: 'evaluation-detail',
+            pageBuilder: (context, state) {
+              final evaluationId = state.pathParameters['evaluationId'] ?? '';
+              final playerId = state.uri.queryParameters['playerId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: EvaluationDetailPage(
+                  evaluationId: evaluationId,
+                  playerId: playerId,
+                ),
               );
             },
           ),

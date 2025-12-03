@@ -28,7 +28,7 @@ final playerEvaluationsRepositoryProvider =
 });
 
 // State notifier providers
-final evaluationCategoriesNotifierProvider = StateNotifierProvider<
+final evaluationCategoriesNotifierProvider = StateNotifierProvider.autoDispose<
     EvaluationCategoriesNotifier, EvaluationCategoriesState>((ref) {
   final repository = ref.watch(evaluationCategoriesRepositoryProvider);
   return EvaluationCategoriesNotifier(repository);

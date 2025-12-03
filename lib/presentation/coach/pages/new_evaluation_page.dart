@@ -6,8 +6,7 @@ import 'package:sport_tech_app/application/evaluations/evaluation_categories_not
 import 'package:sport_tech_app/application/evaluations/evaluation_categories_state.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
-import 'package:sport_tech_app/application/org/org_providers.dart';
-import 'package:sport_tech_app/application/org/players/players_state.dart';
+import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/evaluation_category.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/evaluation_criterion.dart';
 
@@ -136,7 +135,7 @@ class _NewEvaluationPageState extends ConsumerState<NewEvaluationPage> {
     final categoriesState = ref.watch(evaluationCategoriesNotifierProvider);
 
     String playerName = 'Jugador';
-    if (playersState is PlayersLoaded) {
+    if (playersState.players.isNotEmpty) {
       final player = playersState.players
           .firstWhere((p) => p.id == widget.playerId, orElse: () => null as dynamic);
       if (player != null) {
@@ -236,7 +235,7 @@ class _NewEvaluationPageState extends ConsumerState<NewEvaluationPage> {
           ...state.categories.map((category) {
             final criteria = state.criteriaByCategory[category.id] ?? [];
             return _buildCategorySection(category, criteria);
-          }),
+          }).toList(),
 
           const SizedBox(height: 24),
 
@@ -310,6 +309,7 @@ class _NewEvaluationPageState extends ConsumerState<NewEvaluationPage> {
     List<EvaluationCriterion> criteria,
   ) {
     return Card(
+      key: ValueKey('category_${category.id}'),
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -358,7 +358,7 @@ class _NewEvaluationPageState extends ConsumerState<NewEvaluationPage> {
             ),
             const SizedBox(height: 16),
             const Divider(),
-            ...criteria.map((criterion) => _buildCriterionItem(criterion)),
+            ...criteria.map((criterion) => _buildCriterionItem(criterion)).toList(),
           ],
         ),
       ),
@@ -370,6 +370,7 @@ class _NewEvaluationPageState extends ConsumerState<NewEvaluationPage> {
     final hasNote = _scoreNotes.containsKey(criterion.id);
 
     return Padding(
+      key: ValueKey('criterion_${criterion.id}'),
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

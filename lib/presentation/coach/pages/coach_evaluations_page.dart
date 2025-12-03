@@ -5,9 +5,7 @@ import 'package:sport_tech_app/application/evaluations/player_evaluations_notifi
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
-import 'package:sport_tech_app/application/org/players/players_notifier.dart';
-import 'package:sport_tech_app/application/org/players/players_state.dart';
-import 'package:sport_tech_app/application/org/org_providers.dart';
+import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +34,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
     if (activeTeamState.activeTeam != null) {
       ref
           .read(playersNotifierProvider.notifier)
-          .loadPlayers(activeTeamState.activeTeam!.id);
+          .loadPlayersByTeam(activeTeamState.activeTeam!.id, '1'); // Using placeholder sport ID
     }
   }
 
@@ -161,16 +159,16 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
   }
 
   Widget _buildPlayersList(PlayersState state) {
-    if (state is PlayersLoading) {
+    if (state.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state is PlayersError) {
+    if (state.error != null) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Error: ${state.message}',
+            'Error: ${state.error}',
             style: TextStyle(color: Theme.of(context).colorScheme.error),
             textAlign: TextAlign.center,
           ),
@@ -178,7 +176,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
       );
     }
 
-    if (state is! PlayersLoaded || state.players.isEmpty) {
+    if (state.players.isEmpty) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16),

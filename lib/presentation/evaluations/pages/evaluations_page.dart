@@ -7,8 +7,7 @@ import 'package:sport_tech_app/application/evaluations/evaluation_categories_sta
 import 'package:sport_tech_app/application/evaluations/player_evaluations_notifier.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
-import 'package:sport_tech_app/application/org/org_providers.dart';
-import 'package:sport_tech_app/application/org/players/players_state.dart';
+import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/evaluation_score.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/player_evaluation.dart';
 import 'package:intl/intl.dart';
@@ -35,7 +34,7 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
 
     // Load player data
     final playersState = ref.read(playersNotifierProvider);
-    if (playersState is PlayersLoaded) {
+    if (!playersState.isLoading && playersState.error == null) {
       final currentPlayer = playersState.players
           .where((p) => p.userId == user.id)
           .firstOrNull;
@@ -67,9 +66,30 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
       );
     }
 
-    if (playersState is! PlayersLoaded) {
+    if (playersState.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (playersState.error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text('Error: ${playersState.error}'),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _loadData,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar'),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -342,8 +362,8 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
               ),
             ],
             const SizedBox(height: 24),
-            // Radar Chart
-            if (categoryAverages.isNotEmpty)
+            // Radar Chart (only if we have at least 3 data points)
+            if (categoryAverages.length >= 3)
               SizedBox(
                 height: 300,
                 child: _buildRadarChart(context, categoryAverages),

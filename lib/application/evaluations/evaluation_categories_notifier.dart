@@ -16,9 +16,29 @@ class EvaluationCategoriesNotifier
       final criteriaByCategory =
           await _repository.listAllCategoriesWithCriteria();
 
+      // Remove duplicates by ID
+      final uniqueCategoriesMap = <String, EvaluationCategory>{};
+      for (final category in categories) {
+        uniqueCategoriesMap[category.id] = category;
+      }
+
+      final uniqueCriteriaByCategory = <String, List<EvaluationCriterion>>{};
+      criteriaByCategory.forEach((categoryId, criteria) {
+        final uniqueCriteriaMap = <String, EvaluationCriterion>{};
+        for (final criterion in criteria) {
+          uniqueCriteriaMap[criterion.id] = criterion;
+        }
+        uniqueCriteriaByCategory[categoryId] = uniqueCriteriaMap.values.toList();
+      });
+
+      print('DEBUG: Loaded ${uniqueCategoriesMap.length} unique categories');
+      uniqueCriteriaByCategory.forEach((catId, criteria) {
+        print('DEBUG: Category $catId has ${criteria.length} unique criteria');
+      });
+
       state = EvaluationCategoriesLoaded(
-        categories: categories,
-        criteriaByCategory: criteriaByCategory,
+        categories: uniqueCategoriesMap.values.toList(),
+        criteriaByCategory: uniqueCriteriaByCategory,
       );
     } catch (e) {
       state = EvaluationCategoriesError(e.toString());

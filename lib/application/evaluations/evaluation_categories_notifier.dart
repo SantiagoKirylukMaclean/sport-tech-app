@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../domain/evaluations/entities/evaluation_category.dart';
+import '../../domain/evaluations/entities/evaluation_criterion.dart';
 import '../../domain/evaluations/repositories/evaluation_categories_repository.dart';
 import 'evaluation_categories_state.dart';
 

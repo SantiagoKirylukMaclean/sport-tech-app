@@ -9,50 +9,51 @@
 - Módulo 4: Entrenamientos y Asistencia (100%)
 - **Módulo 5: Estadísticas (100%)**
 - **Módulo 6: Evaluaciones de Jugadores (100%)**
+- **Módulo 7: Cross-cutting (i18n ES/EN, testing base, notes) (100%)**
 
 **⚠️ PENDIENTE:**
-- Módulo 7: Cross-cutting (i18n completo, testing completo)
+- Fase 6: Polish & Production Readiness
 
 ---
 
-## FASE 1: Completar Cross-Cutting Concerns (Módulo 7)
+## FASE 1: Completar Cross-Cutting Concerns (Módulo 7) ✅
 
-### Sprint 1.1: Localization (i18n ES/EN)
+### Sprint 1.1: Localization (i18n ES/EN) ✅
 **Objetivo:** Completar sistema de traducción ES/EN
 
 **Tareas:**
-1. **Task 1.1.1: Crear archivos ARB para ES/EN** [1h]
+1. **Task 1.1.1: Crear archivos ARB para ES/EN** [1h] ✅
    - Crear `lib/l10n/app_es.arb` con traducciones en español
    - Crear `lib/l10n/app_en.arb` con traducciones en inglés
    - Incluir keys para: menús, botones, mensajes de error, labels
    - Test: Ejecutar `flutter gen-l10n` y verificar generación
    - Commit: "feat: add ES/EN ARB files for localization"
 
-2. **Task 1.1.2: Integrar AppLocalizations en la app** [30min]
+2. **Task 1.1.2: Integrar AppLocalizations en la app** [30min] ✅
    - Descomentar configuración en `main.dart`
    - Agregar `localizationsDelegates` y `supportedLocales`
    - Test: Hot reload y verificar que no hay errores
    - Commit: "feat: integrate AppLocalizations in MaterialApp"
 
-3. **Task 1.1.3: Agregar selector de idioma** [1h]
+3. **Task 1.1.3: Agregar selector de idioma** [1h] ✅
    - Crear `LocaleNotifier` en `application/locale/`
    - Agregar botón de idioma en `AppScaffold`
    - Persistir selección en SharedPreferences
    - Test: Cambiar idioma y verificar persistencia al reiniciar
    - Commit: "feat: add language selector with persistence"
 
-4. **Task 1.1.4: Reemplazar strings hardcoded con traducciones** [2h]
+4. **Task 1.1.4: Reemplazar strings hardcoded con traducciones** [2h] ✅
    - Actualizar `LoginPage` con `context.l10n`
    - Actualizar menús de navegación
    - Actualizar formularios de org (Sports, Clubs, Teams, Players)
    - Test: Verificar ambos idiomas en cada pantalla
    - Commit: "feat: replace hardcoded strings with i18n"
 
-### Sprint 1.2: Testing Setup
+### Sprint 1.2: Testing Setup ✅
 **Objetivo:** Establecer base de testing
 
 **Tareas:**
-5. **Task 1.2.1: Tests unitarios para repositorios** [2h]
+5. **Task 1.2.1: Tests unitarios para repositorios** [2h] ✅
    - Crear `test/infrastructure/auth/supabase_auth_repository_test.dart`
    - Mock SupabaseClient
    - Test casos: login success, login failure, signOut
@@ -61,7 +62,7 @@
    - Test: `flutter test`
    - Commit: "test: add unit tests for auth repositories"
 
-6. **Task 1.2.2: Widget tests para LoginPage** [1.5h]
+6. **Task 1.2.2: Widget tests para LoginPage** [1.5h] ✅
    - Crear `test/presentation/auth/login_page_test.dart`
    - Test: renderizado de campos
    - Test: validación de formulario
@@ -70,18 +71,18 @@
    - Test: `flutter test`
    - Commit: "test: add widget tests for LoginPage"
 
-7. **Task 1.2.3: Widget tests para AppScaffold** [1h]
+7. **Task 1.2.3: Widget tests para AppScaffold** [1h] ✅
    - Crear `test/presentation/app/scaffold/app_scaffold_test.dart`
    - Test: navegación por rol (super_admin, admin, coach, player)
    - Test: mostrar/ocultar menús según rol
    - Test: `flutter test`
    - Commit: "test: add widget tests for AppScaffold"
 
-### Sprint 1.3: Notes Page
+### Sprint 1.3: Notes Page ✅
 **Objetivo:** Implementar página de notas básica
 
 **Tareas:**
-8. **Task 1.3.1: Implementar NotesPage funcional** [2h]
+8. **Task 1.3.1: Implementar NotesPage funcional** [2h] ✅
    - Diseñar schema simple: `notes (id, user_id, content, created_at)`
    - Crear domain entities y repository
    - Implementar SupabaseNotesRepository
@@ -90,7 +91,7 @@
    - Test: Crear, editar, eliminar notas
    - Commit: "feat: implement notes module"
 
-**Git Tag:** `v0.3.0-cross-cutting-complete`
+**Git Tag:** `v0.3.0-cross-cutting-complete` ✅
 
 ---
 
@@ -658,16 +659,16 @@ refactor(module): description
 
 | Fase | Sprints | Tareas | Tiempo Estimado | Estado |
 |------|---------|--------|-----------------|--------|
-| Fase 1: Cross-cutting | 3 | 8 | ~12h | ⚠️ Pendiente |
+| Fase 1: Cross-cutting | 3 | 8 | ~12h | ✅ Completado |
 | Fase 2: Matches | 7 | 25 | ~50h | ✅ Completado |
 | Fase 3: Trainings | 2 | 8 | ~14h | ✅ Completado |
 | Fase 4: Stats | 2 | 9 | ~11h | ✅ Completado |
 | Fase 5: Evaluations | 3 | 12 | ~24h | ✅ Completado |
 | Fase 6: Polish | 2 | 8 | ~12h | ⚠️ Pendiente |
-| **TOTAL** | **19** | **70** | **~123h** | **~99h completado** |
+| **TOTAL** | **19** | **70** | **~123h** | **~111h completado** |
 
 **Ritmo sugerido:** 15-20h/semana = 6-7 semanas
-**Progreso actual:** ~80% completado
+**Progreso actual:** ~90% completado
 
 ---
 
@@ -675,19 +676,19 @@ refactor(module): description
 
 Si se necesita MVP más rápido:
 
-### MVP Phase 1 (Core Features):
-1. Completar Fase 1 (i18n + testing básico)
-2. Implementar Matches (básico, sin drag & drop sofisticado)
-3. Implementar Trainings
-4. Deploy MVP
+### MVP Phase 1 (Core Features): ✅
+1. Completar Fase 1 (i18n + testing básico) ✅
+2. Implementar Matches (básico, sin drag & drop sofisticado) ✅
+3. Implementar Trainings ✅
+4. Deploy MVP ⚠️
 
 ### MVP Phase 2 (Analytics): ✅
 5. Implementar Stats ✅
 6. Mejorar UX de Matches (drag & drop avanzado) ✅
 
-### MVP Phase 3 (Advanced):
-7. Implementar Evaluations
-8. Polish final
+### MVP Phase 3 (Advanced): ✅
+7. Implementar Evaluations ✅
+8. Polish final ⚠️ (Fase 6 pendiente)
 
 ---
 

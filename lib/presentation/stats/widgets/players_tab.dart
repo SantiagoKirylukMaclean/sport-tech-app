@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 
-class PlayersTab extends ConsumerWidget {
+class PlayersTab extends ConsumerStatefulWidget {
   const PlayersTab({super.key});
+
+  @override
+  ConsumerState<PlayersTab> createState() => _PlayersTabState();
+}
+
+class _PlayersTabState extends ConsumerState<PlayersTab> {
+  int _sortColumnIndex = 0;
+  bool _sortAscending = true;
 
   Color _getAttendanceColor(double percentage, BuildContext context) {
     if (percentage >= 90) {
@@ -15,10 +24,64 @@ class PlayersTab extends ConsumerWidget {
     }
   }
 
+  void _sort(int columnIndex, bool ascending) {
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+    });
+  }
+
+  List<PlayerStatistics> _getSortedPlayers(List<PlayerStatistics> players) {
+    final sortedPlayers = List<PlayerStatistics>.from(players);
+
+    sortedPlayers.sort((a, b) {
+      int comparison;
+
+      switch (_sortColumnIndex) {
+        case 0: // Player name
+          comparison = a.playerName.compareTo(b.playerName);
+          break;
+        case 1: // Jersey number
+          final aJersey = a.jerseyNumber ?? '';
+          final bJersey = b.jerseyNumber ?? '';
+          // Try to compare as numbers first, if both are numeric
+          final aNum = int.tryParse(aJersey);
+          final bNum = int.tryParse(bJersey);
+          if (aNum != null && bNum != null) {
+            comparison = aNum.compareTo(bNum);
+          } else {
+            comparison = aJersey.compareTo(bJersey);
+          }
+          break;
+        case 2: // Training %
+          comparison = a.trainingAttendancePercentage.compareTo(b.trainingAttendancePercentage);
+          break;
+        case 3: // Match %
+          comparison = a.matchAttendancePercentage.compareTo(b.matchAttendancePercentage);
+          break;
+        case 4: // Avg Periods
+          comparison = a.averagePeriods.compareTo(b.averagePeriods);
+          break;
+        case 5: // Goals
+          comparison = a.totalGoals.compareTo(b.totalGoals);
+          break;
+        case 6: // Assists
+          comparison = a.totalAssists.compareTo(b.totalAssists);
+          break;
+        default:
+          comparison = 0;
+      }
+
+      return _sortAscending ? comparison : -comparison;
+    });
+
+    return sortedPlayers;
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final statsState = ref.watch(statsNotifierProvider);
-    final players = statsState.playerStatistics;
+    final players = _getSortedPlayers(statsState.playerStatistics);
 
     if (players.isEmpty) {
       return const Center(
@@ -36,14 +99,42 @@ class PlayersTab extends ConsumerWidget {
               headingRowColor: WidgetStateProperty.all(
                 Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
-              columns: const [
-                DataColumn(label: Text('Player')),
-                DataColumn(label: Text('Jersey')),
-                DataColumn(label: Text('Training %')),
-                DataColumn(label: Text('Match %')),
-                DataColumn(label: Text('Avg Periods')),
-                DataColumn(label: Text('Goals')),
-                DataColumn(label: Text('Assists')),
+              sortColumnIndex: _sortColumnIndex,
+              sortAscending: _sortAscending,
+              columns: [
+                DataColumn(
+                  label: const Text('Player'),
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Jersey'),
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Training %'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Match %'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Avg Periods'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Goals'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: const Text('Assists'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                ),
               ],
               rows: players.map((player) {
                 final trainingColor = _getAttendanceColor(

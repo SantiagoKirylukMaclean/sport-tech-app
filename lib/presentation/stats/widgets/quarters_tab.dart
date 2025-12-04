@@ -2,19 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
 
-class QuartersTab extends ConsumerWidget {
+class QuartersTab extends ConsumerStatefulWidget {
   const QuartersTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<QuartersTab> createState() => _QuartersTabState();
+}
+
+class _QuartersTabState extends ConsumerState<QuartersTab> {
+  int _sortColumnIndex = 0;
+  bool _sortAscending = true;
+
+  @override
+  Widget build(BuildContext context) {
     final statsState = ref.watch(statsNotifierProvider);
-    final quarters = statsState.quarters;
+    final quarters = List.from(statsState.quarters);
 
     if (quarters.isEmpty) {
       return const Center(
         child: Text('No quarter data available'),
       );
     }
+
+    // Sort quarters based on selected column
+    _sortQuarters(quarters);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -30,17 +41,81 @@ class QuartersTab extends ConsumerWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              sortColumnIndex: _sortColumnIndex,
+              sortAscending: _sortAscending,
               headingRowColor: WidgetStateProperty.all(
                 Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
-              columns: const [
-                DataColumn(label: Text('Quarter')),
-                DataColumn(label: Text('Goals For')),
-                DataColumn(label: Text('Goals Against')),
-                DataColumn(label: Text('Wins')),
-                DataColumn(label: Text('Draws')),
-                DataColumn(label: Text('Losses')),
-                DataColumn(label: Text('Effectiveness')),
+              columns: [
+                DataColumn(
+                  label: const Text('Quarter'),
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Goals For'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Goals Against'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Wins'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Draws'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Losses'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: const Text('Effectiveness'),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) {
+                    setState(() {
+                      _sortColumnIndex = columnIndex;
+                      _sortAscending = ascending;
+                    });
+                  },
+                ),
               ],
               rows: quarters.map((quarter) {
                 final effectivenessColor = _getEffectivenessColor(
@@ -166,12 +241,50 @@ class QuartersTab extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(height: 24),
-        _buildQuarterCards(context, quarters),
         const SizedBox(height: 16),
         _buildEffectivenessLegend(context),
       ],
     );
+  }
+
+  void _sortQuarters(List quarters) {
+    switch (_sortColumnIndex) {
+      case 0: // Quarter
+        quarters.sort((a, b) => _sortAscending
+            ? a.quarterNumber.compareTo(b.quarterNumber)
+            : b.quarterNumber.compareTo(a.quarterNumber),);
+        break;
+      case 1: // Goals For
+        quarters.sort((a, b) => _sortAscending
+            ? a.goalsFor.compareTo(b.goalsFor)
+            : b.goalsFor.compareTo(a.goalsFor),);
+        break;
+      case 2: // Goals Against
+        quarters.sort((a, b) => _sortAscending
+            ? a.goalsAgainst.compareTo(b.goalsAgainst)
+            : b.goalsAgainst.compareTo(a.goalsAgainst),);
+        break;
+      case 3: // Wins
+        quarters.sort((a, b) => _sortAscending
+            ? a.wins.compareTo(b.wins)
+            : b.wins.compareTo(a.wins),);
+        break;
+      case 4: // Draws
+        quarters.sort((a, b) => _sortAscending
+            ? a.draws.compareTo(b.draws)
+            : b.draws.compareTo(a.draws),);
+        break;
+      case 5: // Losses
+        quarters.sort((a, b) => _sortAscending
+            ? a.losses.compareTo(b.losses)
+            : b.losses.compareTo(a.losses),);
+        break;
+      case 6: // Effectiveness
+        quarters.sort((a, b) => _sortAscending
+            ? a.effectiveness.compareTo(b.effectiveness)
+            : b.effectiveness.compareTo(a.effectiveness),);
+        break;
+    }
   }
 
   Color _getEffectivenessColor(double effectiveness, BuildContext context) {
@@ -182,82 +295,6 @@ class QuartersTab extends ConsumerWidget {
     } else {
       return Theme.of(context).colorScheme.error;
     }
-  }
-
-  Widget _buildQuarterCards(BuildContext context, List quarters) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1.5,
-      ),
-      itemCount: quarters.length,
-      itemBuilder: (context, index) {
-        final quarter = quarters[index];
-        final effectivenessColor = _getEffectivenessColor(
-          quarter.effectiveness,
-          context,
-        );
-
-        return Card(
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Quarter ${quarter.quarterNumber}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '${quarter.effectiveness.toStringAsFixed(1)}%',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: effectivenessColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Effectiveness',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${quarter.goalsFor}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      ' - ',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    Text(
-                      '${quarter.goalsAgainst}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Widget _buildEffectivenessLegend(BuildContext context) {

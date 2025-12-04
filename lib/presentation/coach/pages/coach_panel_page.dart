@@ -121,15 +121,6 @@ class CoachPanelPage extends ConsumerWidget {
               context.go('/coach-evaluations');
             },
           ),
-          const SizedBox(height: 12),
-          _CoachOptionTile(
-            icon: Icons.bar_chart_outlined,
-            title: 'Estadísticas',
-            subtitle: 'Ver estadísticas del equipo y jugadores',
-            onTap: () {
-              context.go(AppConstants.statisticsRoute);
-            },
-          ),
         ],
       ),
     );

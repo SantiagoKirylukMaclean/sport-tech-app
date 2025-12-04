@@ -41,13 +41,25 @@ class AppScaffold extends ConsumerWidget {
                 }
               },
               labelType: NavigationRailLabelType.all,
-              leading: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Icon(
-                  Icons.sports_soccer,
-                  size: 32,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              leading: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Icon(
+                      Icons.sports_soccer,
+                      size: 32,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  // Team selector for coaches in wide screen
+                  if (authState is AuthStateAuthenticated &&
+                      (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      child: _TeamSelectorCompact(),
+                    ),
+                ],
               ),
               trailing: Expanded(
                 child: Align(
@@ -308,7 +320,7 @@ class _TeamSelectorButton extends ConsumerWidget {
 
   void _showTeamSelectorDialog(BuildContext context, WidgetRef ref) {
     final activeTeamState = ref.read(activeTeamNotifierProvider);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -323,7 +335,66 @@ class _TeamSelectorButton extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final team = activeTeamState.teams[index];
                     final isSelected = activeTeamState.activeTeam?.id == team.id;
-                    
+
+                    return ListTile(
+                      title: Text(team.name),
+                      leading: Icon(
+                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+                        color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                      ),
+                      onTap: () {
+                        ref.read(activeTeamNotifierProvider.notifier).selectTeam(team.id);
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Compact team selector for navigation rail
+class _TeamSelectorCompact extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeTeamState = ref.watch(activeTeamNotifierProvider);
+
+    return IconButton(
+      icon: Icon(
+        Icons.groups,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      tooltip: activeTeamState.activeTeam?.name ?? 'Select Team',
+      onPressed: () => _showTeamSelectorDialog(context, ref),
+    );
+  }
+
+  void _showTeamSelectorDialog(BuildContext context, WidgetRef ref) {
+    final activeTeamState = ref.read(activeTeamNotifierProvider);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Select Team'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: activeTeamState.teams.isEmpty
+              ? const Text('No teams available')
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: activeTeamState.teams.length,
+                  itemBuilder: (context, index) {
+                    final team = activeTeamState.teams[index];
+                    final isSelected = activeTeamState.activeTeam?.id == team.id;
+
                     return ListTile(
                       title: Text(team.name),
                       leading: Icon(

@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       // iPad Simulator
       "name": "Debug iPad (local Supabase)",
@@ -9,9 +10,9 @@
       "program": "lib/main.dart",
       // Usa el deviceId que te da `flutter devices`
       // MacBook Pro
-      //"deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
+      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
       // Mini Mac
-      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
+      //"deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
       // Carga las vars desde .env.json
       "toolArgs": [
         "--dart-define-from-file=.env.ios.json"

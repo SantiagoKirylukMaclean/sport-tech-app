@@ -54,12 +54,7 @@ class SuperAdminPanelPage extends StatelessWidget {
             title: 'Invitar Entrenador/Admin',
             subtitle: 'Enviar invitaciones a nuevos entrenadores o administradores',
             onTap: () {
-              // TODO: Implementar invitación de entrenadores/admins
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Funcionalidad en desarrollo'),
-                ),
-              );
+              context.go(AppConstants.inviteCoachAdminRoute);
             },
           ),
           const SizedBox(height: 12),
@@ -68,12 +63,7 @@ class SuperAdminPanelPage extends StatelessWidget {
             title: 'Invitar Jugador',
             subtitle: 'Enviar invitaciones a nuevos jugadores',
             onTap: () {
-              // TODO: Implementar invitación de jugadores
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Funcionalidad en desarrollo'),
-                ),
-              );
+              context.go(AppConstants.invitePlayerRoute);
             },
           ),
           const SizedBox(height: 12),
@@ -82,12 +72,7 @@ class SuperAdminPanelPage extends StatelessWidget {
             title: 'Invitaciones',
             subtitle: 'Ver y gestionar invitaciones pendientes',
             onTap: () {
-              // TODO: Implementar gestión de invitaciones
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Funcionalidad en desarrollo'),
-                ),
-              );
+              context.go(AppConstants.invitationsManagementRoute);
             },
           ),
           const SizedBox(height: 12),
@@ -96,12 +81,7 @@ class SuperAdminPanelPage extends StatelessWidget {
             title: 'Usuarios',
             subtitle: 'Gestionar usuarios del sistema',
             onTap: () {
-              // TODO: Implementar gestión de usuarios
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Funcionalidad en desarrollo'),
-                ),
-              );
+              context.go(AppConstants.usersManagementRoute);
             },
           ),
         ],

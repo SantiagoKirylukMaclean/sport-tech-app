@@ -6,6 +6,10 @@ import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 /// Repository interface for pending invites operations
 /// This is the contract that infrastructure layer must implement
 abstract class PendingInvitesRepository {
+  /// Get all pending invites (admin only)
+  /// Returns list of [PendingInvite] on success, [Failure] on error
+  Future<Result<List<PendingInvite>>> getAllInvites();
+
   /// Get pending invites by team
   /// Returns list of [PendingInvite] on success, [Failure] on error
   Future<Result<List<PendingInvite>>> getInvitesByTeam(String teamId);

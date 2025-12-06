@@ -22,6 +22,10 @@ import 'package:sport_tech_app/presentation/org/pages/super_admin_panel_page.dar
 import 'package:sport_tech_app/presentation/org/pages/super_admin_sports_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_clubs_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/admin_teams_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/invite_coach_admin_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/invite_player_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/invitations_management_page.dart';
+import 'package:sport_tech_app/presentation/org/pages/users_management_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/team_players_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/coach_players_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/coach_panel_page.dart';
@@ -273,6 +277,38 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
               child: const AdminTeamsPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.inviteCoachAdminRoute,
+            name: 'invite-coach-admin',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const InviteCoachAdminPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.invitePlayerRoute,
+            name: 'invite-player',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const InvitePlayerPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.invitationsManagementRoute,
+            name: 'invitations-management',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const InvitationsManagementPage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.usersManagementRoute,
+            name: 'users-management',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const UsersManagementPage(),
             ),
           ),
           GoRoute(

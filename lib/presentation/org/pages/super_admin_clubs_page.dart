@@ -7,6 +7,7 @@ import 'package:sport_tech_app/application/org/sports_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/presentation/org/widgets/club_form_dialog.dart';
+import 'package:intl/intl.dart';
 
 class SuperAdminClubsPage extends ConsumerStatefulWidget {
   const SuperAdminClubsPage({super.key});
@@ -26,44 +27,82 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clubs Management'),
+        title: const Text('Clubes'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refrescar',
+            onPressed: () {
+              if (_selectedSport != null) {
+                ref
+                    .read(clubsNotifierProvider.notifier)
+                    .loadClubsBySport(_selectedSport!.id);
+              }
+            },
+          ),
+        ],
       ),
       body: sportsState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                // Sport selector
+                // Header and filter
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: DropdownButtonFormField<Sport>(
-                    decoration: const InputDecoration(
-                      labelText: 'Select Sport',
-                      border: OutlineInputBorder(),
-                    ),
-                    initialValue: _selectedSport,
-                    items: sportsState.sports
-                        .map(
-                          (sport) => DropdownMenuItem(
-                            value: sport,
-                            child: Text(sport.name),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Administración de clubes deportivos (${clubsState.clubs.length} clubes)',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7),
+                            ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          const Text('Filtrar por deporte:'),
+                          const SizedBox(width: 16),
+                          SizedBox(
+                            width: 300,
+                            child: DropdownButtonFormField<Sport>(
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                isDense: true,
+                              ),
+                              hint: const Text('Todos los deportes'),
+                              value: _selectedSport,
+                              items: sportsState.sports
+                                  .map(
+                                    (sport) => DropdownMenuItem(
+                                      value: sport,
+                                      child: Text(sport.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (sport) {
+                                setState(() => _selectedSport = sport);
+                                if (sport != null) {
+                                  ref
+                                      .read(clubsNotifierProvider.notifier)
+                                      .loadClubsBySport(sport.id);
+                                }
+                              },
+                            ),
                           ),
-                        )
-                        .toList(),
-                    onChanged: (sport) {
-                      setState(() => _selectedSport = sport);
-                      if (sport != null) {
-                        ref
-                            .read(clubsNotifierProvider.notifier)
-                            .loadClubsBySport(sport.id);
-                      }
-                    },
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                // Clubs list
+                // Clubs table
                 Expanded(
                   child: _selectedSport == null
                       ? const Center(
-                          child: Text('Please select a sport to view clubs'),
+                          child: Text('Selecciona un deporte para ver los clubes'),
                         )
                       : clubsState.isLoading
                           ? const Center(child: CircularProgressIndicator())
@@ -86,7 +125,7 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                                               .loadClubsBySport(
                                                   _selectedSport!.id);
                                         },
-                                        child: const Text('Retry'),
+                                        child: const Text('Reintentar'),
                                       ),
                                     ],
                                   ),
@@ -94,16 +133,35 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                               : clubsState.clubs.isEmpty
                                   ? const Center(
                                       child: Text(
-                                        'No clubs found. Create one to get started!',
+                                        'No se encontraron clubes. ¡Crea uno para comenzar!',
                                       ),
                                     )
-                                  : ListView.builder(
+                                  : SingleChildScrollView(
                                       padding: const EdgeInsets.all(16),
-                                      itemCount: clubsState.clubs.length,
-                                      itemBuilder: (context, index) {
-                                        final club = clubsState.clubs[index];
-                                        return _ClubListItem(club: club);
-                                      },
+                                      child: DataTable(
+                                        columns: const [
+                                          DataColumn(label: Text('Nombre')),
+                                          DataColumn(label: Text('Deporte')),
+                                          DataColumn(label: Text('Creado')),
+                                          DataColumn(label: Text('Acciones')),
+                                        ],
+                                        rows: clubsState.clubs.map((club) {
+                                          return DataRow(
+                                            cells: [
+                                              DataCell(Text(club.name)),
+                                              DataCell(Text(_selectedSport?.name ?? '')),
+                                              DataCell(
+                                                Text(
+                                                  DateFormat('dd sept yyyy, HH:mm').format(club.createdAt),
+                                                ),
+                                              ),
+                                              DataCell(
+                                                _ClubActions(club: club),
+                                              ),
+                                            ],
+                                          );
+                                        }).toList(),
+                                      ),
                                     ),
                 ),
               ],
@@ -112,7 +170,7 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
           ? FloatingActionButton.extended(
               onPressed: () => _showCreateDialog(context),
               icon: const Icon(Icons.add),
-              label: const Text('Create Club'),
+              label: const Text('Nuevo club'),
             )
           : null,
     );
@@ -130,7 +188,7 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Club created successfully')),
+              const SnackBar(content: Text('Club creado exitosamente')),
             );
           }
         },
@@ -139,36 +197,28 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
   }
 }
 
-class _ClubListItem extends ConsumerWidget {
+class _ClubActions extends ConsumerWidget {
   final Club club;
 
-  const _ClubListItem({required this.club});
+  const _ClubActions({required this.club});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(
-          child: Text(club.name[0].toUpperCase()),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.edit_outlined, size: 20),
+          tooltip: 'Editar',
+          onPressed: () => _showEditDialog(context, ref),
         ),
-        title: Text(club.name),
-        subtitle: Text('Created: ${_formatDate(club.createdAt)}'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _showEditDialog(context, ref),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              color: Colors.red,
-              onPressed: () => _showDeleteConfirmation(context, ref),
-            ),
-          ],
+        IconButton(
+          icon: const Icon(Icons.delete_outline, size: 20),
+          tooltip: 'Eliminar',
+          color: Theme.of(context).colorScheme.error,
+          onPressed: () => _showDeleteConfirmation(context, ref),
         ),
-      ),
+      ],
     );
   }
 
@@ -185,7 +235,7 @@ class _ClubListItem extends ConsumerWidget {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Club updated successfully')),
+              const SnackBar(content: Text('Club actualizado exitosamente')),
             );
           }
         },
@@ -197,12 +247,12 @@ class _ClubListItem extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Club'),
-        content: Text('Are you sure you want to delete "${club.name}"?'),
+        title: const Text('Eliminar Club'),
+        content: Text('¿Estás seguro de que quieres eliminar "${club.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () async {
@@ -214,20 +264,18 @@ class _ClubListItem extends ConsumerWidget {
                 Navigator.of(context).pop();
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Club deleted successfully')),
+                    const SnackBar(content: Text('Club eliminado exitosamente')),
                   );
                 }
               }
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Eliminar'),
           ),
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }

@@ -16,6 +16,26 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
   SupabasePendingInvitesRepository(this._client);
 
   @override
+  Future<Result<List<PendingInvite>>> getAllInvites() async {
+    try {
+      final response = await _client
+          .from('pending_invites')
+          .select()
+          .order('created_at', ascending: false);
+
+      final invites = (response as List)
+          .map((json) => PendingInviteMapper.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      return Success(invites);
+    } on PostgrestException catch (e) {
+      return Failed(ServerFailure(e.message, code: e.code));
+    } catch (e) {
+      return Failed(ServerFailure('Error getting all invites: $e'));
+    }
+  }
+
+  @override
   Future<Result<List<PendingInvite>>> getInvitesByTeam(String teamId) async {
     try {
       final response = await _client

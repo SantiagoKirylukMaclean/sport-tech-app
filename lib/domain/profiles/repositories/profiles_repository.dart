@@ -28,4 +28,21 @@ abstract class ProfilesRepository {
     required String displayName,
     required String role,
   });
+
+  /// Get all user profiles (admin only)
+  /// Returns list of [UserProfile] on success, [Failure] on error
+  Future<Result<List<UserProfile>>> getAllProfiles();
+
+  /// Update a user's role (super admin only)
+  /// Returns updated [UserProfile] on success, [Failure] on error
+  Future<Result<UserProfile>> updateUserRole({
+    required String userId,
+    required String role,
+  });
+
+  /// Reset a user's password (admin only)
+  /// Returns void on success, [Failure] on error
+  Future<Result<void>> resetUserPassword({
+    required String userId,
+  });
 }

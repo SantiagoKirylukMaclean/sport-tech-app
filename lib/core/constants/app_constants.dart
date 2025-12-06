@@ -33,6 +33,10 @@ class AppConstants {
   static const String sportsManagementRoute = '/admin/sports';
   static const String clubsManagementRoute = '/admin/clubs';
   static const String teamsManagementRoute = '/admin/teams';
+  static const String inviteCoachAdminRoute = '/admin/invite-coach-admin';
+  static const String invitePlayerRoute = '/admin/invite-player';
+  static const String invitationsManagementRoute = '/admin/invitations';
+  static const String usersManagementRoute = '/admin/users';
 
   // Coach routes
   static const String coachPanelRoute = '/coach/panel';

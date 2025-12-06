@@ -36,6 +36,28 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
 
   PendingInvitesNotifier(this._repository) : super(const PendingInvitesState());
 
+  /// Load all invites (admin only)
+  Future<void> loadAllInvites() async {
+    state = state.copyWith(isLoading: true, error: null);
+
+    final result = await _repository.getAllInvites();
+
+    result.when(
+      success: (invites) {
+        state = state.copyWith(
+          invites: invites,
+          isLoading: false,
+        );
+      },
+      failure: (failure) {
+        state = state.copyWith(
+          isLoading: false,
+          error: failure.message,
+        );
+      },
+    );
+  }
+
   /// Load invites by team
   Future<void> loadInvitesByTeam(String teamId) async {
     state = state.copyWith(isLoading: true, error: null);

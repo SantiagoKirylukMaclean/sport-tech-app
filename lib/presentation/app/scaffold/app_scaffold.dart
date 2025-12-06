@@ -11,6 +11,7 @@ import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/navigation_item.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
+import 'package:sport_tech_app/presentation/app/widgets/app_breadcrumb.dart';
 
 class AppScaffold extends ConsumerWidget {
   final Widget child;
@@ -118,7 +119,14 @@ class AppScaffold extends ConsumerWidget {
             const VerticalDivider(thickness: 1, width: 1),
 
             // Main content
-            Expanded(child: child),
+            Expanded(
+              child: Column(
+                children: [
+                  const AppBreadcrumb(),
+                  Expanded(child: child),
+                ],
+              ),
+            ),
           ],
         ),
       );
@@ -172,7 +180,12 @@ class AppScaffold extends ConsumerWidget {
           ),
         ],
       ),
-      body: child,
+      body: Column(
+        children: [
+          const AppBreadcrumb(),
+          Expanded(child: child),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _getSelectedIndex(currentLocation, navigationItems),
         onDestinationSelected: (index) {
@@ -263,8 +276,42 @@ class AppScaffold extends ConsumerWidget {
 
   /// Get the selected index based on current location
   int _getSelectedIndex(String location, List<NavigationItem> items) {
-    final index = items.indexWhere((item) => item.route == location);
-    return index >= 0 ? index : 0;
+    // First try exact match
+    var index = items.indexWhere((item) => item.route == location);
+    if (index >= 0) return index;
+
+    // Check for coach routes (all routes starting with /coach)
+    if (location.startsWith('/coach')) {
+      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      if (index >= 0) return index;
+    }
+
+    // Check for super admin routes
+    if (location.startsWith(AppConstants.superAdminPanelRoute)) {
+      index = items.indexWhere((item) => item.route == AppConstants.superAdminPanelRoute);
+      if (index >= 0) return index;
+    }
+
+    // Check for teams management route (sub-route of super admin)
+    if (location.startsWith('/teams/')) {
+      index = items.indexWhere((item) => item.route == AppConstants.superAdminPanelRoute);
+      if (index >= 0) return index;
+    }
+
+    // Check for match routes (these are accessed from Coach Panel)
+    if (location.startsWith(AppConstants.matchesRoute)) {
+      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      if (index >= 0) return index;
+    }
+
+    // Check for training routes (these are accessed from Coach Panel)
+    if (location.startsWith(AppConstants.trainingsRoute)) {
+      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      if (index >= 0) return index;
+    }
+
+    // Default to dashboard
+    return 0;
   }
 
   /// Get page title based on current location

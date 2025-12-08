@@ -133,6 +133,8 @@ class AppScaffold extends ConsumerWidget {
     }
 
     // Mobile layout with bottom navigation
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -140,14 +142,14 @@ class AppScaffold extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(_getPageTitle(currentLocation, context)),
-            if (authState is AuthStateAuthenticated && 
+            if (authState is AuthStateAuthenticated &&
                 (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
               _ActiveTeamSubtitle(),
           ],
         ),
         actions: [
           // Team selector button for coaches
-          if (authState is AuthStateAuthenticated && 
+          if (authState is AuthStateAuthenticated &&
               (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
             _TeamSelectorButton(),
           // Language toggle
@@ -182,7 +184,8 @@ class AppScaffold extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          const AppBreadcrumb(),
+          // Only show breadcrumb in portrait mode or when there's enough vertical space
+          if (!isLandscape) const AppBreadcrumb(),
           Expanded(child: child),
         ],
       ),
@@ -286,8 +289,8 @@ class AppScaffold extends ConsumerWidget {
       if (index >= 0) return index;
     }
 
-    // Check for super admin routes
-    if (location.startsWith(AppConstants.superAdminPanelRoute)) {
+    // Check for super admin routes (any route starting with /admin)
+    if (location.startsWith('/admin')) {
       index = items.indexWhere((item) => item.route == AppConstants.superAdminPanelRoute);
       if (index >= 0) return index;
     }

@@ -6,12 +6,10 @@ import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/domain/org/repositories/sports_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/mappers/sport_mapper.dart';
-import 'package:uuid/uuid.dart';
 
 /// Supabase implementation of [SportsRepository]
 class SupabaseSportsRepository implements SportsRepository {
   final SupabaseClient _client;
-  final _uuid = const Uuid();
 
   SupabaseSportsRepository(this._client);
 
@@ -58,11 +56,8 @@ class SupabaseSportsRepository implements SportsRepository {
   @override
   Future<Result<Sport>> createSport({required String name}) async {
     try {
-      final now = DateTime.now().toIso8601String();
       final response = await _client.from('sports').insert({
-        'id': _uuid.v4(),
         'name': name.trim(),
-        'created_at': now,
       }).select().single();
 
       return Success(SportMapper.fromJson(response));

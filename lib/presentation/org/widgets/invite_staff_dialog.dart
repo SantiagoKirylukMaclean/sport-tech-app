@@ -121,9 +121,9 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
           .read(pendingInvitesNotifierProvider.notifier)
           .createStaffInvite(
             email: _emailController.text.trim(),
-            teamId: widget.teamId,
+            teamIds: [int.parse(widget.teamId)],
             role: _selectedRole,
-            invitedBy: authState.user.id,
+            createdBy: authState.user.id,
           );
 
       if (success && mounted) {

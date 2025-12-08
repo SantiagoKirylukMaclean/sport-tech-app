@@ -125,12 +125,62 @@ class SupabasePlayersRepository implements PlayersRepository {
   @override
   Future<Result<void>> deletePlayer(String id) async {
     try {
-      await _client.from('players').delete().eq('id', id);
+      // Call edge function to delete player and associated auth user
+      final response = await _client.functions.invoke(
+        'delete-player',
+        body: {
+          'playerId': int.tryParse(id) ?? id,
+        },
+      );
+
+      if (response.status != 200) {
+        final errorData = response.data as Map<String, dynamic>?;
+        final errorMessage = errorData?['error'] ?? 'Error desconocido';
+        return Failed(ServerFailure('Error eliminando jugador: $errorMessage'));
+      }
+
       return const Success(null);
-    } on PostgrestException catch (e) {
-      return Failed(ServerFailure(e.message, code: e.code));
+    } on FunctionException catch (e) {
+      return Failed(
+        ServerFailure('Error llamando a la función: ${e.details}'),
+      );
     } catch (e) {
       return Failed(ServerFailure('Error deleting player: $e'));
+    }
+  }
+
+  @override
+  Future<Result<Player>> assignCredentials({
+    required String playerId,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      // Call edge function to create auth user and link to player
+      final response = await _client.functions.invoke(
+        'assign-player-credentials',
+        body: {
+          'playerId': int.tryParse(playerId) ?? playerId,
+          'email': email.trim().toLowerCase(),
+          'password': password,
+        },
+      );
+
+      if (response.status != 200) {
+        final errorData = response.data as Map<String, dynamic>?;
+        final errorMessage = errorData?['error'] ?? 'Error desconocido';
+        return Failed(ServerFailure('Error al crear cuenta: $errorMessage'));
+      }
+
+      // Fetch the updated player
+      final playerResult = await getPlayerById(playerId);
+      return playerResult;
+    } on FunctionException catch (e) {
+      return Failed(
+        ServerFailure('Error llamando a la función: ${e.details}'),
+      );
+    } catch (e) {
+      return Failed(ServerFailure('Error asignando credenciales: $e'));
     }
   }
 }

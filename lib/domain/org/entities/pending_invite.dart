@@ -5,83 +5,81 @@ import 'package:equatable/equatable.dart';
 /// Represents a pending invitation
 /// Maps to the public.pending_invites table in Supabase
 class PendingInvite extends Equatable {
-  final String id;
+  final int id;
   final String email;
-  final String teamId;
+  final String? displayName;
   final String role; // 'player', 'coach', or 'admin'
-  final String? playerName; // Only for player invites
-  final int? jerseyNumber; // Only for player invites
-  final String invitedBy; // User ID who sent the invite
-  final String inviteToken;
-  final bool accepted;
+  final List<int> teamIds; // Array of team IDs (for coach/admin)
+  final int? playerId; // Reference to player record (for player invites)
+  final String status; // 'pending', 'accepted', 'canceled'
+  final String createdBy; // User ID who sent the invite
   final DateTime createdAt;
-  final DateTime expiresAt;
+  final DateTime? acceptedAt;
 
   const PendingInvite({
     required this.id,
     required this.email,
-    required this.teamId,
     required this.role,
-    required this.invitedBy,
-    required this.inviteToken,
-    required this.accepted,
+    required this.teamIds,
+    required this.status,
+    required this.createdBy,
     required this.createdAt,
-    required this.expiresAt,
-    this.playerName,
-    this.jerseyNumber,
+    this.displayName,
+    this.playerId,
+    this.acceptedAt,
   });
 
-  /// Check if the invite has expired
-  bool get isExpired => DateTime.now().isAfter(expiresAt);
+  /// Check if the invite is pending
+  bool get isPending => status == 'pending';
 
-  /// Check if the invite is still valid (not accepted and not expired)
-  bool get isValid => !accepted && !isExpired;
+  /// Check if the invite has been accepted
+  bool get isAccepted => status == 'accepted';
+
+  /// Check if the invite has been canceled
+  bool get isCanceled => status == 'canceled';
 
   @override
   List<Object?> get props => [
         id,
         email,
-        teamId,
+        displayName,
         role,
-        playerName,
-        jerseyNumber,
-        invitedBy,
-        inviteToken,
-        accepted,
+        teamIds,
+        playerId,
+        status,
+        createdBy,
         createdAt,
-        expiresAt,
+        acceptedAt,
       ];
 
   @override
   String toString() =>
-      'PendingInvite(email: $email, role: $role, teamId: $teamId)';
+      'PendingInvite(email: $email, role: $role, status: $status)';
 
   /// Create a copy with updated fields
   PendingInvite copyWith({
-    String? id,
+    int? id,
     String? email,
-    String? teamId,
+    String? displayName,
     String? role,
-    String? playerName,
-    int? jerseyNumber,
-    String? invitedBy,
-    String? inviteToken,
-    bool? accepted,
+    List<int>? teamIds,
+    int? playerId,
+    String? status,
+    String? createdBy,
     DateTime? createdAt,
-    DateTime? expiresAt,
+    DateTime? acceptedAt,
   }) {
     return PendingInvite(
       id: id ?? this.id,
       email: email ?? this.email,
-      teamId: teamId ?? this.teamId,
+      displayName: displayName ?? this.displayName,
       role: role ?? this.role,
-      playerName: playerName ?? this.playerName,
-      jerseyNumber: jerseyNumber ?? this.jerseyNumber,
-      invitedBy: invitedBy ?? this.invitedBy,
-      inviteToken: inviteToken ?? this.inviteToken,
-      accepted: accepted ?? this.accepted,
+      teamIds: teamIds ?? this.teamIds,
+      playerId: playerId ?? this.playerId,
+      status: status ?? this.status,
+      createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
-      expiresAt: expiresAt ?? this.expiresAt,
+      acceptedAt: acceptedAt ?? this.acceptedAt,
     );
   }
 }

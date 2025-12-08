@@ -16,6 +16,7 @@ class PlayerMapper {
         userId: json['user_id']?.toString(),
         fullName: json['full_name'] as String,
         jerseyNumber: json['jersey_number'] as int?,
+        email: json['email'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
       );
 
@@ -36,6 +37,7 @@ class PlayerMapper {
       'user_id': player.userId,
       'full_name': player.fullName,
       'jersey_number': player.jerseyNumber,
+      'email': player.email,
       'created_at': player.createdAt.toIso8601String(),
     };
   }

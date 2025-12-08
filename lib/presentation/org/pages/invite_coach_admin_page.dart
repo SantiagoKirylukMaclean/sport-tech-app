@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
+import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
-import 'package:sport_tech_app/domain/org/entities/team.dart';
 
 class InviteCoachAdminPage extends ConsumerStatefulWidget {
   const InviteCoachAdminPage({super.key});
@@ -29,8 +29,8 @@ class _InviteCoachAdminPageState extends ConsumerState<InviteCoachAdminPage> {
     // Load user's teams
     Future.microtask(() {
       final authState = ref.read(authNotifierProvider);
-      if (authState.user != null) {
-        ref.read(teamsNotifierProvider.notifier).loadTeamsByUser(authState.user!.id);
+      if (authState is AuthStateAuthenticated) {
+        ref.read(teamsNotifierProvider.notifier).loadTeamsByUser(authState.user.id);
       }
     });
   }
@@ -114,7 +114,7 @@ class _InviteCoachAdminPageState extends ConsumerState<InviteCoachAdminPage> {
                             const SizedBox(height: 16),
                             // Role dropdown
                             DropdownButtonFormField<String>(
-                              value: _selectedRole,
+                              initialValue: _selectedRole,
                               decoration: const InputDecoration(
                                 labelText: 'Role *',
                                 helperText: 'The role that will be assigned to the user',
@@ -285,30 +285,22 @@ class _InviteCoachAdminPageState extends ConsumerState<InviteCoachAdminPage> {
     });
 
     final authState = ref.read(authNotifierProvider);
-    if (authState.user == null) {
+    if (authState is! AuthStateAuthenticated) {
       setState(() {
         _isSubmitting = false;
       });
       return;
     }
 
-    // Create an invite for each selected team
-    bool allSuccessful = true;
-    for (final teamId in _selectedTeams) {
-      final success = await ref
-          .read(pendingInvitesNotifierProvider.notifier)
-          .createStaffInvite(
-            email: _emailController.text.trim(),
-            teamId: teamId,
-            role: _selectedRole,
-            invitedBy: authState.user!.id,
-          );
-
-      if (!success) {
-        allSuccessful = false;
-        break;
-      }
-    }
+    // Create a single invite with all selected teams
+    final allSuccessful = await ref
+        .read(pendingInvitesNotifierProvider.notifier)
+        .createStaffInvite(
+          email: _emailController.text.trim(),
+          teamIds: _selectedTeams.map((id) => int.parse(id)).toList(),
+          role: _selectedRole,
+          createdBy: authState.user.id,
+        );
 
     setState(() {
       _isSubmitting = false;

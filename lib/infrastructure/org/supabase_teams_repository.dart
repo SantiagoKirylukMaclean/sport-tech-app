@@ -6,12 +6,10 @@ import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/org/entities/team.dart';
 import 'package:sport_tech_app/domain/org/repositories/teams_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/mappers/team_mapper.dart';
-import 'package:uuid/uuid.dart';
 
 /// Supabase implementation of [TeamsRepository]
 class SupabaseTeamsRepository implements TeamsRepository {
   final SupabaseClient _client;
-  final _uuid = const Uuid();
 
   SupabaseTeamsRepository(this._client);
 
@@ -106,12 +104,9 @@ class SupabaseTeamsRepository implements TeamsRepository {
     required String name,
   }) async {
     try {
-      final now = DateTime.now().toIso8601String();
       final response = await _client.from('teams').insert({
-        'id': _uuid.v4(),
         'club_id': clubId,
         'name': name.trim(),
-        'created_at': now,
       }).select().single();
 
       return Success(TeamMapper.fromJson(response));

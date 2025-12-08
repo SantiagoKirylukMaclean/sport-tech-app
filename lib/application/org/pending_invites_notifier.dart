@@ -59,7 +59,7 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
   }
 
   /// Load invites by team
-  Future<void> loadInvitesByTeam(String teamId) async {
+  Future<void> loadInvitesByTeam(int teamId) async {
     state = state.copyWith(isLoading: true, error: null);
 
     final result = await _repository.getInvitesByTeam(teamId);
@@ -80,20 +80,21 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
     );
   }
 
-  /// Create a player invite
+  /// Create a player invite (player must already exist)
+  /// [sendEmail] if true, sends email automatically. If false, returns magic link for manual sharing
   Future<bool> createPlayerInvite({
     required String email,
-    required String teamId,
-    required String playerName,
-    required String invitedBy,
-    int? jerseyNumber,
+    required int playerId,
+    required String createdBy,
+    String? displayName,
+    bool sendEmail = true,
   }) async {
     final result = await _repository.createPlayerInvite(
       email: email,
-      teamId: teamId,
-      playerName: playerName,
-      invitedBy: invitedBy,
-      jerseyNumber: jerseyNumber,
+      playerId: playerId,
+      createdBy: createdBy,
+      displayName: displayName,
+      sendEmail: sendEmail,
     );
 
     return result.when(
@@ -110,18 +111,20 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
     );
   }
 
-  /// Create a staff invite
+  /// Create a staff invite (coach or admin)
   Future<bool> createStaffInvite({
     required String email,
-    required String teamId,
+    required List<int> teamIds,
     required String role,
-    required String invitedBy,
+    required String createdBy,
+    String? displayName,
   }) async {
     final result = await _repository.createStaffInvite(
       email: email,
-      teamId: teamId,
+      teamIds: teamIds,
       role: role,
-      invitedBy: invitedBy,
+      createdBy: createdBy,
+      displayName: displayName,
     );
 
     return result.when(
@@ -138,9 +141,9 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
     );
   }
 
-  /// Get invite by token
-  Future<PendingInvite?> getInviteByToken(String token) async {
-    final result = await _repository.getInviteByToken(token);
+  /// Get invite by email
+  Future<PendingInvite?> getInviteByEmail(String email) async {
+    final result = await _repository.getInviteByEmail(email);
 
     return result.when(
       success: (invite) => invite,
@@ -152,14 +155,14 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
   }
 
   /// Mark invite as accepted
-  Future<bool> markInviteAccepted(String token) async {
-    final result = await _repository.markInviteAccepted(token);
+  Future<bool> markInviteAccepted(String email) async {
+    final result = await _repository.markInviteAccepted(email);
 
     return result.when(
       success: (updatedInvite) {
         state = state.copyWith(
           invites: state.invites
-              .map((i) => i.inviteToken == token ? updatedInvite : i)
+              .map((i) => i.email == email ? updatedInvite : i)
               .toList(),
         );
         return true;
@@ -172,7 +175,7 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
   }
 
   /// Delete an invite
-  Future<bool> deleteInvite(String id) async {
+  Future<bool> deleteInvite(int id) async {
     final result = await _repository.deleteInvite(id);
 
     return result.when(
@@ -185,6 +188,41 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
       failure: (failure) {
         state = state.copyWith(error: failure.message);
         return false;
+      },
+    );
+  }
+
+  /// Cancel an invite
+  Future<bool> cancelInvite(int id) async {
+    final result = await _repository.cancelInvite(id);
+
+    return result.when(
+      success: (updatedInvite) {
+        state = state.copyWith(
+          invites: state.invites
+              .map((i) => i.id == id ? updatedInvite : i)
+              .toList(),
+        );
+        return true;
+      },
+      failure: (failure) {
+        state = state.copyWith(error: failure.message);
+        return false;
+      },
+    );
+  }
+
+  /// Resend an invitation email
+  /// [sendEmail] if true, sends email automatically. If false, returns magic link
+  /// Returns signup URL or confirmation message on success, null on failure
+  Future<String?> resendInvite(int id, {bool sendEmail = true}) async {
+    final result = await _repository.resendInvite(id, sendEmail: sendEmail);
+
+    return result.when(
+      success: (signupUrl) => signupUrl,
+      failure: (failure) {
+        state = state.copyWith(error: failure.message);
+        return null;
       },
     );
   }

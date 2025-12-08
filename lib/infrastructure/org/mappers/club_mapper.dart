@@ -7,8 +7,8 @@ class ClubMapper {
   /// Convert from Supabase JSON to Club entity
   static Club fromJson(Map<String, dynamic> json) {
     return Club(
-      id: json['id'] as String,
-      sportId: json['sport_id'] as String,
+      id: json['id'].toString(),
+      sportId: json['sport_id'].toString(),
       name: json['name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
     );

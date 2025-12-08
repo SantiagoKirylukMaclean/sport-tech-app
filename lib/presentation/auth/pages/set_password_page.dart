@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/domain/auth/repositories/auth_repository.dart';
 import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 import 'package:sport_tech_app/infrastructure/auth/providers/auth_repository_provider.dart';
@@ -52,21 +51,16 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
       _error = null;
     });
 
-    final invite = await ref
-        .read(pendingInvitesNotifierProvider.notifier)
-        .getInviteByToken(widget.inviteToken);
+    // TODO: This flow needs to be redesigned
+    // The invite system no longer uses tokens. Instead:
+    // 1. User receives Supabase magic link via email
+    // 2. When they sign up, the trigger automatically links their account
+    // For now, we'll show an error directing users to use the Supabase link
 
     setState(() {
-      _invite = invite;
+      _invite = null;
       _isLoading = false;
-
-      if (invite == null) {
-        _error = 'Invalid or expired invite';
-      } else if (invite.accepted) {
-        _error = 'This invite has already been accepted';
-      } else if (invite.isExpired) {
-        _error = 'This invite has expired';
-      }
+      _error = 'Please use the invitation link sent to your email to sign up.';
     });
   }
 
@@ -248,12 +242,9 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
 
       await signUpResult.when(
         success: (user) async {
-          // Mark the invite as accepted
-          final accepted = await ref
-              .read(pendingInvitesNotifierProvider.notifier)
-              .markInviteAccepted(widget.inviteToken);
-
-          if (accepted && mounted) {
+          // NOTE: The trigger will automatically link the invite when the user signs up
+          // No need to manually mark as accepted
+          if (mounted) {
             // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -263,14 +254,6 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
             );
 
             // Navigate to login
-            context.go('/login');
-          } else if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Account created but failed to accept invite'),
-                backgroundColor: Colors.orange,
-              ),
-            );
             context.go('/login');
           }
         },

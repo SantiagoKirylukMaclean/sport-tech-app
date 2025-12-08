@@ -26,22 +26,6 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
     final clubsState = ref.watch(clubsNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clubes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refrescar',
-            onPressed: () {
-              if (_selectedSport != null) {
-                ref
-                    .read(clubsNotifierProvider.notifier)
-                    .loadClubsBySport(_selectedSport!.id);
-              }
-            },
-          ),
-        ],
-      ),
       body: sportsState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
@@ -52,46 +36,61 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Administración de clubes deportivos (${clubsState.clubs.length} clubes)',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.7),
-                            ),
-                      ),
-                      const SizedBox(height: 16),
                       Row(
                         children: [
-                          const Text('Filtrar por deporte:'),
-                          const SizedBox(width: 16),
-                          SizedBox(
-                            width: 300,
-                            child: DropdownButtonFormField<Sport>(
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                isDense: true,
-                              ),
-                              hint: const Text('Todos los deportes'),
-                              value: _selectedSport,
-                              items: sportsState.sports
-                                  .map(
-                                    (sport) => DropdownMenuItem(
-                                      value: sport,
-                                      child: Text(sport.name),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (sport) {
-                                setState(() => _selectedSport = sport);
-                                if (sport != null) {
-                                  ref
-                                      .read(clubsNotifierProvider.notifier)
-                                      .loadClubsBySport(sport.id);
-                                }
-                              },
+                          Expanded(
+                            child: Text(
+                              'Administración de clubes deportivos (${clubsState.clubs.length} clubes)',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.7),
+                                  ),
                             ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            tooltip: 'Refrescar',
+                            onPressed: () {
+                              if (_selectedSport != null) {
+                                ref
+                                    .read(clubsNotifierProvider.notifier)
+                                    .loadClubsBySport(_selectedSport!.id);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('Filtrar por deporte:'),
+                          const SizedBox(height: 8),
+                          DropdownButtonFormField<Sport>(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              isDense: true,
+                            ),
+                            hint: const Text('Todos los deportes'),
+                            initialValue: _selectedSport,
+                            items: sportsState.sports
+                                .map(
+                                  (sport) => DropdownMenuItem(
+                                    value: sport,
+                                    child: Text(sport.name),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (sport) {
+                              setState(() => _selectedSport = sport);
+                              if (sport != null) {
+                                ref
+                                    .read(clubsNotifierProvider.notifier)
+                                    .loadClubsBySport(sport.id);
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -121,9 +120,9 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                                         onPressed: () {
                                           ref
                                               .read(clubsNotifierProvider
-                                                  .notifier)
+                                                  .notifier,)
                                               .loadClubsBySport(
-                                                  _selectedSport!.id);
+                                                  _selectedSport!.id,);
                                         },
                                         child: const Text('Reintentar'),
                                       ),
@@ -136,32 +135,16 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
                                         'No se encontraron clubes. ¡Crea uno para comenzar!',
                                       ),
                                     )
-                                  : SingleChildScrollView(
-                                      padding: const EdgeInsets.all(16),
-                                      child: DataTable(
-                                        columns: const [
-                                          DataColumn(label: Text('Nombre')),
-                                          DataColumn(label: Text('Deporte')),
-                                          DataColumn(label: Text('Creado')),
-                                          DataColumn(label: Text('Acciones')),
-                                        ],
-                                        rows: clubsState.clubs.map((club) {
-                                          return DataRow(
-                                            cells: [
-                                              DataCell(Text(club.name)),
-                                              DataCell(Text(_selectedSport?.name ?? '')),
-                                              DataCell(
-                                                Text(
-                                                  DateFormat('dd sept yyyy, HH:mm').format(club.createdAt),
-                                                ),
-                                              ),
-                                              DataCell(
-                                                _ClubActions(club: club),
-                                              ),
-                                            ],
-                                          );
-                                        }).toList(),
-                                      ),
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                      itemCount: clubsState.clubs.length,
+                                      itemBuilder: (context, index) {
+                                        final club = clubsState.clubs[index];
+                                        return _ClubCard(
+                                          club: club,
+                                          sportName: _selectedSport?.name ?? '',
+                                        );
+                                      },
                                     ),
                 ),
               ],
@@ -197,28 +180,90 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
   }
 }
 
-class _ClubActions extends ConsumerWidget {
+class _ClubCard extends ConsumerWidget {
   final Club club;
+  final String sportName;
 
-  const _ClubActions({required this.club});
+  const _ClubCard({required this.club, required this.sportName});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.edit_outlined, size: 20),
-          tooltip: 'Editar',
-          onPressed: () => _showEditDialog(context, ref),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outlineVariant,
         ),
-        IconButton(
-          icon: const Icon(Icons.delete_outline, size: 20),
-          tooltip: 'Eliminar',
-          color: Theme.of(context).colorScheme.error,
-          onPressed: () => _showDeleteConfirmation(context, ref),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.sports_outlined,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        club.name,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '$sportName • Creado: ${DateFormat('dd MMM yyyy, HH:mm').format(club.createdAt)}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.6),
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined),
+                      tooltip: 'Editar',
+                      onPressed: () => _showEditDialog(context, ref),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      tooltip: 'Eliminar',
+                      color: Theme.of(context).colorScheme.error,
+                      onPressed: () => _showDeleteConfirmation(context, ref),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

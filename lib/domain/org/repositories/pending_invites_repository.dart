@@ -12,38 +12,47 @@ abstract class PendingInvitesRepository {
 
   /// Get pending invites by team
   /// Returns list of [PendingInvite] on success, [Failure] on error
-  Future<Result<List<PendingInvite>>> getInvitesByTeam(String teamId);
+  Future<Result<List<PendingInvite>>> getInvitesByTeam(int teamId);
 
-  /// Get an invite by token
+  /// Get an invite by email
   /// Returns [PendingInvite] on success, [Failure] on error
-  Future<Result<PendingInvite>> getInviteByToken(String token);
+  Future<Result<PendingInvite>> getInviteByEmail(String email);
 
-  /// Create a new player invite
+  /// Create a new player invite (links to existing player record)
+  /// [sendEmail] if true, sends email automatically. If false, returns magic link for manual sharing
   /// Returns created [PendingInvite] on success, [Failure] on error
   Future<Result<PendingInvite>> createPlayerInvite({
     required String email,
-    required String teamId,
-    required String playerName,
-    required String invitedBy,
-    int? jerseyNumber,
-    int expiryDays = 7,
+    required int playerId,
+    required String createdBy,
+    String? displayName,
+    bool sendEmail = true,
   });
 
   /// Create a new staff invite (coach or admin)
   /// Returns created [PendingInvite] on success, [Failure] on error
   Future<Result<PendingInvite>> createStaffInvite({
     required String email,
-    required String teamId,
+    required List<int> teamIds,
     required String role, // 'coach' or 'admin'
-    required String invitedBy,
-    int expiryDays = 7,
+    required String createdBy,
+    String? displayName,
   });
 
-  /// Mark an invite as accepted
+  /// Mark an invite as accepted by email
   /// Returns updated [PendingInvite] on success, [Failure] on error
-  Future<Result<PendingInvite>> markInviteAccepted(String token);
+  Future<Result<PendingInvite>> markInviteAccepted(String email);
 
   /// Delete an invite
   /// Returns void on success, [Failure] on error
-  Future<Result<void>> deleteInvite(String id);
+  Future<Result<void>> deleteInvite(int id);
+
+  /// Cancel an invite (sets status to 'canceled')
+  /// Returns updated [PendingInvite] on success, [Failure] on error
+  Future<Result<PendingInvite>> cancelInvite(int id);
+
+  /// Resend an invitation email to the user
+  /// [sendEmail] if true, sends email automatically. If false, returns magic link for manual sharing
+  /// Returns signup URL string or confirmation message on success, [Failure] on error
+  Future<Result<String>> resendInvite(int id, {bool sendEmail = true});
 }

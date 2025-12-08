@@ -10,6 +10,7 @@ class Player extends Equatable {
   final String? userId; // Optional link to auth user
   final String fullName;
   final int? jerseyNumber;
+  final String? email; // Email address when user account exists
   final DateTime createdAt;
 
   const Player({
@@ -19,6 +20,7 @@ class Player extends Equatable {
     required this.createdAt,
     this.userId,
     this.jerseyNumber,
+    this.email,
   });
 
   @override
@@ -28,6 +30,7 @@ class Player extends Equatable {
         userId,
         fullName,
         jerseyNumber,
+        email,
         createdAt,
       ];
 
@@ -41,6 +44,7 @@ class Player extends Equatable {
     String? userId,
     String? fullName,
     int? jerseyNumber,
+    String? email,
     DateTime? createdAt,
   }) {
     return Player(
@@ -49,6 +53,7 @@ class Player extends Equatable {
       userId: userId ?? this.userId,
       fullName: fullName ?? this.fullName,
       jerseyNumber: jerseyNumber ?? this.jerseyNumber,
+      email: email ?? this.email,
       createdAt: createdAt ?? this.createdAt,
     );
   }

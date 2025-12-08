@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
+import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
+import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
 
 class InvitePlayerPage extends ConsumerStatefulWidget {
@@ -28,8 +30,8 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
     // Load user's teams
     Future.microtask(() {
       final authState = ref.read(authNotifierProvider);
-      if (authState.user != null) {
-        ref.read(teamsNotifierProvider.notifier).loadTeamsByUser(authState.user!.id);
+      if (authState is AuthStateAuthenticated) {
+        ref.read(teamsNotifierProvider.notifier).loadTeamsByUser(authState.user.id);
       }
     });
   }
@@ -45,7 +47,6 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
   @override
   Widget build(BuildContext context) {
     final teamsState = ref.watch(teamsNotifierProvider);
-    final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -157,7 +158,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                               )
                             else
                               DropdownButtonFormField<String>(
-                                value: _selectedTeamId,
+                                initialValue: _selectedTeamId,
                                 decoration: const InputDecoration(
                                   labelText: 'Team *',
                                   helperText: 'Select the team for this player',
@@ -166,7 +167,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                 ),
                                 items: teamsState.teams.map((team) {
                                   return DropdownMenuItem(
-                                    value: team.id,
+                                    value: team.id.toString(),
                                     child: Text(team.name),
                                   );
                                 }).toList(),
@@ -212,10 +213,10 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '• The system generates a one-time recovery link\n'
-                              '• Share this link through any communication channel\n'
-                              '• When clicked, the invitee sets their password\n'
-                              '• They are automatically assigned to the selected team with the player role',
+                              '• A player record is created in the team\n'
+                              '• An invitation is sent to the email address\n'
+                              '• When the player signs up, their account is linked to the player record\n'
+                              '• They can then access their evaluations and team information',
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                                   ),
@@ -274,55 +275,96 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
     });
 
     final authState = ref.read(authNotifierProvider);
-    if (authState.user == null) {
+    if (authState is! AuthStateAuthenticated) {
       setState(() {
         _isSubmitting = false;
       });
       return;
     }
 
-    final jerseyNumber = _jerseyNumberController.text.isEmpty
-        ? null
-        : int.tryParse(_jerseyNumberController.text);
+    try {
+      final jerseyNumber = _jerseyNumberController.text.isEmpty
+          ? null
+          : int.tryParse(_jerseyNumberController.text);
 
-    final success = await ref
-        .read(pendingInvitesNotifierProvider.notifier)
-        .createPlayerInvite(
-          email: _emailController.text.trim(),
-          teamId: _selectedTeamId!,
-          playerName: _playerNameController.text.trim(),
-          invitedBy: authState.user!.id,
-          jerseyNumber: jerseyNumber,
+      // Step 1: Create the player first
+      final playerCreated = await ref
+          .read(playersNotifierProvider.notifier)
+          .createPlayer(
+            teamId: _selectedTeamId!,
+            fullName: _playerNameController.text.trim(),
+            jerseyNumber: jerseyNumber,
+          );
+
+      if (!playerCreated) {
+        if (mounted) {
+          final error = ref.read(playersNotifierProvider).error;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to create player: ${error ?? "Unknown error"}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Step 2: Get the created player ID
+      final players = ref.read(playersNotifierProvider).players;
+      final createdPlayer = players.firstWhere(
+        (p) => p.fullName == _playerNameController.text.trim(),
+      );
+
+      // Step 3: Create the invitation linked to the player
+      final inviteCreated = await ref
+          .read(pendingInvitesNotifierProvider.notifier)
+          .createPlayerInvite(
+            email: _emailController.text.trim(),
+            playerId: int.parse(createdPlayer.id),
+            createdBy: authState.user.id,
+            displayName: _playerNameController.text.trim(),
+          );
+
+      if (!mounted) return;
+
+      if (inviteCreated) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Player ${_playerNameController.text} created and invitation sent successfully'),
+            backgroundColor: Colors.green,
+          ),
         );
-
-    setState(() {
-      _isSubmitting = false;
-    });
-
-    if (!mounted) return;
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Invitation created successfully for ${_playerNameController.text}'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      _formKey.currentState!.reset();
-      _emailController.clear();
-      _playerNameController.clear();
-      _jerseyNumberController.clear();
-      setState(() {
-        _selectedTeamId = null;
-      });
-    } else {
-      final error = ref.read(pendingInvitesNotifierProvider).error;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error creating invitation: ${error ?? "Unknown error"}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+        _formKey.currentState!.reset();
+        _emailController.clear();
+        _playerNameController.clear();
+        _jerseyNumberController.clear();
+        setState(() {
+          _selectedTeamId = null;
+        });
+      } else {
+        final error = ref.read(pendingInvitesNotifierProvider).error;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Player created but failed to send invite: ${error ?? "Unknown error"}'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 }

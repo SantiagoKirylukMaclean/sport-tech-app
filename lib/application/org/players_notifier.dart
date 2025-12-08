@@ -3,20 +3,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/domain/org/entities/position.dart';
+import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 import 'package:sport_tech_app/domain/org/repositories/players_repository.dart';
 import 'package:sport_tech_app/domain/org/repositories/positions_repository.dart';
+import 'package:sport_tech_app/domain/org/repositories/pending_invites_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
 
 /// State for players management
 class PlayersState {
   final List<Player> players;
   final List<Position> positions;
+  final List<PendingInvite> pendingInvites;
   final bool isLoading;
   final String? error;
 
   const PlayersState({
     this.players = const [],
     this.positions = const [],
+    this.pendingInvites = const [],
     this.isLoading = false,
     this.error,
   });
@@ -24,12 +28,14 @@ class PlayersState {
   PlayersState copyWith({
     List<Player>? players,
     List<Position>? positions,
+    List<PendingInvite>? pendingInvites,
     bool? isLoading,
     String? error,
   }) {
     return PlayersState(
       players: players ?? this.players,
       positions: positions ?? this.positions,
+      pendingInvites: pendingInvites ?? this.pendingInvites,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -40,9 +46,13 @@ class PlayersState {
 class PlayersNotifier extends StateNotifier<PlayersState> {
   final PlayersRepository _playersRepository;
   final PositionsRepository _positionsRepository;
+  final PendingInvitesRepository _pendingInvitesRepository;
 
-  PlayersNotifier(this._playersRepository, this._positionsRepository)
-      : super(const PlayersState());
+  PlayersNotifier(
+    this._playersRepository,
+    this._positionsRepository,
+    this._pendingInvitesRepository,
+  ) : super(const PlayersState());
 
   /// Load players by team and positions by sport
   Future<void> loadPlayersByTeam(String teamId, String sportId) async {
@@ -52,8 +62,14 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     print('DEBUG PlayersNotifier: Calling _playersRepository.getPlayersByTeam');
     final playersResult = await _playersRepository.getPlayersByTeam(teamId);
     print('DEBUG PlayersNotifier: playersResult type: ${playersResult.runtimeType}');
-    
+
     final positionsResult = await _positionsRepository.getPositionsBySport(sportId);
+
+    // Load pending invites for this team
+    final teamIdInt = int.tryParse(teamId);
+    final invitesResult = teamIdInt != null
+        ? await _pendingInvitesRepository.getInvitesByTeam(teamIdInt)
+        : null;
 
     playersResult.when(
       success: (players) {
@@ -61,9 +77,19 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
         positionsResult.when(
           success: (positions) {
             print('DEBUG PlayersNotifier: Positions loaded successfully: ${positions.length} positions');
+
+            // Handle invites result
+            final invites = invitesResult?.when(
+              success: (invitesList) => invitesList,
+              failure: (_) => <PendingInvite>[],
+            ) ?? <PendingInvite>[];
+
+            print('DEBUG PlayersNotifier: Loaded ${invites.length} pending invites');
+
             state = state.copyWith(
               players: players,
               positions: positions,
+              pendingInvites: invites,
               isLoading: false,
             );
           },
@@ -158,6 +184,34 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
       },
     );
   }
+
+  /// Assign credentials (email and password) to a player
+  Future<bool> assignCredentials({
+    required String playerId,
+    required String email,
+    required String password,
+  }) async {
+    final result = await _playersRepository.assignCredentials(
+      playerId: playerId,
+      email: email,
+      password: password,
+    );
+
+    return result.when(
+      success: (updatedPlayer) {
+        state = state.copyWith(
+          players: state.players
+              .map((p) => p.id == playerId ? updatedPlayer : p)
+              .toList(),
+        );
+        return true;
+      },
+      failure: (failure) {
+        state = state.copyWith(error: failure.message);
+        return false;
+      },
+    );
+  }
 }
 
 /// Provider for players notifier
@@ -165,5 +219,6 @@ final playersNotifierProvider =
     StateNotifierProvider<PlayersNotifier, PlayersState>((ref) {
   final playersRepo = ref.watch(playersRepositoryProvider);
   final positionsRepo = ref.watch(positionsRepositoryProvider);
-  return PlayersNotifier(playersRepo, positionsRepo);
+  final pendingInvitesRepo = ref.watch(pendingInvitesRepositoryProvider);
+  return PlayersNotifier(playersRepo, positionsRepo, pendingInvitesRepo);
 });

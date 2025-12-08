@@ -82,7 +82,7 @@ class _InvitationsManagementPageState
                   const SizedBox(height: 16),
                   // Status filter
                   DropdownButtonFormField<String>(
-                    value: _statusFilter,
+                    initialValue: _statusFilter,
                     decoration: const InputDecoration(
                       labelText: 'Estado',
                       border: OutlineInputBorder(),
@@ -206,13 +206,13 @@ class _InvitationsManagementPageState
       }
 
       // Status filter
-      if (_statusFilter == 'pending' && (invite.accepted || invite.isExpired)) {
+      if (_statusFilter == 'pending' && invite.status != 'pending') {
         return false;
       }
-      if (_statusFilter == 'accepted' && !invite.accepted) {
+      if (_statusFilter == 'accepted' && invite.status != 'accepted') {
         return false;
       }
-      if (_statusFilter == 'expired' && !invite.isExpired) {
+      if (_statusFilter == 'expired' && invite.status != 'canceled') {
         return false;
       }
 
@@ -242,8 +242,10 @@ class _InvitationListItem extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Rol: ${_formatRole(invite.role)}'),
-          if (invite.playerName != null)
-            Text('Jugador: ${invite.playerName}'),
+          if (invite.displayName != null)
+            Text('Nombre: ${invite.displayName}'),
+          if (invite.playerId != null)
+            Text('Player ID: ${invite.playerId}'),
           Text(
             'Creada: ${DateFormat('dd/MM/yyyy HH:mm').format(invite.createdAt)}',
           ),
@@ -257,8 +259,44 @@ class _InvitationListItem extends ConsumerWidget {
             backgroundColor: _getStatusColor(context),
             labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
+          // Only show resend options for pending invites
+          if (invite.isPending)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.send, color: Colors.blue),
+              tooltip: 'Opciones de invitación',
+              onSelected: (value) {
+                if (value == 'email') {
+                  _showResendConfirmation(context, ref, sendEmail: true);
+                } else if (value == 'link') {
+                  _showResendConfirmation(context, ref, sendEmail: false);
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'email',
+                  child: Row(
+                    children: [
+                      Icon(Icons.email, size: 20),
+                      SizedBox(width: 8),
+                      Text('Enviar Email'),
+                    ],
+                  ),
+                ),
+                const PopupMenuItem(
+                  value: 'link',
+                  child: Row(
+                    children: [
+                      Icon(Icons.link, size: 20),
+                      SizedBox(width: 8),
+                      Text('Obtener Enlace'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
+            tooltip: 'Eliminar invitación',
             onPressed: () => _showDeleteConfirmation(context, ref),
           ),
         ],
@@ -280,33 +318,162 @@ class _InvitationListItem extends ConsumerWidget {
   }
 
   String _getStatusText() {
-    if (invite.accepted) {
-      return 'Aceptada';
-    } else if (invite.isExpired) {
-      return 'Expirada';
-    } else {
-      return 'Pendiente';
+    switch (invite.status) {
+      case 'accepted':
+        return 'Aceptada';
+      case 'canceled':
+        return 'Cancelada';
+      case 'pending':
+      default:
+        return 'Pendiente';
     }
   }
 
   IconData _getStatusIcon() {
-    if (invite.accepted) {
-      return Icons.check;
-    } else if (invite.isExpired) {
-      return Icons.close;
-    } else {
-      return Icons.schedule;
+    switch (invite.status) {
+      case 'accepted':
+        return Icons.check;
+      case 'canceled':
+        return Icons.close;
+      case 'pending':
+      default:
+        return Icons.schedule;
     }
   }
 
   Color _getStatusColor(BuildContext context) {
-    if (invite.accepted) {
-      return Colors.green;
-    } else if (invite.isExpired) {
-      return Colors.red;
-    } else {
-      return Colors.orange;
+    switch (invite.status) {
+      case 'accepted':
+        return Colors.green;
+      case 'canceled':
+        return Colors.red;
+      case 'pending':
+      default:
+        return Colors.orange;
     }
+  }
+
+  void _showResendConfirmation(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool sendEmail,
+  }) {
+    final title = sendEmail ? 'Enviar Email de Invitación' : 'Generar Enlace de Invitación';
+    final message = sendEmail
+        ? '¿Deseas enviar un email de invitación a "${invite.email}"?\n\nEl usuario recibirá un correo con instrucciones.'
+        : '¿Deseas generar un enlace de invitación para "${invite.email}"?\n\nPodrás compartir el enlace manualmente por WhatsApp u otro medio.';
+    final buttonText = sendEmail ? 'Enviar Email' : 'Generar Enlace';
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final result = await ref
+                  .read(pendingInvitesNotifierProvider.notifier)
+                  .resendInvite(invite.id, sendEmail: sendEmail);
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                if (result != null) {
+                  // Show success dialog with result
+                  _showSignupUrlDialog(context, result);
+                } else {
+                  final error = ref.read(pendingInvitesNotifierProvider).error;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: ${error ?? "Desconocido"}'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.blue),
+            child: Text(buttonText),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSignupUrlDialog(BuildContext context, String message) {
+    // Check if it's an email sent confirmation or a URL to share
+    final isEmailSent = message.contains('Email sent') ||
+                        message.contains('exitosamente') ||
+                        !message.startsWith('http');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isEmailSent ? '✅ Invitación Enviada' : 'Enlace de Invitación'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (isEmailSent) ...[
+              const Text('Se ha enviado un email de invitación a:'),
+              const SizedBox(height: 8),
+              Text(
+                invite.email,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'El usuario recibirá un correo con instrucciones para establecer su contraseña y acceder a la aplicación.',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                '💡 Tip: Pídele que revise su carpeta de spam si no lo encuentra.',
+                style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+              ),
+            ] else ...[
+              Text('Comparte este enlace con ${invite.email}:'),
+              const SizedBox(height: 16),
+              SelectableText(
+                message,
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'El usuario debe crear su cuenta usando este enlace y el email de la invitación.',
+                style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          if (!isEmailSent)
+            TextButton(
+              onPressed: () {
+                // Copy to clipboard functionality would go here
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Funcionalidad de copiar pendiente de implementar'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              child: const Text('Copiar'),
+            ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDeleteConfirmation(BuildContext context, WidgetRef ref) {

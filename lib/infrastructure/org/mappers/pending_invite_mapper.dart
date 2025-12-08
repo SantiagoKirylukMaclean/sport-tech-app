@@ -6,18 +6,25 @@ import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 class PendingInviteMapper {
   /// Convert from Supabase JSON to PendingInvite entity
   static PendingInvite fromJson(Map<String, dynamic> json) {
+    // Parse team_ids array from PostgreSQL array format
+    final teamIds = (json['team_ids'] as List<dynamic>?)
+            ?.map((e) => e as int)
+            .toList() ??
+        [];
+
     return PendingInvite(
-      id: json['id'] as String,
+      id: json['id'] as int,
       email: json['email'] as String,
-      teamId: json['team_id'] as String,
+      displayName: json['display_name'] as String?,
       role: json['role'] as String,
-      playerName: json['player_name'] as String?,
-      jerseyNumber: json['jersey_number'] as int?,
-      invitedBy: json['invited_by'] as String,
-      inviteToken: json['invite_token'] as String,
-      accepted: json['accepted'] as bool,
+      teamIds: teamIds,
+      playerId: json['player_id'] as int?,
+      status: json['status'] as String,
+      createdBy: json['created_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      expiresAt: DateTime.parse(json['expires_at'] as String),
+      acceptedAt: json['accepted_at'] != null
+          ? DateTime.parse(json['accepted_at'] as String)
+          : null,
     );
   }
 
@@ -26,15 +33,14 @@ class PendingInviteMapper {
     return {
       'id': invite.id,
       'email': invite.email,
-      'team_id': invite.teamId,
+      'display_name': invite.displayName,
       'role': invite.role,
-      'player_name': invite.playerName,
-      'jersey_number': invite.jerseyNumber,
-      'invited_by': invite.invitedBy,
-      'invite_token': invite.inviteToken,
-      'accepted': invite.accepted,
+      'team_ids': invite.teamIds,
+      'player_id': invite.playerId,
+      'status': invite.status,
+      'created_by': invite.createdBy,
       'created_at': invite.createdAt.toIso8601String(),
-      'expires_at': invite.expiresAt.toIso8601String(),
+      'accepted_at': invite.acceptedAt?.toIso8601String(),
     };
   }
 }

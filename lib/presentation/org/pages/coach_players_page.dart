@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
-import 'package:sport_tech_app/domain/org/entities/position.dart';
 import 'package:sport_tech_app/presentation/org/widgets/player_form_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dart';
 
@@ -256,7 +255,7 @@ class _PlayerListItem extends ConsumerWidget {
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text('Player deleted successfully')),
+                        content: Text('Player deleted successfully'),),
                   );
                 }
               }

@@ -33,6 +33,7 @@ import 'package:sport_tech_app/presentation/coach/pages/coach_evaluations_page.d
 import 'package:sport_tech_app/presentation/coach/pages/new_evaluation_page.dart';
 import 'package:sport_tech_app/presentation/coach/pages/evaluation_detail_page.dart';
 import 'package:sport_tech_app/presentation/auth/pages/set_password_page.dart';
+import 'package:sport_tech_app/presentation/auth/pages/auth_callback_page.dart';
 
 /// Provider for the GoRouter instance
 final routerProvider = Provider<GoRouter>((ref) {
@@ -77,10 +78,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthenticated = authState is AuthStateAuthenticated;
       final isLoggingIn = state.matchedLocation == AppConstants.loginRoute;
       final isSettingPassword = state.matchedLocation.startsWith(AppConstants.setPasswordRoute);
+      final isAuthCallback = state.matchedLocation == '/auth-callback';
 
       // Redirect root to dashboard or login
       if (state.matchedLocation == '/') {
         return isAuthenticated ? AppConstants.dashboardRoute : AppConstants.loginRoute;
+      }
+
+      // Allow access to auth callback page without authentication
+      if (isAuthCallback) {
+        return null;
       }
 
       // Allow access to set password page without authentication
@@ -123,6 +130,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             child: SetPasswordPage(inviteToken: token),
           );
         },
+      ),
+
+      // Auth callback route for handling deep links (no scaffold, no auth required)
+      GoRoute(
+        path: '/auth-callback',
+        name: 'auth-callback',
+        pageBuilder: (context, state) => MaterialPage(
+          key: state.pageKey,
+          child: const AuthCallbackPage(),
+        ),
       ),
 
       // Shell route for authenticated pages (with scaffold)

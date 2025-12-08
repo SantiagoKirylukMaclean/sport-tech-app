@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
+import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/position.dart';
 
 class InvitePlayerDialog extends ConsumerStatefulWidget {
@@ -94,7 +95,7 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'An invitation email will be sent to the player with a link to set their password and join the team.',
+                'Choose how to send the invitation: via email or get a shareable link.',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
@@ -106,21 +107,77 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
           child: const Text('Cancel'),
         ),
-        ElevatedButton(
-          onPressed: _isSubmitting ? null : _submit,
-          child: _isSubmitting
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Send Invite'),
-        ),
+        if (_isSubmitting)
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          )
+        else
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'email') {
+                _submit(sendEmail: true);
+              } else if (value == 'link') {
+                _submit(sendEmail: false);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'email',
+                child: Row(
+                  children: [
+                    Icon(Icons.email, size: 20),
+                    SizedBox(width: 8),
+                    Text('Enviar Email'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'link',
+                child: Row(
+                  children: [
+                    Icon(Icons.link, size: 20),
+                    SizedBox(width: 8),
+                    Text('Obtener Enlace'),
+                  ],
+                ),
+              ),
+            ],
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Send Invite',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ],
+              ),
+            ),
+          ),
       ],
     );
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit({bool sendEmail = true}) async {
     if (!_formKey.currentState!.validate()) return;
 
     final authState = ref.read(authNotifierProvider);
@@ -138,26 +195,70 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
           ? null
           : int.parse(_jerseyController.text.trim());
 
-      final success = await ref
-          .read(pendingInvitesNotifierProvider.notifier)
-          .createPlayerInvite(
-            email: _emailController.text.trim(),
+      // Step 1: Create the player first
+      final playerCreated = await ref
+          .read(playersNotifierProvider.notifier)
+          .createPlayer(
             teamId: widget.teamId,
-            playerName: _nameController.text.trim(),
-            invitedBy: authState.user.id,
+            fullName: _nameController.text.trim(),
             jerseyNumber: jerseyNumber,
           );
 
-      if (success && mounted) {
+      if (!playerCreated) {
+        if (mounted) {
+          final error = ref.read(playersNotifierProvider).error;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to create player: ${error ?? "Unknown error"}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+
+      // Step 2: Get the created player ID
+      final players = ref.read(playersNotifierProvider).players;
+      final createdPlayer = players.firstWhere(
+        (p) => p.fullName == _nameController.text.trim(),
+      );
+
+      // Step 3: Create the invitation linked to the player
+      final inviteCreated = await ref
+          .read(pendingInvitesNotifierProvider.notifier)
+          .createPlayerInvite(
+            email: _emailController.text.trim(),
+            playerId: int.parse(createdPlayer.id),
+            createdBy: authState.user.id,
+            displayName: _nameController.text.trim(),
+            sendEmail: sendEmail,
+          );
+
+      if (inviteCreated && mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invitation sent successfully')),
+          SnackBar(
+            content: Text(
+              sendEmail
+                  ? 'Player created and invitation sent successfully'
+                  : 'Player created. Share the invitation link with them.',
+            ),
+          ),
         );
       } else if (mounted) {
         final error = ref.read(pendingInvitesNotifierProvider).error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send invite: ${error ?? "Unknown error"}'),
+            content: Text('Player created but failed to send invite: ${error ?? "Unknown error"}'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
             backgroundColor: Colors.red,
           ),
         );

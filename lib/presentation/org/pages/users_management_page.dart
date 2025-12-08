@@ -82,7 +82,7 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
                   const SizedBox(height: 16),
                   // Role filter
                   DropdownButtonFormField<String>(
-                    value: _roleFilter,
+                    initialValue: _roleFilter,
                     decoration: const InputDecoration(
                       labelText: 'Rol',
                       border: OutlineInputBorder(),
@@ -260,7 +260,7 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
             Text('Email: ${profile.userId}'),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: selectedRole,
+              initialValue: selectedRole,
               decoration: const InputDecoration(
                 labelText: 'Rol',
                 border: OutlineInputBorder(),

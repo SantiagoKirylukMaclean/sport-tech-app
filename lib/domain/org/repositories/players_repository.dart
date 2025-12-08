@@ -34,4 +34,13 @@ abstract class PlayersRepository {
   /// Delete a player
   /// Returns void on success, [Failure] on error
   Future<Result<void>> deletePlayer(String id);
+
+  /// Assign credentials (email and password) to a player
+  /// Creates a Supabase auth user and links it to the player
+  /// Returns updated [Player] on success, [Failure] on error
+  Future<Result<Player>> assignCredentials({
+    required String playerId,
+    required String email,
+    required String password,
+  });
 }

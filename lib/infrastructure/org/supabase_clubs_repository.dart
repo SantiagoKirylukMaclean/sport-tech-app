@@ -6,12 +6,10 @@ import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/repositories/clubs_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/mappers/club_mapper.dart';
-import 'package:uuid/uuid.dart';
 
 /// Supabase implementation of [ClubsRepository]
 class SupabaseClubsRepository implements ClubsRepository {
   final SupabaseClient _client;
-  final _uuid = const Uuid();
 
   SupabaseClubsRepository(this._client);
 
@@ -82,12 +80,9 @@ class SupabaseClubsRepository implements ClubsRepository {
     required String name,
   }) async {
     try {
-      final now = DateTime.now().toIso8601String();
       final response = await _client.from('clubs').insert({
-        'id': _uuid.v4(),
         'sport_id': sportId,
         'name': name.trim(),
-        'created_at': now,
       }).select().single();
 
       return Success(ClubMapper.fromJson(response));

@@ -15,18 +15,6 @@ class SuperAdminSportsPage extends ConsumerWidget {
     final sportsState = ref.watch(sportsNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Deportes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refrescar',
-            onPressed: () {
-              ref.read(sportsNotifierProvider.notifier).loadSports();
-            },
-          ),
-        ],
-      ),
       body: sportsState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : sportsState.error != null
@@ -53,14 +41,27 @@ class SuperAdminSportsPage extends ConsumerWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Text(
-                        'Gestión de deportes del sistema (${sportsState.sports.length} deportes)',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.7),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Gestión de deportes del sistema (${sportsState.sports.length} deportes)',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.7),
+                                  ),
                             ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            tooltip: 'Refrescar',
+                            onPressed: () {
+                              ref.read(sportsNotifierProvider.notifier).loadSports();
+                            },
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(
@@ -98,11 +99,21 @@ class SuperAdminSportsPage extends ConsumerWidget {
               .read(sportsNotifierProvider.notifier)
               .createSport(name);
 
-          if (success && context.mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Deporte creado exitosamente')),
-            );
+          if (context.mounted) {
+            if (success) {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Deporte creado exitosamente')),
+              );
+            } else {
+              final error = ref.read(sportsNotifierProvider).error;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(error ?? 'Error al crear el deporte'),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            }
           }
         },
       ),
@@ -161,12 +172,12 @@ class _SportCard extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'ID: ${sport.id.substring(0, 8)}... • Creado: ${DateFormat('dd MMM yyyy, HH:mm').format(sport.createdAt)}',
+                        'ID: ${sport.id} • Creado: ${DateFormat('dd MMM yyyy, HH:mm').format(sport.createdAt)}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurface
-                                  .withOpacity(0.6),
+                                  .withValues(alpha: 0.6),
                             ),
                       ),
                     ],
@@ -206,11 +217,21 @@ class _SportCard extends ConsumerWidget {
               .read(sportsNotifierProvider.notifier)
               .updateSport(sport.id, name);
 
-          if (success && context.mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Deporte actualizado exitosamente')),
-            );
+          if (context.mounted) {
+            if (success) {
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Deporte actualizado exitosamente')),
+              );
+            } else {
+              final error = ref.read(sportsNotifierProvider).error;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(error ?? 'Error al actualizar el deporte'),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            }
           }
         },
       ),

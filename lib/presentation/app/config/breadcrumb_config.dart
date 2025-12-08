@@ -57,7 +57,7 @@ class BreadcrumbConfig {
       }
     }
     // Super Admin Panel routes
-    else if (location.startsWith(AppConstants.superAdminPanelRoute)) {
+    else if (location.startsWith('/admin')) {
       // Don't show breadcrumb on main super admin panel page
       if (location != AppConstants.superAdminPanelRoute) {
         breadcrumbs.add(

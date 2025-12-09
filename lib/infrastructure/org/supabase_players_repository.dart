@@ -64,6 +64,27 @@ class SupabasePlayersRepository implements PlayersRepository {
   }
 
   @override
+  Future<Result<Player?>> getPlayerByUserId(String userId) async {
+    try {
+      final response = await _client
+          .from('players')
+          .select()
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (response == null) {
+        return const Success(null);
+      }
+
+      return Success(PlayerMapper.fromJson(response));
+    } on PostgrestException catch (e) {
+      return Failed(ServerFailure(e.message, code: e.code));
+    } catch (e) {
+      return Failed(ServerFailure('Error getting player by user ID: $e'));
+    }
+  }
+
+  @override
   Future<Result<Player>> createPlayer({
     required String teamId,
     required String fullName,

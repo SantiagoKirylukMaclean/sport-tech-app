@@ -252,8 +252,20 @@ class AppScaffold extends ConsumerWidget {
       );
     }
 
-    // Player-facing items
+    // Common items for all roles
     items.addAll([
+      NavigationItem(
+        label: l10n.trainings,
+        route: AppConstants.trainingsRoute,
+        iconOutlined: Icons.fitness_center_outlined,
+        iconFilled: Icons.fitness_center,
+      ),
+      NavigationItem(
+        label: l10n.championship,
+        route: AppConstants.championshipRoute,
+        iconOutlined: Icons.emoji_events_outlined,
+        iconFilled: Icons.emoji_events,
+      ),
       NavigationItem(
         label: l10n.evaluations,
         route: AppConstants.evaluationsRoute,

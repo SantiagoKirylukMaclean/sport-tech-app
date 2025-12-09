@@ -6,6 +6,7 @@ abstract class PlayerEvaluationsRepository {
   Future<void> createScores(List<EvaluationScore> scores);
   Future<PlayerEvaluation?> getLatestEvaluationForPlayer(String playerId);
   Future<List<PlayerEvaluation>> listEvaluationsForPlayer(String playerId);
+  Future<int> getEvaluationsCount(String playerId);
   Future<List<EvaluationScore>> getScoresForEvaluation(String evaluationId);
   Future<PlayerEvaluation?> getEvaluationById(String evaluationId);
   Future<void> deleteEvaluation(String evaluationId);

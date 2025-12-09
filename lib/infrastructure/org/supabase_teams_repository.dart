@@ -102,11 +102,17 @@ class SupabaseTeamsRepository implements TeamsRepository {
   Future<Result<Team>> createTeam({
     required String clubId,
     required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
   }) async {
     try {
       final response = await _client.from('teams').insert({
         'club_id': clubId,
         'name': name.trim(),
+        if (standingsUrl != null) 'standings_url': standingsUrl,
+        if (resultsUrl != null) 'results_url': resultsUrl,
+        if (calendarUrl != null) 'calendar_url': calendarUrl,
       }).select().single();
 
       return Success(TeamMapper.fromJson(response));
@@ -121,11 +127,19 @@ class SupabaseTeamsRepository implements TeamsRepository {
   Future<Result<Team>> updateTeam({
     required String id,
     required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
   }) async {
     try {
       final response = await _client
           .from('teams')
-          .update({'name': name.trim()})
+          .update({
+            'name': name.trim(),
+            'standings_url': standingsUrl,
+            'results_url': resultsUrl,
+            'calendar_url': calendarUrl,
+          })
           .eq('id', int.tryParse(id) ?? id)
           .select()
           .single();

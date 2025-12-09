@@ -73,6 +73,26 @@ class SupabaseStatsRepository implements StatsRepository {
   }
 
   @override
+  Future<PlayerStatistics?> getPlayerStatistics(String playerId, String teamId) async {
+    try {
+      // Get all player statistics for the team
+      final allStats = await getTeamPlayerStatistics(teamId);
+
+      // Find the specific player's stats
+      try {
+        return allStats.firstWhere(
+          (stat) => stat.playerId == playerId,
+        );
+      } catch (e) {
+        // Player not found in statistics
+        return null;
+      }
+    } catch (e) {
+      throw Exception('Failed to get player statistics: $e');
+    }
+  }
+
+  @override
   Future<List<ScorerStats>> getScorersRanking(String teamId, {int limit = 10}) async {
     try {
       final teamIdInt = int.parse(teamId);

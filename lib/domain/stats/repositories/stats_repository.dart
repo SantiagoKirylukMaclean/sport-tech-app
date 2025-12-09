@@ -8,6 +8,10 @@ abstract class StatsRepository {
   /// Get comprehensive player statistics for a team
   Future<List<PlayerStatistics>> getTeamPlayerStatistics(String teamId);
 
+  /// Get statistics for a specific player
+  /// Returns null if the player is not found or has no statistics
+  Future<PlayerStatistics?> getPlayerStatistics(String playerId, String teamId);
+
   /// Get top scorers ranking for a team
   Future<List<ScorerStats>> getScorersRanking(String teamId, {int limit = 10});
 

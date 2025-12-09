@@ -63,6 +63,21 @@ class SupabasePlayerEvaluationsRepository
   }
 
   @override
+  Future<int> getEvaluationsCount(String playerId) async {
+    try {
+      final response = await _client
+          .from('player_evaluations')
+          .select('id')
+          .eq('player_id', int.parse(playerId))
+          .count(CountOption.exact);
+
+      return response.count;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  @override
   Future<List<EvaluationScore>> getScoresForEvaluation(
       String evaluationId) async {
     final response = await _client

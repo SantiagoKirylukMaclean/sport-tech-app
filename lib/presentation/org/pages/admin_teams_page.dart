@@ -332,10 +332,21 @@ class _AdminTeamsPageState extends ConsumerState<AdminTeamsPage> {
     showDialog(
       context: context,
       builder: (context) => TeamFormDialog(
-        onSubmit: (name) async {
+        onSubmit: ({
+          required String name,
+          String? standingsUrl,
+          String? resultsUrl,
+          String? calendarUrl,
+        }) async {
           final success = await ref
               .read(teamsNotifierProvider.notifier)
-              .createTeam(_selectedClub!.id, name);
+              .createTeam(
+                clubId: _selectedClub!.id,
+                name: name,
+                standingsUrl: standingsUrl,
+                resultsUrl: resultsUrl,
+                calendarUrl: calendarUrl,
+              );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();
@@ -454,10 +465,24 @@ class _TeamCard extends ConsumerWidget {
       context: context,
       builder: (context) => TeamFormDialog(
         initialName: team.name,
-        onSubmit: (name) async {
+        initialStandingsUrl: team.standingsUrl,
+        initialResultsUrl: team.resultsUrl,
+        initialCalendarUrl: team.calendarUrl,
+        onSubmit: ({
+          required String name,
+          String? standingsUrl,
+          String? resultsUrl,
+          String? calendarUrl,
+        }) async {
           final success = await ref
               .read(teamsNotifierProvider.notifier)
-              .updateTeam(team.id, name);
+              .updateTeam(
+                id: team.id,
+                name: name,
+                standingsUrl: standingsUrl,
+                resultsUrl: resultsUrl,
+                calendarUrl: calendarUrl,
+              );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();

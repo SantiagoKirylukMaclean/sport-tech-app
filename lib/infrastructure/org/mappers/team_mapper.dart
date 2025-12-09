@@ -11,6 +11,9 @@ class TeamMapper {
       clubId: json['club_id'].toString(),
       name: json['name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
+      standingsUrl: json['standings_url'] as String?,
+      resultsUrl: json['results_url'] as String?,
+      calendarUrl: json['calendar_url'] as String?,
     );
   }
 
@@ -21,6 +24,9 @@ class TeamMapper {
       'club_id': team.clubId,
       'name': team.name,
       'created_at': team.createdAt.toIso8601String(),
+      'standings_url': team.standingsUrl,
+      'results_url': team.resultsUrl,
+      'calendar_url': team.calendarUrl,
     };
   }
 }

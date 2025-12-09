@@ -27,6 +27,9 @@ abstract class TeamsRepository {
   Future<Result<Team>> createTeam({
     required String clubId,
     required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
   });
 
   /// Update an existing team
@@ -34,6 +37,9 @@ abstract class TeamsRepository {
   Future<Result<Team>> updateTeam({
     required String id,
     required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
   });
 
   /// Delete a team

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../application/auth/auth_providers.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../domain/trainings/entities/training_session.dart';
 import '../widgets/training_session_form_dialog.dart';
 
@@ -129,10 +131,21 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
     context.push('/trainings/${session.id}/attendance');
   }
 
+  void _navigateToDetail(TrainingSession session) {
+    context.push('/trainings/${session.id}/detail');
+  }
+
   @override
   Widget build(BuildContext context) {
     final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
     final state = ref.watch(trainingSessionsNotifierProvider);
+    final currentUser = ref.watch(currentUserProfileProvider);
+
+    // Check if user is a coach (can manage sessions)
+    final isCoach = currentUser != null &&
+        (currentUser.role == UserRole.coach ||
+            currentUser.role == UserRole.admin ||
+            currentUser.role == UserRole.superAdmin);
 
     if (activeTeam == null) {
       return const Scaffold(
@@ -152,17 +165,19 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
               child: state.isLoading && state.sessions.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : state.sessions.isEmpty
-                      ? _buildEmptyState(context)
-                      : _buildSessionsList(context, state.sessions),
+                      ? _buildEmptyState(context, isCoach)
+                      : _buildSessionsList(context, state.sessions, isCoach),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showSessionDialog(),
-        icon: const Icon(Icons.add),
-        label: const Text('New Session'),
-      ),
+      floatingActionButton: isCoach
+          ? FloatingActionButton.extended(
+              onPressed: () => _showSessionDialog(),
+              icon: const Icon(Icons.add),
+              label: const Text('New Session'),
+            )
+          : null,
     );
   }
 
@@ -236,7 +251,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
     }).length;
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, bool isCoach) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -252,24 +267,26 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
-          const Text('Create your first training session'),
+          Text(isCoach
+              ? 'Create your first training session'
+              : 'No training sessions scheduled yet'),
         ],
       ),
     );
   }
 
-  Widget _buildSessionsList(BuildContext context, List<TrainingSession> sessions) {
+  Widget _buildSessionsList(BuildContext context, List<TrainingSession> sessions, bool isCoach) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: sessions.length,
       itemBuilder: (context, index) {
         final session = sessions[index];
-        return _buildSessionCard(context, session);
+        return _buildSessionCard(context, session, isCoach);
       },
     );
   }
 
-  Widget _buildSessionCard(BuildContext context, TrainingSession session) {
+  Widget _buildSessionCard(BuildContext context, TrainingSession session, bool isCoach) {
     final dateFormat = DateFormat('EEEE, MMM d, yyyy');
     final timeFormat = DateFormat('HH:mm');
 
@@ -307,37 +324,38 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
                     ],
                   ),
                 ),
-                PopupMenuButton(
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit, size: 20),
-                          SizedBox(width: 8),
-                          Text('Edit'),
-                        ],
+                if (isCoach)
+                  PopupMenuButton(
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit, size: 20),
+                            SizedBox(width: 8),
+                            Text('Edit'),
+                          ],
+                        ),
                       ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete, size: 20),
-                          SizedBox(width: 8),
-                          Text('Delete'),
-                        ],
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete, size: 20),
+                            SizedBox(width: 8),
+                            Text('Delete'),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      _showSessionDialog(session);
-                    } else if (value == 'delete') {
-                      _deleteSession(session);
-                    }
-                  },
-                ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        _showSessionDialog(session);
+                      } else if (value == 'delete') {
+                        _deleteSession(session);
+                      }
+                    },
+                  ),
               ],
             ),
             if (session.notes != null && session.notes!.isNotEmpty) ...[
@@ -350,11 +368,17 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: () => _navigateToAttendance(session),
-                icon: const Icon(Icons.check_circle_outline),
-                label: const Text('Manage Attendance'),
-              ),
+              child: isCoach
+                  ? FilledButton.icon(
+                      onPressed: () => _navigateToAttendance(session),
+                      icon: const Icon(Icons.check_circle_outline),
+                      label: const Text('Manage Attendance'),
+                    )
+                  : OutlinedButton.icon(
+                      onPressed: () => _navigateToDetail(session),
+                      icon: const Icon(Icons.info_outline),
+                      label: const Text('View Details'),
+                    ),
             ),
           ],
         ),

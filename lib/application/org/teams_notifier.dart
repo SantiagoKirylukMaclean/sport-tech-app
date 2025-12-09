@@ -81,8 +81,20 @@ class TeamsNotifier extends StateNotifier<TeamsState> {
   }
 
   /// Create a new team
-  Future<bool> createTeam(String clubId, String name) async {
-    final result = await _repository.createTeam(clubId: clubId, name: name);
+  Future<bool> createTeam({
+    required String clubId,
+    required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
+  }) async {
+    final result = await _repository.createTeam(
+      clubId: clubId,
+      name: name,
+      standingsUrl: standingsUrl,
+      resultsUrl: resultsUrl,
+      calendarUrl: calendarUrl,
+    );
 
     return result.when(
       success: (team) {
@@ -99,8 +111,20 @@ class TeamsNotifier extends StateNotifier<TeamsState> {
   }
 
   /// Update a team
-  Future<bool> updateTeam(String id, String name) async {
-    final result = await _repository.updateTeam(id: id, name: name);
+  Future<bool> updateTeam({
+    required String id,
+    required String name,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
+  }) async {
+    final result = await _repository.updateTeam(
+      id: id,
+      name: name,
+      standingsUrl: standingsUrl,
+      resultsUrl: resultsUrl,
+      calendarUrl: calendarUrl,
+    );
 
     return result.when(
       success: (updatedTeam) {

@@ -9,16 +9,22 @@ class Team extends Equatable {
   final String clubId;
   final String name;
   final DateTime createdAt;
+  final String? standingsUrl;
+  final String? resultsUrl;
+  final String? calendarUrl;
 
   const Team({
     required this.id,
     required this.clubId,
     required this.name,
     required this.createdAt,
+    this.standingsUrl,
+    this.resultsUrl,
+    this.calendarUrl,
   });
 
   @override
-  List<Object?> get props => [id, clubId, name, createdAt];
+  List<Object?> get props => [id, clubId, name, createdAt, standingsUrl, resultsUrl, calendarUrl];
 
   @override
   String toString() => 'Team(id: $id, name: $name, clubId: $clubId)';
@@ -29,12 +35,18 @@ class Team extends Equatable {
     String? clubId,
     String? name,
     DateTime? createdAt,
+    String? standingsUrl,
+    String? resultsUrl,
+    String? calendarUrl,
   }) {
     return Team(
       id: id ?? this.id,
       clubId: clubId ?? this.clubId,
       name: name ?? this.name,
       createdAt: createdAt ?? this.createdAt,
+      standingsUrl: standingsUrl ?? this.standingsUrl,
+      resultsUrl: resultsUrl ?? this.resultsUrl,
+      calendarUrl: calendarUrl ?? this.calendarUrl,
     );
   }
 }

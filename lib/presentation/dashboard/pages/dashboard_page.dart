@@ -4,6 +4,7 @@ import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/application/dashboard/player_dashboard_providers.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/players_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/goals_tab.dart';
@@ -11,6 +12,7 @@ import 'package:sport_tech_app/presentation/stats/widgets/matches_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/quarters_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
+import 'package:sport_tech_app/presentation/dashboard/widgets/player_dashboard_content.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -56,11 +58,29 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     final authState = ref.watch(authNotifierProvider);
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final statsState = ref.watch(statsNotifierProvider);
+    final playerDashboardState = ref.watch(playerDashboardNotifierProvider);
 
     // Check if user is coach or super admin
     final isCoach = authState is AuthStateAuthenticated &&
         (authState.profile.role == UserRole.coach ||
             authState.profile.role == UserRole.superAdmin);
+
+    // Check if user is player
+    final isPlayer = authState is AuthStateAuthenticated &&
+        authState.profile.role == UserRole.player;
+
+    // Load player dashboard for players on first build
+    if (isPlayer && !_hasLoadedStats) {
+      _hasLoadedStats = true;
+      final userId = authState.profile.userId;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref
+              .read(playerDashboardNotifierProvider.notifier)
+              .loadPlayerDashboard(userId);
+        }
+      });
+    }
 
     // Load stats on first build when we have a team and user is coach
     if (isCoach && !_hasLoadedStats && activeTeamState.activeTeam != null) {
@@ -73,6 +93,84 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               .loadTeamStats(activeTeamState.activeTeam!.id);
         }
       });
+    }
+
+    // Player Dashboard
+    if (isPlayer) {
+      if (playerDashboardState.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      if (playerDashboardState.error != null) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Error cargando estadísticas',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                playerDashboardState.error!,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {
+                  ref.read(playerDashboardNotifierProvider.notifier).refresh();
+                },
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar'),
+              ),
+            ],
+          ),
+        );
+      }
+
+      if (playerDashboardState.player == null ||
+          playerDashboardState.playerStats == null) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person_off,
+                size: 64,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Sin datos de jugador',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'No se encontró un registro de jugador para tu cuenta',
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+
+      return RefreshIndicator(
+        onRefresh: () =>
+            ref.read(playerDashboardNotifierProvider.notifier).refresh(),
+        child: PlayerDashboardContent(
+          playerStats: playerDashboardState.playerStats!,
+          teamMatches: playerDashboardState.teamMatches,
+          evaluationsCount: playerDashboardState.evaluationsCount,
+        ),
+      );
     }
 
     // If user is coach and has an active team, show statistics

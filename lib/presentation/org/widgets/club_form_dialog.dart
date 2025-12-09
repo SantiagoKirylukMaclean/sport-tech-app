@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/club_form_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ClubFormDialog extends StatefulWidget {
   final String? initialName;
@@ -35,22 +36,23 @@ class _ClubFormDialogState extends State<ClubFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.initialName != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Club' : 'Create Club'),
+      title: Text(isEditing ? l10n.editClub : l10n.createClub),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Club Name',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.clubName,
+            border: const OutlineInputBorder(),
           ),
           autofocus: true,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter a club name';
+              return l10n.enterClubName;
             }
             return null;
           },
@@ -59,7 +61,7 @@ class _ClubFormDialogState extends State<ClubFormDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,
@@ -69,7 +71,7 @@ class _ClubFormDialogState extends State<ClubFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(isEditing ? 'Update' : 'Create'),
+              : Text(isEditing ? l10n.update : l10n.create),
         ),
       ],
     );

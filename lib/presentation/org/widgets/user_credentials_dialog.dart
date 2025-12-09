@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Dialog to view user credentials and change password
 class UserCredentialsDialog extends StatefulWidget {
@@ -49,8 +50,8 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Contraseña actualizada correctamente'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.passwordUpdatedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -64,8 +65,10 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: const Text('Credenciales de Usuario'),
+      title: Text(l10n.userCredentials),
       content: SizedBox(
         width: 400,
         child: Column(
@@ -74,7 +77,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
           children: [
             // Player name
             Text(
-              'Jugador: ${widget.playerName}',
+              '${l10n.player}: ${widget.playerName}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -97,7 +100,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                       Icon(Icons.email, size: 16, color: Colors.grey[600]),
                       const SizedBox(width: 8),
                       Text(
-                        'Email',
+                        l10n.email,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -120,13 +123,13 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.copy, size: 18),
-                        tooltip: 'Copiar email',
+                        tooltip: l10n.copyEmail,
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: widget.email));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Email copiado'),
-                              duration: Duration(seconds: 1),
+                            SnackBar(
+                              content: Text(l10n.emailCopied),
+                              duration: const Duration(seconds: 1),
                             ),
                           );
                         },
@@ -148,7 +151,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                     setState(() => _isChangingPassword = true);
                   },
                   icon: const Icon(Icons.lock_reset),
-                  label: const Text('Cambiar Contraseña'),
+                  label: Text(l10n.changePassword),
                 ),
               )
             else
@@ -158,7 +161,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nueva Contraseña',
+                      l10n.newPassword,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -167,7 +170,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                     TextFormField(
                       controller: _newPasswordController,
                       decoration: InputDecoration(
-                        labelText: 'Contraseña',
+                        labelText: l10n.password,
                         border: const OutlineInputBorder(),
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
@@ -186,10 +189,10 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                       enabled: !_isLoading,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Ingresa una contraseña';
+                          return l10n.passwordRequired;
                         }
                         if (value.length < 6) {
-                          return 'La contraseña debe tener al menos 6 caracteres';
+                          return l10n.passwordTooShort;
                         }
                         return null;
                       },
@@ -207,7 +210,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                                       _newPasswordController.clear();
                                     });
                                   },
-                            child: const Text('Cancelar'),
+                            child: Text(l10n.cancel),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -221,7 +224,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
                                     child: CircularProgressIndicator(
                                         strokeWidth: 2),
                                   )
-                                : const Text('Actualizar'),
+                                : Text(l10n.update),
                           ),
                         ),
                       ],
@@ -235,7 +238,7 @@ class _UserCredentialsDialogState extends State<UserCredentialsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cerrar'),
+          child: Text(l10n.close),
         ),
       ],
     );

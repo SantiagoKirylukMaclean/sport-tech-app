@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/team_form_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TeamFormDialog extends StatefulWidget {
   final String? initialName;
@@ -35,22 +36,23 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.initialName != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Team' : 'Create Team'),
+      title: Text(isEditing ? l10n.editTeam : l10n.createTeam),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Team Name',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.teamName,
+            border: const OutlineInputBorder(),
           ),
           autofocus: true,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter a team name';
+              return l10n.enterTeamName;
             }
             return null;
           },
@@ -59,7 +61,7 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,
@@ -69,7 +71,7 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(isEditing ? 'Update' : 'Create'),
+              : Text(isEditing ? l10n.update : l10n.create),
         ),
       ],
     );

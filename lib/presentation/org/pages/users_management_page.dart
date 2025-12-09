@@ -1,6 +1,7 @@
 // lib/presentation/org/pages/users_management_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/profiles/profiles_notifier.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
@@ -29,13 +30,14 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final profilesState = ref.watch(profilesNotifierProvider);
 
     final filteredProfiles = _filterProfiles(profilesState.profiles);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Usuarios'),
+        title: Text(l10n.usersManagement),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -60,7 +62,7 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
                       const Icon(Icons.search),
                       const SizedBox(width: 8),
                       Text(
-                        'Filtros y Búsqueda',
+                        l10n.filtersAndSearch,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
@@ -68,10 +70,10 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
                   const SizedBox(height: 16),
                   // Search field
                   TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar por email o nombre',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.searchByEmailOrName,
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -83,30 +85,30 @@ class _UsersManagementPageState extends ConsumerState<UsersManagementPage> {
                   // Role filter
                   DropdownButtonFormField<String>(
                     initialValue: _roleFilter,
-                    decoration: const InputDecoration(
-                      labelText: 'Rol',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.role,
+                      border: const OutlineInputBorder(),
                     ),
-                    items: const [
+                    items: [
                       DropdownMenuItem(
                         value: 'all',
-                        child: Text('Todos los roles'),
+                        child: Text(l10n.allRoles),
                       ),
                       DropdownMenuItem(
                         value: 'player',
-                        child: Text('Jugador'),
+                        child: Text(l10n.playerRole),
                       ),
                       DropdownMenuItem(
                         value: 'coach',
-                        child: Text('Entrenador'),
+                        child: Text(l10n.coachRole),
                       ),
                       DropdownMenuItem(
                         value: 'admin',
-                        child: Text('Administrador'),
+                        child: Text(l10n.adminRole),
                       ),
                       DropdownMenuItem(
                         value: 'super_admin',
-                        child: Text('Super Admin'),
+                        child: Text(l10n.superAdminRole),
                       ),
                     ],
                     onChanged: (value) {

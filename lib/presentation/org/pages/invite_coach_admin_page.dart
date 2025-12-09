@@ -1,6 +1,7 @@
 // lib/presentation/org/pages/invite_coach_admin_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
@@ -49,7 +50,7 @@ class _InviteCoachAdminPageState extends ConsumerState<InviteCoachAdminPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Invitar Entrenador/Admin'),
+        title: Text(AppLocalizations.of(context)!.inviteCoachAdmin),
       ),
       body: teamsState.isLoading
           ? const Center(child: CircularProgressIndicator())

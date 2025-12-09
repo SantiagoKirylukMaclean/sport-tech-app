@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
@@ -40,8 +41,10 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: const Text('Invite Player'),
+      title: Text(l10n.invitePlayer),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -126,23 +129,23 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'email',
                 child: Row(
                   children: [
-                    Icon(Icons.email, size: 20),
-                    SizedBox(width: 8),
-                    Text('Enviar Email'),
+                    const Icon(Icons.email, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.sendEmail),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'link',
                 child: Row(
                   children: [
-                    Icon(Icons.link, size: 20),
-                    SizedBox(width: 8),
-                    Text('Obtener Enlace'),
+                    const Icon(Icons.link, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.getLink),
                   ],
                 ),
               ),

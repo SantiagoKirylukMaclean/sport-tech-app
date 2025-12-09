@@ -1,6 +1,7 @@
 // lib/presentation/profile/pages/profile_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
@@ -10,6 +11,7 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authNotifierProvider);
 
     if (authState is! AuthStateAuthenticated) {
@@ -63,30 +65,30 @@ class ProfilePage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Account Information',
+                          l10n.accountInformation,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 16),
                         _InfoRow(
-                          label: 'Email',
+                          label: l10n.email,
                           value: user.email,
                           icon: Icons.email_outlined,
                         ),
                         const Divider(height: 24),
                         _InfoRow(
-                          label: 'Display Name',
+                          label: l10n.displayName,
                           value: profile.displayName,
                           icon: Icons.person_outline,
                         ),
                         const Divider(height: 24),
                         _InfoRow(
-                          label: 'Role',
+                          label: l10n.role,
                           value: profile.role.value,
                           icon: Icons.badge_outlined,
                         ),
                         const Divider(height: 24),
                         _InfoRow(
-                          label: 'Member Since',
+                          label: l10n.memberSince,
                           value: _formatDate(profile.createdAt),
                           icon: Icons.calendar_today_outlined,
                         ),
@@ -98,12 +100,12 @@ class ProfilePage extends ConsumerWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.lock_outline),
-                    title: const Text('Change Password'),
+                    title: Text(l10n.changePassword),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Change password feature coming soon'),
+                        SnackBar(
+                          content: Text(l10n.changePasswordComingSoon),
                         ),
                       );
                     },

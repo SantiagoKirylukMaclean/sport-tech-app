@@ -1,6 +1,7 @@
 // lib/presentation/org/pages/invitations_management_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
@@ -29,13 +30,14 @@ class _InvitationsManagementPageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final invitesState = ref.watch(pendingInvitesNotifierProvider);
 
     final filteredInvites = _filterInvites(invitesState.invites);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestión de Invitaciones'),
+        title: Text(l10n.invitationsManagement),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -60,7 +62,7 @@ class _InvitationsManagementPageState
                       const Icon(Icons.search),
                       const SizedBox(width: 8),
                       Text(
-                        'Filtros y Búsqueda',
+                        l10n.filtersAndSearch,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ],
@@ -68,10 +70,10 @@ class _InvitationsManagementPageState
                   const SizedBox(height: 16),
                   // Search field
                   TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar por email',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.searchByEmail,
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -83,26 +85,26 @@ class _InvitationsManagementPageState
                   // Status filter
                   DropdownButtonFormField<String>(
                     initialValue: _statusFilter,
-                    decoration: const InputDecoration(
-                      labelText: 'Estado',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.status,
+                      border: const OutlineInputBorder(),
                     ),
-                    items: const [
+                    items: [
                       DropdownMenuItem(
                         value: 'all',
-                        child: Text('Todos los estados'),
+                        child: Text(l10n.allStatuses),
                       ),
                       DropdownMenuItem(
                         value: 'pending',
-                        child: Text('Pendiente'),
+                        child: Text(l10n.pending),
                       ),
                       DropdownMenuItem(
                         value: 'accepted',
-                        child: Text('Aceptada'),
+                        child: Text(l10n.accepted),
                       ),
                       DropdownMenuItem(
                         value: 'expired',
-                        child: Text('Expirada'),
+                        child: Text(l10n.expired),
                       ),
                     ],
                     onChanged: (value) {
@@ -137,14 +139,14 @@ class _InvitationsManagementPageState
                                     .read(pendingInvitesNotifierProvider.notifier)
                                     .loadAllInvites();
                               },
-                              child: const Text('Retry'),
+                              child: Text(l10n.retry),
                             ),
                           ],
                         ),
                       )
                     : filteredInvites.isEmpty
-                        ? const Center(
-                            child: Text('No se encontraron invitaciones'),
+                        ? Center(
+                            child: Text(l10n.noInvitationsFound),
                           )
                         : Card(
                             margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -158,7 +160,7 @@ class _InvitationsManagementPageState
                                       const Icon(Icons.mail_outline),
                                       const SizedBox(width: 8),
                                       Text(
-                                        'Invitaciones (${filteredInvites.length})',
+                                        '${l10n.invitations} (${filteredInvites.length})',
                                         style: Theme.of(context).textTheme.titleMedium,
                                       ),
                                     ],

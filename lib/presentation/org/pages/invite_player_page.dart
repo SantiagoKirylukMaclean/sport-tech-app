@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
@@ -50,7 +51,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Invitar Jugador'),
+        title: Text(AppLocalizations.of(context)!.invitePlayer),
       ),
       body: teamsState.isLoading
           ? const Center(child: CircularProgressIndicator())

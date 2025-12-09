@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PlayerFormDialog extends StatefulWidget {
   final String? initialFullName;
@@ -43,10 +44,11 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.initialFullName != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Player' : 'Add Player'),
+      title: Text(isEditing ? l10n.editPlayer : l10n.addPlayer),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -55,14 +57,14 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.fullName,
+                  border: const OutlineInputBorder(),
                 ),
                 autofocus: true,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter player name';
+                    return l10n.enterPlayerName;
                   }
                   return null;
                 },
@@ -70,9 +72,9 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _jerseyController,
-                decoration: const InputDecoration(
-                  labelText: 'Jersey Number (Optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.jerseyNumberOptional,
+                  border: const OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -84,7 +86,7 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,
@@ -94,7 +96,7 @@ class _PlayerFormDialogState extends State<PlayerFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(isEditing ? 'Update' : 'Add'),
+              : Text(isEditing ? l10n.update : l10n.addPlayer),
         ),
       ],
     );

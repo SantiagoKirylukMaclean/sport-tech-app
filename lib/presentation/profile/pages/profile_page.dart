@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:sport_tech_app/presentation/profile/widgets/change_password_dialog.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -101,10 +102,9 @@ class ProfilePage extends ConsumerWidget {
                     title: const Text('Change Password'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Change password feature coming soon'),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (context) => const ChangePasswordDialog(),
                       );
                     },
                   ),

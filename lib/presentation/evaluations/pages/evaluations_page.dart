@@ -7,6 +7,7 @@ import 'package:sport_tech_app/application/evaluations/evaluation_categories_sta
 import 'package:sport_tech_app/application/evaluations/player_evaluations_notifier.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/evaluation_score.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/player_evaluation.dart';
@@ -28,28 +29,38 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
     });
   }
 
-  void _loadData() {
+  Future<void> _loadData() async {
     final user = ref.read(currentUserProvider);
     if (user == null) return;
 
-    // Load player data
+    // First, load the user's teams to get the active team
+    await ref.read(activeTeamNotifierProvider.notifier).loadUserTeams(user.id);
+
+    final activeTeamState = ref.read(activeTeamNotifierProvider);
+    if (activeTeamState.activeTeam == null) return;
+
+    // Load players for the active team
+    await ref.read(playersNotifierProvider.notifier).loadPlayersByTeam(
+      activeTeamState.activeTeam!.id,
+      '1', // TODO: Get sport ID from team
+    );
+
+    // Now find the current player
     final playersState = ref.read(playersNotifierProvider);
-    if (!playersState.isLoading && playersState.error == null) {
-      final currentPlayer = playersState.players
-          .where((p) => p.userId == user.id)
-          .firstOrNull;
+    final currentPlayer = playersState.players
+        .where((p) => p.userId == user.id)
+        .firstOrNull;
 
-      if (currentPlayer != null) {
-        // Load evaluations
-        ref
-            .read(playerEvaluationsNotifierProvider.notifier)
-            .loadEvaluationsForPlayer(currentPlayer.id);
+    if (currentPlayer != null) {
+      // Load evaluations
+      ref
+          .read(playerEvaluationsNotifierProvider.notifier)
+          .loadEvaluationsForPlayer(currentPlayer.id);
 
-        // Load categories
-        ref
-            .read(evaluationCategoriesNotifierProvider.notifier)
-            .loadCategoriesWithCriteria();
-      }
+      // Load categories
+      ref
+          .read(evaluationCategoriesNotifierProvider.notifier)
+          .loadCategoriesWithCriteria();
     }
   }
 

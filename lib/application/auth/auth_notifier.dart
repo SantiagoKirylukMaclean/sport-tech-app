@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/auth/repositories/auth_repository.dart';
 import 'package:sport_tech_app/domain/profiles/repositories/profiles_repository.dart';
 import 'package:sport_tech_app/infrastructure/auth/providers/auth_repository_provider.dart';
@@ -163,6 +164,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state = AuthStateError(failure.message);
       },
     );
+  }
+
+  /// Update password for the currently authenticated user
+  Future<Result<void>> updatePassword({required String newPassword}) async {
+    return await _authRepository.updatePassword(newPassword: newPassword);
   }
 
   @override

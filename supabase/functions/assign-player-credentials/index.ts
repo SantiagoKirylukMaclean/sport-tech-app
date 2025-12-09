@@ -218,6 +218,36 @@ serve(async (req) => {
       // Don't fail the request, as the trigger might handle this
     }
 
+    // Create user_team_role entry so the player can see their team
+    const { error: teamRoleError } = await supabaseAdmin
+      .from('user_team_roles')
+      .insert({
+        user_id: newUser.user.id,
+        team_id: player.team_id,
+        role: 'player'
+      })
+
+    if (teamRoleError) {
+      console.error('Failed to create user_team_role:', teamRoleError)
+      // Rollback: delete the created user and player link
+      await supabaseAdmin.auth.admin.deleteUser(newUser.user.id)
+      await supabaseAdmin
+        .from('players')
+        .update({ user_id: null, email: null })
+        .eq('id', body.playerId)
+
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          error: `Failed to assign team role: ${teamRoleError.message}`
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      )
+    }
+
     return new Response(
       JSON.stringify({
         ok: true,

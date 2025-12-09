@@ -107,4 +107,18 @@ class SupabaseAuthRepository implements AuthRepository {
       return Failed(AuthFailure('Unexpected error during password reset: $e'));
     }
   }
+
+  @override
+  Future<Result<void>> updatePassword({required String newPassword}) async {
+    try {
+      await _client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+      return const Success(null);
+    } on AuthException catch (e) {
+      return Failed(AuthFailure(e.message, code: e.statusCode));
+    } catch (e) {
+      return Failed(AuthFailure('Unexpected error updating password: $e'));
+    }
+  }
 }

@@ -37,4 +37,10 @@ abstract class AuthRepository {
   Future<Result<void>> resetPassword({
     required String email,
   });
+
+  /// Update password for the currently authenticated user
+  /// Returns void on success, [Failure] on error
+  Future<Result<void>> updatePassword({
+    required String newPassword,
+  });
 }

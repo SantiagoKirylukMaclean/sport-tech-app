@@ -9,6 +9,8 @@ import 'package:sport_tech_app/domain/org/repositories/positions_repository.dart
 import 'package:sport_tech_app/domain/org/repositories/sports_repository.dart';
 import 'package:sport_tech_app/domain/org/repositories/teams_repository.dart';
 import 'package:sport_tech_app/domain/org/repositories/user_team_roles_repository.dart';
+import 'package:sport_tech_app/domain/org/repositories/staff_members_repository.dart';
+import 'package:sport_tech_app/domain/org/repositories/staff_attendance_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/supabase_clubs_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/supabase_pending_invites_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/supabase_players_repository.dart';
@@ -16,6 +18,8 @@ import 'package:sport_tech_app/infrastructure/org/supabase_positions_repository.
 import 'package:sport_tech_app/infrastructure/org/supabase_sports_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/supabase_teams_repository.dart';
 import 'package:sport_tech_app/infrastructure/org/supabase_user_team_roles_repository.dart';
+import 'package:sport_tech_app/infrastructure/org/supabase_staff_members_repository.dart';
+import 'package:sport_tech_app/infrastructure/org/supabase_staff_attendance_repository.dart';
 
 /// Provider for Sports Repository
 final sportsRepositoryProvider = Provider<SportsRepository>((ref) {
@@ -57,4 +61,16 @@ final userTeamRolesRepositoryProvider = Provider<UserTeamRolesRepository>((ref) 
 final pendingInvitesRepositoryProvider = Provider<PendingInvitesRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return SupabasePendingInvitesRepository(client);
+});
+
+/// Provider for Staff Members Repository
+final staffMembersRepositoryProvider = Provider<StaffMembersRepository>((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  return SupabaseStaffMembersRepository(client);
+});
+
+/// Provider for Staff Attendance Repository
+final staffAttendanceRepositoryProvider = Provider<StaffAttendanceRepository>((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  return SupabaseStaffAttendanceRepository(client);
 });

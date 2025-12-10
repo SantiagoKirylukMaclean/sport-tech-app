@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_notifier.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
@@ -46,6 +47,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final playersState = ref.watch(playersNotifierProvider);
     final evaluationsState = ref.watch(playerEvaluationsNotifierProvider);
@@ -53,21 +55,21 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
     if (activeTeamState.activeTeam == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Evaluaciones'),
+          title: Text(l10n.evaluations),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.go(AppConstants.dashboardRoute),
           ),
         ),
-        body: const Center(
-          child: Text('No team selected. Please select a team first.'),
+        body: Center(
+          child: Text(l10n.noTeamSelectedSelectFirst),
         ),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Evaluaciones de Jugadores'),
+        title: Text(l10n.playerEvaluations),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go(AppConstants.dashboardRoute),
@@ -91,7 +93,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    'Selecciona un Jugador',
+                    l10n.selectAPlayer,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -119,7 +121,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Selecciona un jugador',
+                          l10n.selectPlayer,
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -129,7 +131,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Elige un jugador de la lista para ver sus evaluaciones',
+                          l10n.choosePlayerFromList,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                 color: Theme.of(context)
                                     .colorScheme
@@ -152,7 +154,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text('Nueva Evaluación'),
+              label: Text(l10n.newEvaluation),
             )
           : null,
     );
@@ -228,6 +230,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
   }
 
   Widget _buildEvaluationsContent(PlayerEvaluationsState state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state is PlayerEvaluationsLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -244,7 +247,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Error al cargar evaluaciones',
+              l10n.error,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -253,7 +256,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
             ElevatedButton.icon(
               onPressed: () => _loadEvaluationsForPlayer(_selectedPlayer!),
               icon: const Icon(Icons.refresh),
-              label: const Text('Reintentar'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -276,12 +279,12 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Sin evaluaciones',
+              l10n.evaluations,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
-              'Este jugador aún no tiene evaluaciones.',
+              l10n.noData,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
@@ -294,7 +297,7 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text('Crear Primera Evaluación'),
+              label: Text(l10n.createFirstEvaluation),
             ),
           ],
         ),
@@ -380,18 +383,16 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
                       final confirmed = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Eliminar evaluación'),
-                          content: const Text(
-                            '¿Estás seguro de que deseas eliminar esta evaluación?',
-                          ),
+                          title: Text(l10n.deleteEvaluation),
+                          content: Text(l10n.confirmDelete),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: const Text('Cancelar'),
+                              child: Text(l10n.cancel),
                             ),
                             FilledButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text('Eliminar'),
+                              child: Text(l10n.delete),
                             ),
                           ],
                         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
 
 /// Combined player statistics for goals and assists
@@ -34,6 +35,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final statsState = ref.watch(statsNotifierProvider);
     final scorers = statsState.scorers;
     final assisters = statsState.assisters;
@@ -42,8 +44,8 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
     final combinedStats = _combinePlayerStats(scorers, assisters);
 
     if (combinedStats.isEmpty) {
-      return const Center(
-        child: Text('No goals or assists data available'),
+      return Center(
+        child: Text(l10n.noGoalsOrAssistsData),
       );
     }
 
@@ -71,7 +73,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
               ),
               columns: [
                 DataColumn(
-                  label: const Text('Player'),
+                  label: Text(l10n.player),
                   onSort: (columnIndex, ascending) {
                     setState(() {
                       _sortColumnIndex = columnIndex;
@@ -80,7 +82,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Goals'),
+                  label: Text(l10n.goals),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -90,7 +92,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Assists'),
+                  label: Text(l10n.assists),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -100,7 +102,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Total'),
+                  label: Text(l10n.total),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {

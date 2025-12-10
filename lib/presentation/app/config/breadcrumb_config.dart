@@ -39,20 +39,20 @@ class BreadcrumbConfig {
 
       // Coach sub-routes
       if (location == '/coach-players') {
-        breadcrumbs.add(const BreadcrumbItem(label: 'Jugadores'));
+        breadcrumbs.add(BreadcrumbItem(label: l10n.players));
       } else if (location.startsWith('/coach-evaluations')) {
         breadcrumbs.add(
-          const BreadcrumbItem(
-            label: 'Evaluaciones',
+          BreadcrumbItem(
+            label: l10n.evaluations,
             route: '/coach-evaluations',
           ),
         );
 
         if (location == '/coach-evaluations/new') {
-          breadcrumbs.add(const BreadcrumbItem(label: 'Nueva Evaluación'));
+          breadcrumbs.add(BreadcrumbItem(label: l10n.newEvaluationBreadcrumb));
         } else if (location.contains('/coach-evaluations/') &&
                    location != '/coach-evaluations') {
-          breadcrumbs.add(const BreadcrumbItem(label: 'Detalle'));
+          breadcrumbs.add(BreadcrumbItem(label: l10n.detail));
         }
       }
     }
@@ -90,7 +90,7 @@ class BreadcrumbConfig {
           route: AppConstants.teamsManagementRoute,
         ),
       );
-      breadcrumbs.add(const BreadcrumbItem(label: 'Jugadores del Equipo'));
+      breadcrumbs.add(BreadcrumbItem(label: l10n.teamPlayers));
     }
     // Matches routes (accessed from Coach Panel)
     else if (location.startsWith(AppConstants.matchesRoute)) {
@@ -112,7 +112,7 @@ class BreadcrumbConfig {
 
       // Add detail pages
       if (location.contains('/lineup')) {
-        breadcrumbs.add(const BreadcrumbItem(label: 'Alineación'));
+        breadcrumbs.add(BreadcrumbItem(label: l10n.lineup));
       }
     }
     // Trainings routes (accessed from Coach Panel)
@@ -135,7 +135,7 @@ class BreadcrumbConfig {
 
       // Add detail pages
       if (location.contains('/attendance')) {
-        breadcrumbs.add(const BreadcrumbItem(label: 'Asistencia'));
+        breadcrumbs.add(BreadcrumbItem(label: l10n.attendance));
       }
     }
 

@@ -8,6 +8,7 @@ import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvitePlayerPage extends ConsumerStatefulWidget {
   const InvitePlayerPage({super.key});
@@ -46,11 +47,12 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final teamsState = ref.watch(teamsNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Invitar Jugador'),
+        title: Text(l10n.invitePlayer),
       ),
       body: teamsState.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -75,7 +77,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Crear Invitación de Jugador',
+                                  l10n.createPlayerInvitation,
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
@@ -84,19 +86,19 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             // Email field
                             TextFormField(
                               controller: _emailController,
-                              decoration: const InputDecoration(
-                                labelText: 'Email Address *',
-                                helperText: 'The email address of the player you want to invite',
-                                prefixIcon: Icon(Icons.email_outlined),
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.emailAddress,
+                                helperText: l10n.emailAddressDescription,
+                                prefixIcon: const Icon(Icons.email_outlined),
+                                border: const OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return 'Email is required';
+                                  return l10n.emailIsRequired;
                                 }
                                 if (!value.contains('@')) {
-                                  return 'Please enter a valid email';
+                                  return l10n.enterValidEmail;
                                 }
                                 return null;
                               },
@@ -105,18 +107,18 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             // Player Name field
                             TextFormField(
                               controller: _playerNameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Player Name *',
-                                helperText: 'Full name of the player',
-                                prefixIcon: Icon(Icons.person_outline),
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.playerName,
+                                helperText: l10n.fullNamePlayer,
+                                prefixIcon: const Icon(Icons.person_outline),
+                                border: const OutlineInputBorder(),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return 'Player name is required';
+                                  return l10n.playerNameIsRequired;
                                 }
                                 if (value.trim().length < 2) {
-                                  return 'Player name must be at least 2 characters';
+                                  return l10n.playerNameMinLength;
                                 }
                                 return null;
                               },
@@ -125,11 +127,11 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             // Jersey Number field
                             TextFormField(
                               controller: _jerseyNumberController,
-                              decoration: const InputDecoration(
-                                labelText: 'Jersey Number',
-                                helperText: 'Optional jersey/shirt number',
-                                prefixIcon: Icon(Icons.numbers),
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                labelText: l10n.jerseyNumber,
+                                helperText: l10n.optionalJerseyNumber,
+                                prefixIcon: const Icon(Icons.numbers),
+                                border: const OutlineInputBorder(),
                               ),
                               keyboardType: TextInputType.number,
                               inputFormatters: [
@@ -139,7 +141,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                 if (value != null && value.isNotEmpty) {
                                   final number = int.tryParse(value);
                                   if (number == null || number < 0 || number > 999) {
-                                    return 'Jersey number must be between 0 and 999';
+                                    return l10n.jerseyNumberRange;
                                   }
                                 }
                                 return null;
@@ -148,22 +150,20 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             const SizedBox(height: 16),
                             // Team selection
                             if (teamsState.teams.isEmpty)
-                              const Card(
+                              Card(
                                 child: Padding(
-                                  padding: EdgeInsets.all(16),
-                                  child: Text(
-                                    'No teams available. Please create a team first.',
-                                  ),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Text(l10n.noTeamsAvailableCreateFirst),
                                 ),
                               )
                             else
                               DropdownButtonFormField<String>(
                                 initialValue: _selectedTeamId,
-                                decoration: const InputDecoration(
-                                  labelText: 'Team *',
-                                  helperText: 'Select the team for this player',
-                                  prefixIcon: Icon(Icons.groups_outlined),
-                                  border: OutlineInputBorder(),
+                                decoration: InputDecoration(
+                                  labelText: l10n.team,
+                                  helperText: l10n.selectTeamForPlayer,
+                                  prefixIcon: const Icon(Icons.groups_outlined),
+                                  border: const OutlineInputBorder(),
                                 ),
                                 items: teamsState.teams.map((team) {
                                   return DropdownMenuItem(
@@ -178,7 +178,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                 },
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please select a team';
+                                    return l10n.pleaseSelectTeam;
                                   }
                                   return null;
                                 },
@@ -204,7 +204,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'How it works:',
+                                  l10n.howItWorks,
                                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                         color: Theme.of(context).colorScheme.onPrimaryContainer,
                                       ),
@@ -213,10 +213,9 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '• A player record is created in the team\n'
-                              '• An invitation is sent to the email address\n'
-                              '• When the player signs up, their account is linked to the player record\n'
-                              '• They can then access their evaluations and team information',
+                              '• ${l10n.invitationStep1}\n'
+                              '• ${l10n.invitationStep2}\n'
+                              '• ${l10n.invitationStep3}',
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Theme.of(context).colorScheme.onPrimaryContainer,
                                   ),
@@ -242,7 +241,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                     _selectedTeamId = null;
                                   });
                                 },
-                          child: const Text('Reset Form'),
+                          child: Text(l10n.resetForm),
                         ),
                         const SizedBox(width: 16),
                         FilledButton.icon(
@@ -254,7 +253,7 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.group_add),
-                          label: Text(_isSubmitting ? 'Creating...' : 'Create Invitation'),
+                          label: Text(_isSubmitting ? l10n.creating : l10n.createInvitation),
                         ),
                       ],
                     ),
@@ -298,10 +297,11 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
 
       if (!playerCreated) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           final error = ref.read(playersNotifierProvider).error;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to create player: ${error ?? "Unknown error"}'),
+              content: Text(l10n.failedToCreatePlayer(error ?? "Unknown error")),
               backgroundColor: Colors.red,
             ),
           );
@@ -328,9 +328,10 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
       if (!mounted) return;
 
       if (inviteCreated) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Player ${_playerNameController.text} created and invitation sent successfully'),
+            content: Text(l10n.playerCreatedAndInviteSent(_playerNameController.text)),
             backgroundColor: Colors.green,
           ),
         );
@@ -342,10 +343,11 @@ class _InvitePlayerPageState extends ConsumerState<InvitePlayerPage> {
           _selectedTeamId = null;
         });
       } else {
+        final l10n = AppLocalizations.of(context)!;
         final error = ref.read(pendingInvitesNotifierProvider).error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Player created but failed to send invite: ${error ?? "Unknown error"}'),
+            content: Text(l10n.playerCreatedButInviteFailed(error ?? "Unknown error")),
             backgroundColor: Colors.orange,
           ),
         );

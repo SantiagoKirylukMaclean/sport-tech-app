@@ -8,6 +8,7 @@ import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/presentation/org/widgets/club_form_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SuperAdminClubsPage extends ConsumerStatefulWidget {
   const SuperAdminClubsPage({super.key});
@@ -171,7 +172,7 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Club creado exitosamente')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.clubCreatedSuccessfully)),
             );
           }
         },
@@ -280,7 +281,7 @@ class _ClubCard extends ConsumerWidget {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Club actualizado exitosamente')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.clubUpdatedSuccessfully)),
             );
           }
         },
@@ -309,7 +310,7 @@ class _ClubCard extends ConsumerWidget {
                 Navigator.of(context).pop();
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Club eliminado exitosamente')),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.clubDeletedSuccessfully)),
                   );
                 }
               }

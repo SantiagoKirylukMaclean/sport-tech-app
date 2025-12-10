@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvitationsManagementPage extends ConsumerStatefulWidget {
   const InvitationsManagementPage({super.key});
@@ -241,7 +242,7 @@ class _InvitationListItem extends ConsumerWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Rol: ${_formatRole(invite.role)}'),
+          Text('Rol: ${_formatRole(invite.role, context)}'),
           if (invite.displayName != null)
             Text('Nombre: ${invite.displayName}'),
           if (invite.playerId != null)
@@ -255,7 +256,7 @@ class _InvitationListItem extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Chip(
-            label: Text(_getStatusText()),
+            label: Text(_getStatusText(context)),
             backgroundColor: _getStatusColor(context),
             labelStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
@@ -271,28 +272,31 @@ class _InvitationListItem extends ConsumerWidget {
                   _showResendConfirmation(context, ref, sendEmail: false);
                 }
               },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'email',
-                  child: Row(
-                    children: [
-                      Icon(Icons.email, size: 20),
-                      SizedBox(width: 8),
-                      Text('Enviar Email'),
-                    ],
+              itemBuilder: (context) {
+                final l10n = AppLocalizations.of(context)!;
+                return [
+                  PopupMenuItem(
+                    value: 'email',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.email, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l10n.sendEmail),
+                      ],
+                    ),
                   ),
-                ),
-                const PopupMenuItem(
-                  value: 'link',
-                  child: Row(
-                    children: [
-                      Icon(Icons.link, size: 20),
-                      SizedBox(width: 8),
-                      Text('Obtener Enlace'),
-                    ],
+                  PopupMenuItem(
+                    value: 'link',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.link, size: 20),
+                        const SizedBox(width: 8),
+                        Text(l10n.getLink),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ];
+              },
             ),
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
@@ -304,28 +308,30 @@ class _InvitationListItem extends ConsumerWidget {
     );
   }
 
-  String _formatRole(String role) {
+  String _formatRole(String role, BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (role) {
       case 'player':
-        return 'Jugador';
+        return l10n.playerRole;
       case 'coach':
-        return 'Entrenador';
+        return l10n.coachRole;
       case 'admin':
-        return 'Administrador';
+        return l10n.adminRole;
       default:
         return role;
     }
   }
 
-  String _getStatusText() {
+  String _getStatusText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (invite.status) {
       case 'accepted':
-        return 'Aceptada';
+        return l10n.accepted;
       case 'canceled':
-        return 'Cancelada';
+        return l10n.cancelled;
       case 'pending':
       default:
-        return 'Pendiente';
+        return l10n.pending;
     }
   }
 

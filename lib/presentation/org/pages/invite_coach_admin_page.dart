@@ -6,6 +6,7 @@ import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InviteCoachAdminPage extends ConsumerStatefulWidget {
   const InviteCoachAdminPage({super.key});
@@ -91,11 +92,12 @@ class _InviteCoachAdminPageState extends ConsumerState<InviteCoachAdminPage> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
+                                final l10n = AppLocalizations.of(context)!;
                                 if (value == null || value.trim().isEmpty) {
-                                  return 'Email is required';
+                                  return l10n.emailIsRequired;
                                 }
                                 if (!value.contains('@')) {
-                                  return 'Please enter a valid email';
+                                  return l10n.enterValidEmail;
                                 }
                                 return null;
                               },

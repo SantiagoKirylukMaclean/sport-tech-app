@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
 import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 
@@ -9,12 +10,13 @@ class MatchesTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final statsState = ref.watch(statsNotifierProvider);
     final matches = statsState.matches;
 
     if (matches.isEmpty) {
-      return const Center(
-        child: Text('No matches played yet'),
+      return Center(
+        child: Text(l10n.noMatchesPlayedYet),
       );
     }
 

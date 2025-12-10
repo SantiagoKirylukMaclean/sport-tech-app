@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 
 /// Dialog for changing the user's password
@@ -53,10 +54,11 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
 
     result.when(
       success: (_) {
+        final l10n = AppLocalizations.of(context)!;
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Password updated successfully'),
+          SnackBar(
+            content: Text(l10n.passwordUpdatedSuccessfully),
             backgroundColor: Colors.green,
           ),
         );
@@ -74,8 +76,9 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('Change Password'),
+      title: Text(l10n.changePassword),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -86,7 +89,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 controller: _currentPasswordController,
                 obscureText: _obscureCurrentPassword,
                 decoration: InputDecoration(
-                  labelText: 'Current Password',
+                  labelText: l10n.currentPassword,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -104,7 +107,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your current password';
+                    return l10n.pleaseEnterCurrentPassword;
                   }
                   return null;
                 },
@@ -114,7 +117,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 controller: _newPasswordController,
                 obscureText: _obscureNewPassword,
                 decoration: InputDecoration(
-                  labelText: 'New Password',
+                  labelText: l10n.newPassword,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -132,10 +135,10 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a new password';
+                    return l10n.pleaseEnterNewPassword;
                   }
                   if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
+                    return l10n.passwordTooShort;
                   }
                   return null;
                 },
@@ -145,7 +148,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
-                  labelText: 'Confirm New Password',
+                  labelText: l10n.confirmNewPassword,
                   prefixIcon: const Icon(Icons.lock_outline),
                   suffixIcon: IconButton(
                     icon: Icon(
@@ -163,10 +166,10 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please confirm your new password';
+                    return l10n.pleaseConfirmNewPassword;
                   }
                   if (value != _newPasswordController.text) {
-                    return 'Passwords do not match';
+                    return l10n.passwordsDoNotMatch;
                   }
                   return null;
                 },
@@ -178,7 +181,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: _isLoading ? null : _handleChangePassword,
@@ -190,7 +193,7 @@ class _ChangePasswordDialogState extends ConsumerState<ChangePasswordDialog> {
                     strokeWidth: 2,
                   ),
                 )
-              : const Text('Update Password'),
+              : Text(l10n.updatePassword),
         ),
       ],
     );

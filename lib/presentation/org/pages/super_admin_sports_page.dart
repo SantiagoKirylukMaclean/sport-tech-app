@@ -6,6 +6,7 @@ import 'package:sport_tech_app/application/org/sports_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/presentation/org/widgets/sport_form_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SuperAdminSportsPage extends ConsumerWidget {
   const SuperAdminSportsPage({super.key});
@@ -103,7 +104,7 @@ class SuperAdminSportsPage extends ConsumerWidget {
             if (success) {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Deporte creado exitosamente')),
+                SnackBar(content: Text(AppLocalizations.of(context)!.sportCreatedSuccessfully)),
               );
             } else {
               final error = ref.read(sportsNotifierProvider).error;
@@ -221,7 +222,7 @@ class _SportCard extends ConsumerWidget {
             if (success) {
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Deporte actualizado exitosamente')),
+                SnackBar(content: Text(AppLocalizations.of(context)!.sportUpdatedSuccessfully)),
               );
             } else {
               final error = ref.read(sportsNotifierProvider).error;
@@ -259,7 +260,7 @@ class _SportCard extends ConsumerWidget {
                 Navigator.of(context).pop();
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Deporte eliminado exitosamente')),
+                    SnackBar(content: Text(AppLocalizations.of(context)!.sportDeletedSuccessfully)),
                   );
                 }
               }

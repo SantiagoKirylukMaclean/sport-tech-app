@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/training_attendance_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
@@ -46,8 +47,9 @@ class _TrainingAttendancePageState
 
       if (session == null) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session not found')),
+            SnackBar(content: Text(l10n.sessionNotFound)),
           );
           Navigator.of(context).pop();
         }
@@ -115,6 +117,7 @@ class _TrainingAttendancePageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final attendanceState = ref.watch(trainingAttendanceNotifierProvider);
 
     return Scaffold(
@@ -122,7 +125,7 @@ class _TrainingAttendancePageState
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Training Attendance'),
+            Text(l10n.trainingAttendance),
             if (_session != null)
               Text(
                 DateFormat('MMM d, yyyy - HH:mm').format(_session!.sessionDate),
@@ -134,8 +137,8 @@ class _TrainingAttendancePageState
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _players.isEmpty
-              ? const Center(
-                  child: Text('No players found for this team'),
+              ? Center(
+                  child: Text(l10n.noPlayersFoundForTeam),
                 )
               : _buildPlayersList(context, attendanceState),
     );
@@ -159,6 +162,7 @@ class _TrainingAttendancePageState
 
   Widget _buildPlayerCard(
       BuildContext context, Player player, AttendanceStatus? currentStatus) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -191,21 +195,21 @@ class _TrainingAttendancePageState
             ),
             const SizedBox(height: 16),
             SegmentedButton<AttendanceStatus>(
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: AttendanceStatus.onTime,
-                  label: Text('On Time'),
-                  icon: Icon(Icons.check_circle, size: 18),
+                  label: Text(l10n.onTime),
+                  icon: const Icon(Icons.check_circle, size: 18),
                 ),
                 ButtonSegment(
                   value: AttendanceStatus.late,
-                  label: Text('Late'),
-                  icon: Icon(Icons.schedule, size: 18),
+                  label: Text(l10n.late),
+                  icon: const Icon(Icons.schedule, size: 18),
                 ),
                 ButtonSegment(
                   value: AttendanceStatus.absent,
-                  label: Text('Absent'),
-                  icon: Icon(Icons.cancel, size: 18),
+                  label: Text(l10n.absent),
+                  icon: const Icon(Icons.cancel, size: 18),
                 ),
               ],
               selected: currentStatus != null ? {currentStatus} : {},

@@ -1,6 +1,7 @@
 // lib/presentation/org/pages/super_admin_panel_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 
@@ -9,9 +10,10 @@ class SuperAdminPanelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Panel de administración'),
+        title: Text(l10n.administrationPanel),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -24,8 +26,8 @@ class SuperAdminPanelPage extends StatelessWidget {
         children: [
           _AdminOptionTile(
             icon: Icons.sports_outlined,
-            title: 'Deportes',
-            subtitle: 'Gestionar deportes del sistema',
+            title: l10n.sports,
+            subtitle: l10n.manageSports,
             onTap: () {
               context.go(AppConstants.sportsManagementRoute);
             },
@@ -33,8 +35,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.business_outlined,
-            title: 'Clubes',
-            subtitle: 'Gestionar clubes y organizaciones',
+            title: l10n.clubs,
+            subtitle: l10n.manageClubs,
             onTap: () {
               context.go(AppConstants.clubsManagementRoute);
             },
@@ -42,8 +44,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.groups_outlined,
-            title: 'Equipos',
-            subtitle: 'Gestionar equipos del sistema',
+            title: l10n.teams,
+            subtitle: l10n.manageTeams,
             onTap: () {
               context.go(AppConstants.teamsManagementRoute);
             },
@@ -51,8 +53,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.person_add_outlined,
-            title: 'Invitar Entrenador/Admin',
-            subtitle: 'Enviar invitaciones a nuevos entrenadores o administradores',
+            title: l10n.inviteCoachAdmin,
+            subtitle: l10n.sendInvitationsCoachAdmin,
             onTap: () {
               context.go(AppConstants.inviteCoachAdminRoute);
             },
@@ -60,8 +62,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.group_add_outlined,
-            title: 'Invitar Jugador',
-            subtitle: 'Enviar invitaciones a nuevos jugadores',
+            title: l10n.invitePlayer,
+            subtitle: l10n.sendInvitationsPlayers,
             onTap: () {
               context.go(AppConstants.invitePlayerRoute);
             },
@@ -69,8 +71,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.mail_outline,
-            title: 'Invitaciones',
-            subtitle: 'Ver y gestionar invitaciones pendientes',
+            title: l10n.invitations,
+            subtitle: l10n.viewManageInvitations,
             onTap: () {
               context.go(AppConstants.invitationsManagementRoute);
             },
@@ -78,8 +80,8 @@ class SuperAdminPanelPage extends StatelessWidget {
           const SizedBox(height: 12),
           _AdminOptionTile(
             icon: Icons.people_outline,
-            title: 'Usuarios',
-            subtitle: 'Gestionar usuarios del sistema',
+            title: l10n.users,
+            subtitle: l10n.manageUsers,
             onTap: () {
               context.go(AppConstants.usersManagementRoute);
             },

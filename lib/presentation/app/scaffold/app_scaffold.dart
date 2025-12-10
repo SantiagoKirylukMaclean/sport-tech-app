@@ -373,24 +373,26 @@ class _ActiveTeamSubtitle extends ConsumerWidget {
 class _TeamSelectorButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return IconButton(
       icon: const Icon(Icons.groups_outlined),
-      tooltip: 'Select Team',
+      tooltip: l10n.selectTeam,
       onPressed: () => _showTeamSelectorDialog(context, ref),
     );
   }
 
   void _showTeamSelectorDialog(BuildContext context, WidgetRef ref) {
     final activeTeamState = ref.read(activeTeamNotifierProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Team'),
+        title: Text(l10n.selectTeam),
         content: SizedBox(
           width: double.maxFinite,
           child: activeTeamState.teams.isEmpty
-              ? const Text('No teams available')
+              ? Text(l10n.noTeamsAvailable)
               : ListView.builder(
                   shrinkWrap: true,
                   itemCount: activeTeamState.teams.length,
@@ -415,7 +417,7 @@ class _TeamSelectorButton extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
@@ -428,28 +430,30 @@ class _TeamSelectorCompact extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return IconButton(
       icon: Icon(
         Icons.groups,
         color: Theme.of(context).colorScheme.primary,
       ),
-      tooltip: activeTeamState.activeTeam?.name ?? 'Select Team',
+      tooltip: activeTeamState.activeTeam?.name ?? l10n.selectTeam,
       onPressed: () => _showTeamSelectorDialog(context, ref),
     );
   }
 
   void _showTeamSelectorDialog(BuildContext context, WidgetRef ref) {
     final activeTeamState = ref.read(activeTeamNotifierProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Team'),
+        title: Text(l10n.selectTeam),
         content: SizedBox(
           width: double.maxFinite,
           child: activeTeamState.teams.isEmpty
-              ? const Text('No teams available')
+              ? Text(l10n.noTeamsAvailable)
               : ListView.builder(
                   shrinkWrap: true,
                   itemCount: activeTeamState.teams.length,
@@ -474,7 +478,7 @@ class _TeamSelectorCompact extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
@@ -102,6 +103,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       }
 
       if (playerDashboardState.error != null) {
+        final l10n = AppLocalizations.of(context)!;
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +115,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'Error cargando estadísticas',
+                l10n.errorLoadingStatistics,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
@@ -128,7 +130,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                   ref.read(playerDashboardNotifierProvider.notifier).refresh();
                 },
                 icon: const Icon(Icons.refresh),
-                label: const Text('Reintentar'),
+                label: Text(l10n.retry),
               ),
             ],
           ),
@@ -137,6 +139,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
       if (playerDashboardState.player == null ||
           playerDashboardState.playerStats == null) {
+        final l10n = AppLocalizations.of(context)!;
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -148,12 +151,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'Sin datos de jugador',
+                l10n.noPlayerData,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
               Text(
-                'No se encontró un registro de jugador para tu cuenta',
+                l10n.noPlayerRecordFound,
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -175,6 +178,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
     // If user is coach and has an active team, show statistics
     if (isCoach && activeTeamState.activeTeam != null) {
+      final l10n = AppLocalizations.of(context)!;
       return statsState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : statsState.error != null
@@ -189,7 +193,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Error loading statistics',
+                        l10n.errorLoadingStatistics,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
@@ -202,7 +206,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                       ElevatedButton.icon(
                         onPressed: _refresh,
                         icon: const Icon(Icons.refresh),
-                        label: const Text('Retry'),
+                        label: Text(l10n.retry),
                       ),
                     ],
                   ),
@@ -217,12 +221,12 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                       child: TabBar(
                         controller: _tabController,
                         isScrollable: true,
-                        tabs: const [
-                          Tab(text: 'Players'),
-                          Tab(text: 'Goals'),
-                          Tab(text: 'Matches'),
-                          Tab(text: 'Quarters'),
-                          Tab(text: 'Training'),
+                        tabs: [
+                          Tab(text: l10n.players),
+                          Tab(text: l10n.goals),
+                          Tab(text: l10n.matches),
+                          Tab(text: l10n.quarters),
+                          Tab(text: l10n.training),
                         ],
                       ),
                     ),
@@ -247,6 +251,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     }
 
     // Default dashboard for non-coach users or coach without active team
+    final l10n = AppLocalizations.of(context)!;
     return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -260,18 +265,18 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               ),
               const SizedBox(height: 24),
               Text(
-                'Dashboard',
+                l10n.dashboard,
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 16),
               if (authState is AuthStateAuthenticated) ...[
                 Text(
-                  'Welcome, ${authState.profile.displayName}!',
+                  l10n.welcomeUser(authState.profile.displayName),
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Role: ${authState.profile.role.value}',
+                  l10n.roleUser(authState.profile.role.value),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 32),
@@ -279,7 +284,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                   const CircularProgressIndicator()
                 else if (activeTeamState.error != null)
                   Text(
-                    'Error loading teams: ${activeTeamState.error}',
+                    l10n.errorLoadingTeams(activeTeamState.error!),
                     style: const TextStyle(color: Colors.red),
                   )
                 else if (activeTeamState.teams.isNotEmpty) ...[
@@ -292,7 +297,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: activeTeamState.activeTeam?.id,
-                        hint: const Text('Select Team'),
+                        hint: Text(l10n.selectTeam),
                         isExpanded: true,
                         items: activeTeamState.teams.map((team) {
                           return DropdownMenuItem<String>(
@@ -316,14 +321,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                   if (activeTeamState.activeTeam != null) ...[
                     const SizedBox(height: 16),
                     Text(
-                      'Active Team: ${activeTeamState.activeTeam!.name}',
+                      l10n.activeTeam(activeTeamState.activeTeam!.name),
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Theme.of(context).colorScheme.primary,
                           ),
                     ),
                   ],
                 ] else
-                  const Text('No teams assigned.'),
+                  Text(l10n.noTeamsAssigned),
               ],
             ],
           ),

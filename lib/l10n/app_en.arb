@@ -99,5 +99,332 @@
   "noteUpdated": "Note updated successfully",
   "noteDeleted": "Note deleted successfully",
   "confirmDeleteNote": "Are you sure you want to delete this note?",
-  "noNotes": "No notes yet. Create your first note!"
+  "noNotes": "No notes yet. Create your first note!",
+
+  "@_DASHBOARD": {},
+  "errorLoadingStatistics": "Error loading statistics",
+  "retry": "Retry",
+  "noPlayerData": "No player data",
+  "noPlayerRecordFound": "No player record found for your account",
+  "players": "Players",
+  "goals": "Goals",
+  "quarters": "Quarters",
+  "training": "Training",
+  "welcomeUser": "Welcome, {userName}!",
+  "@welcomeUser": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "roleUser": "Role: {role}",
+  "@roleUser": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingTeams": "Error loading teams: {error}",
+  "@errorLoadingTeams": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "selectTeam": "Select Team",
+  "activeTeam": "Active Team: {teamName}",
+  "@activeTeam": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
+  "noTeamsAssigned": "No teams assigned.",
+  "noTeamsAvailable": "No teams available",
+
+  "@_ADMIN_PANEL": {},
+  "administrationPanel": "Administration Panel",
+  "sports": "Sports",
+  "manageSports": "Manage sports in the system",
+  "clubs": "Clubs",
+  "manageClubs": "Manage clubs and organizations",
+  "teams": "Teams",
+  "manageTeams": "Manage teams in the system",
+  "inviteCoachAdmin": "Invite Coach/Admin",
+  "sendInvitationsCoachAdmin": "Send invitations to new coaches or administrators",
+  "invitePlayer": "Invite Player",
+  "sendInvitationsPlayers": "Send invitations to new players",
+  "invitations": "Invitations",
+  "viewManageInvitations": "View and manage pending invitations",
+  "users": "Users",
+  "manageUsers": "Manage system users",
+
+  "@_TEAMS_MANAGEMENT": {},
+  "filters": "Filters",
+  "refresh": "Refresh",
+  "sport": "Sport",
+  "allSports": "All sports",
+  "club": "Club",
+  "allClubs": "All clubs",
+  "selectSportAndClub": "Select a sport and a club to view teams",
+  "errorMessage": "Error: {message}",
+  "@errorMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "teamsCount": "Teams ({count})",
+  "@teamsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "noTeamsFound": "No teams found. Create one to get started!",
+  "newTeam": "New team",
+  "teamCreatedSuccessfully": "Team created successfully",
+  "assign": "Assign",
+  "deleteTeam": "Delete Team",
+  "confirmDeleteTeam": "Are you sure you want to delete \"{teamName}\"?",
+  "@confirmDeleteTeam": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
+  "teamUpdatedSuccessfully": "Team updated successfully",
+  "teamDeletedSuccessfully": "Team deleted successfully",
+  "createdOn": "Created: {date}",
+  "@createdOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_INVITE_PLAYER": {},
+  "createPlayerInvitation": "Create Player Invitation",
+  "emailAddress": "Email Address *",
+  "emailAddressDescription": "The email address of the player you want to invite",
+  "emailIsRequired": "Email is required",
+  "enterValidEmail": "Please enter a valid email",
+  "playerName": "Player Name *",
+  "fullNamePlayer": "Full name of the player",
+  "playerNameIsRequired": "Player name is required",
+  "playerNameMinLength": "Player name must be at least 2 characters",
+  "jerseyNumber": "Jersey Number",
+  "optionalJerseyNumber": "Optional jersey/shirt number",
+  "jerseyNumberRange": "Jersey number must be between 0 and 999",
+  "noTeamsAvailableCreateFirst": "No teams available. Please create a team first.",
+  "team": "Team *",
+  "selectTeamForPlayer": "Select the team for this player",
+  "pleaseSelectTeam": "Please select a team",
+  "howItWorks": "How it works:",
+  "invitationStep1": "An invitation will be sent to the player's email",
+  "invitationStep2": "The player can accept and set up their account",
+  "invitationStep3": "Once accepted, they'll have access to the app",
+  "resetForm": "Reset Form",
+  "creating": "Creating...",
+  "createInvitation": "Create Invitation",
+  "failedToCreatePlayer": "Failed to create player: {error}",
+  "@failedToCreatePlayer": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "playerCreatedAndInviteSent": "Player {playerName} created and invitation sent successfully",
+  "@playerCreatedAndInviteSent": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "playerCreatedButInviteFailed": "Player created but failed to send invite: {error}",
+  "@playerCreatedButInviteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sportCreatedSuccessfully": "Sport created successfully",
+  "sportUpdatedSuccessfully": "Sport updated successfully",
+  "sportDeletedSuccessfully": "Sport deleted successfully",
+  "clubCreatedSuccessfully": "Club created successfully",
+  "clubUpdatedSuccessfully": "Club updated successfully",
+  "clubDeletedSuccessfully": "Club deleted successfully",
+
+  "@_EVALUATIONS": {},
+  "evaluations": "Evaluations",
+  "noTeamSelectedSelectFirst": "No team selected. Please select a team first.",
+  "playerEvaluations": "Player Evaluations",
+  "selectAPlayer": "Select a Player",
+  "selectPlayer": "Select a player",
+  "choosePlayerFromList": "Choose a player from the list to view their evaluations",
+  "newEvaluation": "New Evaluation",
+  "createFirstEvaluation": "Create First Evaluation",
+  "deleteEvaluation": "Delete evaluation",
+  "evaluationForPlayer": "Evaluation - {playerName}",
+  "@evaluationForPlayer": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "evaluationNotFound": "Evaluation not found",
+  "errorNoAuthenticatedUser": "Error: No authenticated user",
+  "loadingData": "Loading data...",
+
+  "@_MATCHES": {},
+  "noTeamSelected": "No Team Selected",
+  "selectTeamToViewMatches": "Please select a team from the Dashboard to view and manage matches.",
+  "noMatchesYet": "No matches yet",
+  "createFirstMatch": "Create your first match using the + button",
+  "manageCallUp": "Manage Call-Up",
+  "noPlayersFoundForTeam": "No players found for this team.",
+  "jersey": "Jersey: {number}",
+  "@jersey": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "done": "Done",
+  "quarterResultSaved": "Quarter result saved",
+  "saveResult": "Save Result",
+  "addGoal": "Add Goal",
+  "assist": "Assist: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  },
+  "none": "None",
+  "opponentNameRequired": "Opponent name is required",
+
+  "@_TRAININGS": {},
+  "trainingSessionCreated": "Training session created",
+  "trainingSessionUpdated": "Training session updated",
+  "deleteSession": "Delete Session",
+  "confirmDeleteTrainingSession": "Are you sure you want to delete this training session?",
+  "trainingSessionDeleted": "Training session deleted",
+  "pleaseSelectTeamFirst": "Please select a team first",
+  "newSession": "New Session",
+  "manageAttendance": "Manage Attendance",
+  "viewDetails": "View Details",
+  "sessionNotFound": "Session not found",
+  "errorLoadingPlayers": "Error loading players: {message}",
+  "@errorLoadingPlayers": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "errorUpdatingAttendance": "Error updating attendance: {error}",
+  "@errorUpdatingAttendance": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingAttendance": "Training Attendance",
+  "noPlayersFoundForTeam": "No players found for this team",
+  "onTime": "On Time",
+  "late": "Late",
+  "absent": "Absent",
+  "trainingSessionDetails": "Training Session Details",
+
+  "@_STATISTICS": {},
+  "noTrainingAttendanceData": "No training attendance data available",
+  "noGoalsOrAssistsData": "No goals or assists data available",
+  "player": "Player",
+  "assists": "Assists",
+  "total": "Total",
+  "noMatchesPlayedYet": "No matches played yet",
+
+  "@_PROFILE": {},
+  "accountInformation": "Account Information",
+  "changePassword": "Change Password",
+  "passwordUpdatedSuccessfully": "Password updated successfully",
+  "currentPassword": "Current Password",
+  "pleaseEnterCurrentPassword": "Please enter your current password",
+  "newPassword": "New Password",
+  "pleaseEnterNewPassword": "Please enter a new password",
+  "confirmNewPassword": "Confirm New Password",
+  "pleaseConfirmNewPassword": "Please confirm your new password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "updatePassword": "Update Password",
+
+  "@_DIALOGS_FORMS": {},
+  "invitePlayerDialog": "Invite Player",
+  "chooseInvitationMethod": "Choose how to send the invitation: via email or get a shareable link.",
+  "sendEmail": "Send Email",
+  "getLink": "Get Link",
+  "mustBeLoggedIn": "You must be logged in to send invites",
+  "pleaseEnterClubName": "Please enter a club name",
+  "pleaseEnterSportName": "Please enter a sport name",
+  "pleaseEnterName": "Please enter a name",
+  "urlMustStartWithHttp": "URL must start with http:// or https://",
+  "enterPassword": "Enter a password",
+  "pleaseEnterEmail": "Please enter an email",
+  "invalidEmailFormat": "Invalid email",
+  "pleaseEnterPlayerName": "Please enter player name",
+  "invitationSentSuccessfully": "Invitation sent successfully",
+
+  "@_BREADCRUMBS": {},
+  "teamPlayers": "Team Players",
+  "newEvaluationBreadcrumb": "New Evaluation",
+  "detail": "Detail",
+  "lineup": "Lineup",
+  "attendance": "Attendance",
+
+  "@_INVITATIONS": {},
+  "playerRole": "Player",
+  "coachRole": "Coach",
+  "adminRole": "Administrator",
+  "accepted": "Accepted",
+  "cancelled": "Cancelled",
+  "pending": "Pending",
+
+  "@_PLAYERS": {},
+  "playerAddedSuccessfully": "Player added successfully",
+  "playerUpdatedSuccessfully": "Player updated successfully",
+
+  "@_CHAMPIONSHIP": {},
+  "noUrlAvailable": "No {label} URL available",
+  "@noUrlAvailable": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "urlCopiedToClipboard": "{label} URL copied to clipboard",
+  "@urlCopiedToClipboard": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "copyUrl": "Copy URL",
+  "open": "Open"
 }

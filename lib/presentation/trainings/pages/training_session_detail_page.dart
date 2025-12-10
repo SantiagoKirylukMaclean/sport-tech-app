@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../application/auth/auth_providers.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
@@ -46,8 +47,9 @@ class _TrainingSessionDetailPageState
 
       if (session == null) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Session not found')),
+            SnackBar(content: Text(l10n.sessionNotFound)),
           );
           Navigator.of(context).pop();
         }
@@ -133,17 +135,18 @@ class _TrainingSessionDetailPageState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final currentUser = ref.watch(currentUserProfileProvider);
     ref.watch(trainingAttendanceNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Training Session Details'),
+        title: Text(l10n.trainingSessionDetails),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _session == null
-              ? const Center(child: Text('Session not found'))
+              ? Center(child: Text(l10n.sessionNotFound))
               : RefreshIndicator(
                   onRefresh: _loadData,
                   child: SingleChildScrollView(
@@ -302,6 +305,7 @@ class _TrainingSessionDetailPageState
 
   Widget _buildAttendanceStatus(
       BuildContext context, AttendanceStatus? status) {
+    final l10n = AppLocalizations.of(context)!;
     IconData icon;
     String label;
     Color color;
@@ -314,17 +318,17 @@ class _TrainingSessionDetailPageState
       switch (status) {
         case AttendanceStatus.onTime:
           icon = Icons.check_circle;
-          label = 'On Time';
+          label = l10n.onTime;
           color = Colors.green;
           break;
         case AttendanceStatus.late:
           icon = Icons.schedule;
-          label = 'Late';
+          label = l10n.late;
           color = Colors.orange;
           break;
         case AttendanceStatus.absent:
           icon = Icons.cancel;
-          label = 'Absent';
+          label = l10n.absent;
           color = Colors.red;
           break;
       }
@@ -354,6 +358,7 @@ class _TrainingSessionDetailPageState
   }
 
   Widget _buildAttendanceStats(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final stats = _getAttendanceStats();
 
     return Card(
@@ -385,7 +390,7 @@ class _TrainingSessionDetailPageState
                   child: _buildStatItem(
                     context,
                     icon: Icons.check_circle,
-                    label: 'On Time',
+                    label: l10n.onTime,
                     value: stats['onTime']!,
                     color: Colors.green,
                   ),
@@ -395,7 +400,7 @@ class _TrainingSessionDetailPageState
                   child: _buildStatItem(
                     context,
                     icon: Icons.schedule,
-                    label: 'Late',
+                    label: l10n.late,
                     value: stats['late']!,
                     color: Colors.orange,
                   ),
@@ -409,7 +414,7 @@ class _TrainingSessionDetailPageState
                   child: _buildStatItem(
                     context,
                     icon: Icons.cancel,
-                    label: 'Absent',
+                    label: l10n.absent,
                     value: stats['absent']!,
                     color: Colors.red,
                   ),

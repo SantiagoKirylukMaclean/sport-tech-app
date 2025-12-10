@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../application/auth/auth_providers.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
@@ -44,6 +45,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
     );
 
     if (result != null && mounted) {
+      final l10n = AppLocalizations.of(context)!;
       final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
       if (activeTeam == null) return;
 
@@ -57,7 +59,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
               );
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Training session created')),
+              SnackBar(content: Text(l10n.trainingSessionCreated)),
             );
           }
         } else {
@@ -71,7 +73,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
               .updateSession(updatedSession);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Training session updated')),
+              SnackBar(content: Text(l10n.trainingSessionUpdated)),
             );
           }
         }
@@ -86,22 +88,23 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
   }
 
   Future<void> _deleteSession(TrainingSession session) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Session'),
-        content: const Text('Are you sure you want to delete this training session?'),
+        title: Text(l10n.deleteSession),
+        content: Text(l10n.confirmDeleteTrainingSession),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -114,7 +117,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
             .deleteSession(session.id);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Training session deleted')),
+            SnackBar(content: Text(l10n.trainingSessionDeleted)),
           );
         }
       } catch (e) {
@@ -137,6 +140,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
     final state = ref.watch(trainingSessionsNotifierProvider);
     final currentUser = ref.watch(currentUserProfileProvider);
@@ -148,9 +152,9 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
             currentUser.role == UserRole.superAdmin);
 
     if (activeTeam == null) {
-      return const Scaffold(
+      return Scaffold(
         body: Center(
-          child: Text('Please select a team first'),
+          child: Text(l10n.pleaseSelectTeamFirst),
         ),
       );
     }
@@ -175,7 +179,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
           ? FloatingActionButton.extended(
               onPressed: () => _showSessionDialog(),
               icon: const Icon(Icons.add),
-              label: const Text('New Session'),
+              label: Text(l10n.newSession),
             )
           : null,
     );
@@ -287,6 +291,7 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
   }
 
   Widget _buildSessionCard(BuildContext context, TrainingSession session, bool isCoach) {
+    final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat('EEEE, MMM d, yyyy');
     final timeFormat = DateFormat('HH:mm');
 
@@ -327,23 +332,23 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
                 if (isCoach)
                   PopupMenuButton(
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit, size: 20),
-                            SizedBox(width: 8),
-                            Text('Edit'),
+                            const Icon(Icons.edit, size: 20),
+                            const SizedBox(width: 8),
+                            Text(l10n.edit),
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete, size: 20),
-                            SizedBox(width: 8),
-                            Text('Delete'),
+                            const Icon(Icons.delete, size: 20),
+                            const SizedBox(width: 8),
+                            Text(l10n.delete),
                           ],
                         ),
                       ),
@@ -372,12 +377,12 @@ class _TrainingsPageState extends ConsumerState<TrainingsPage> {
                   ? FilledButton.icon(
                       onPressed: () => _navigateToAttendance(session),
                       icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('Manage Attendance'),
+                      label: Text(l10n.manageAttendance),
                     )
                   : OutlinedButton.icon(
                       onPressed: () => _navigateToDetail(session),
                       icon: const Icon(Icons.info_outline),
-                      label: const Text('View Details'),
+                      label: Text(l10n.viewDetails),
                     ),
             ),
           ],

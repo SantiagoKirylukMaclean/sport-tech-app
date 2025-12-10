@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/matches/matches_notifier.dart';
 import 'package:sport_tech_app/application/matches/matches_state.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
@@ -29,6 +30,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final activeTeam = activeTeamState.activeTeam;
 
@@ -36,7 +38,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
     if (activeTeam == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Matches'),
+          title: Text(l10n.matches),
         ),
         body: Center(
           child: Column(
@@ -49,14 +51,14 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
               ),
               const SizedBox(height: 24),
               Text(
-                'No Team Selected',
+                l10n.noTeamSelected,
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 16),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
-                  'Please select a team from the Dashboard to view and manage matches.',
+                  l10n.selectTeamToViewMatches,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -70,7 +72,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Matches'),
+        title: Text(l10n.matches),
       ),
       body: switch (state) {
         MatchesStateInitial() || MatchesStateLoading() => const Center(
@@ -95,7 +97,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                         .loadMatches();
                   },
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Retry'),
+                  label: Text(l10n.retry),
                 ),
               ],
             ),
@@ -112,11 +114,11 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'No matches yet',
+                      l10n.noMatchesYet,
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 8),
-                    const Text('Create your first match using the + button'),
+                    Text(l10n.createFirstMatch),
                   ],
                 ),
               )
@@ -171,11 +173,11 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                         trailing: PopupMenuButton(
                           itemBuilder: (context) => [
                             PopupMenuItem(
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(Icons.groups),
-                                  SizedBox(width: 8),
-                                  Text('Manage Lineup'),
+                                  const Icon(Icons.groups),
+                                  const SizedBox(width: 8),
+                                  Text(l10n.lineup),
                                 ],
                               ),
                               onTap: () {
@@ -186,11 +188,11 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                               },
                             ),
                             PopupMenuItem(
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(width: 8),
-                                  Text('Edit'),
+                                  const Icon(Icons.edit),
+                                  const SizedBox(width: 8),
+                                  Text(l10n.edit),
                                 ],
                               ),
                               onTap: () {
@@ -206,13 +208,13 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                               },
                             ),
                             PopupMenuItem(
-                              child: const Row(
+                              child: Row(
                                 children: [
-                                  Icon(Icons.delete, color: Colors.red),
-                                  SizedBox(width: 8),
+                                  const Icon(Icons.delete, color: Colors.red),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    'Delete',
-                                    style: TextStyle(color: Colors.red),
+                                    l10n.delete,
+                                    style: const TextStyle(color: Colors.red),
                                   ),
                                 ],
                               ),
@@ -241,26 +243,25 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
           );
         },
         icon: const Icon(Icons.add),
-        label: const Text('New Match'),
+        label: Text(l10n.matches),
       ),
     );
   }
 
   void _showDeleteConfirmation(BuildContext context, String matchId) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
     if (activeTeam == null) return;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Match'),
-        content: const Text(
-          'Are you sure you want to delete this match? This action cannot be undone.',
-        ),
+        title: Text(l10n.delete),
+        content: Text(l10n.confirmDelete),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () {
@@ -272,7 +273,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
             style: FilledButton.styleFrom(
               backgroundColor: Colors.red,
             ),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),

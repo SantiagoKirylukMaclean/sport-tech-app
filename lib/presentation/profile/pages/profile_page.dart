@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/presentation/profile/widgets/change_password_dialog.dart';
@@ -11,6 +12,7 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authNotifierProvider);
 
     if (authState is! AuthStateAuthenticated) {
@@ -64,7 +66,7 @@ class ProfilePage extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Account Information',
+                          l10n.accountInformation,
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 16),
@@ -99,7 +101,7 @@ class ProfilePage extends ConsumerWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.lock_outline),
-                    title: const Text('Change Password'),
+                    title: Text(l10n.changePassword),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       showDialog(

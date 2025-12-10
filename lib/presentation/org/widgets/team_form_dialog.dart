@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/team_form_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TeamFormDialog extends StatefulWidget {
   final String? initialName;
@@ -74,8 +75,9 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
                 ),
                 autofocus: true,
                 validator: (value) {
+                  final l10n = AppLocalizations.of(context)!;
                   if (value == null || value.trim().isEmpty) {
-                    return 'Por favor ingresa un nombre';
+                    return l10n.pleaseEnterName;
                   }
                   return null;
                 },
@@ -99,9 +101,10 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
                 ),
                 keyboardType: TextInputType.url,
                 validator: (value) {
+                  final l10n = AppLocalizations.of(context)!;
                   if (value != null && value.trim().isNotEmpty) {
                     if (!value.startsWith('http://') && !value.startsWith('https://')) {
-                      return 'La URL debe comenzar con http:// o https://';
+                      return l10n.urlMustStartWithHttp;
                     }
                   }
                   return null;
@@ -118,9 +121,10 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
                 ),
                 keyboardType: TextInputType.url,
                 validator: (value) {
+                  final l10n = AppLocalizations.of(context)!;
                   if (value != null && value.trim().isNotEmpty) {
                     if (!value.startsWith('http://') && !value.startsWith('https://')) {
-                      return 'La URL debe comenzar con http:// o https://';
+                      return l10n.urlMustStartWithHttp;
                     }
                   }
                   return null;
@@ -137,9 +141,10 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
                 ),
                 keyboardType: TextInputType.url,
                 validator: (value) {
+                  final l10n = AppLocalizations.of(context)!;
                   if (value != null && value.trim().isNotEmpty) {
                     if (!value.startsWith('http://') && !value.startsWith('https://')) {
-                      return 'La URL debe comenzar con http:// o https://';
+                      return l10n.urlMustStartWithHttp;
                     }
                   }
                   return null;
@@ -152,7 +157,7 @@ class _TeamFormDialogState extends State<TeamFormDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancelar'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,

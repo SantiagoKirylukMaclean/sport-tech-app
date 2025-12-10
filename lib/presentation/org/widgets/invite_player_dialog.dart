@@ -8,6 +8,7 @@ import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/position.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InvitePlayerDialog extends ConsumerStatefulWidget {
   final String teamId;
@@ -40,8 +41,9 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: const Text('Invite Player'),
+      title: Text(l10n.invitePlayerDialog),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -50,19 +52,19 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
             children: [
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                decoration: InputDecoration(
+                  labelText: l10n.email,
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 autofocus: true,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter an email';
+                    return l10n.pleaseEnterEmail;
                   }
                   if (!value.contains('@')) {
-                    return 'Please enter a valid email';
+                    return l10n.enterValidEmail;
                   }
                   return null;
                 },
@@ -70,14 +72,14 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Player Name',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
+                decoration: InputDecoration(
+                  labelText: l10n.playerName,
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.person),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter player name';
+                    return l10n.pleaseEnterPlayerName;
                   }
                   return null;
                 },
@@ -94,9 +96,9 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Choose how to send the invitation: via email or get a shareable link.',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              Text(
+                l10n.chooseInvitationMethod,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -105,7 +107,7 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         if (_isSubmitting)
           const Padding(
@@ -125,28 +127,31 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
                 _submit(sendEmail: false);
               }
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'email',
-                child: Row(
-                  children: [
-                    Icon(Icons.email, size: 20),
-                    SizedBox(width: 8),
-                    Text('Enviar Email'),
-                  ],
+            itemBuilder: (context) {
+              final l10n = AppLocalizations.of(context)!;
+              return [
+                PopupMenuItem(
+                  value: 'email',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.email, size: 20),
+                      const SizedBox(width: 8),
+                      Text(l10n.sendEmail),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem(
-                value: 'link',
-                child: Row(
-                  children: [
-                    Icon(Icons.link, size: 20),
-                    SizedBox(width: 8),
-                    Text('Obtener Enlace'),
-                  ],
+                PopupMenuItem(
+                  value: 'link',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.link, size: 20),
+                      const SizedBox(width: 8),
+                      Text(l10n.getLink),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ];
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
@@ -182,8 +187,9 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
 
     final authState = ref.read(authNotifierProvider);
     if (authState is! AuthStateAuthenticated) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to send invites')),
+        SnackBar(content: Text(l10n.mustBeLoggedIn)),
       );
       return;
     }
@@ -206,10 +212,11 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
 
       if (!playerCreated) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           final error = ref.read(playersNotifierProvider).error;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to create player: ${error ?? "Unknown error"}'),
+              content: Text(l10n.failedToCreatePlayer(error ?? "Unknown error")),
               backgroundColor: Colors.red,
             ),
           );
@@ -235,21 +242,19 @@ class _InvitePlayerDialogState extends ConsumerState<InvitePlayerDialog> {
           );
 
       if (inviteCreated && mounted) {
+        final l10n = AppLocalizations.of(context)!;
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              sendEmail
-                  ? 'Player created and invitation sent successfully'
-                  : 'Player created. Share the invitation link with them.',
-            ),
+            content: Text(l10n.invitationSentSuccessfully),
           ),
         );
       } else if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         final error = ref.read(pendingInvitesNotifierProvider).error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Player created but failed to send invite: ${error ?? "Unknown error"}'),
+            content: Text(l10n.playerCreatedButInviteFailed(error ?? "Unknown error")),
             backgroundColor: Colors.orange,
           ),
         );

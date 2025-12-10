@@ -5,6 +5,7 @@ import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/presentation/org/widgets/player_form_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CoachPlayersPage extends ConsumerStatefulWidget {
   const CoachPlayersPage({super.key});
@@ -146,7 +147,7 @@ class _CoachPlayersPageState extends ConsumerState<CoachPlayersPage> {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Player added successfully')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.playerAddedSuccessfully)),
             );
           }
         },
@@ -225,7 +226,7 @@ class _PlayerListItem extends ConsumerWidget {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Player updated successfully')),
+              SnackBar(content: Text(AppLocalizations.of(context)!.playerUpdatedSuccessfully)),
             );
           }
         },

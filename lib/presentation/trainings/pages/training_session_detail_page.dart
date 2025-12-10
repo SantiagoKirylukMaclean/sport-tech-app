@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import '../../../application/auth/auth_providers.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';

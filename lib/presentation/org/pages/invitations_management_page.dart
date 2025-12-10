@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class InvitationsManagementPage extends ConsumerStatefulWidget {
   const InvitationsManagementPage({super.key});

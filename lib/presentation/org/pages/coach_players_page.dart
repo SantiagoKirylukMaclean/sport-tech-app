@@ -5,7 +5,7 @@ import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/presentation/org/widgets/player_form_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class CoachPlayersPage extends ConsumerStatefulWidget {
   const CoachPlayersPage({super.key});

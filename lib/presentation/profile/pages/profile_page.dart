@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/presentation/profile/widgets/change_password_dialog.dart';

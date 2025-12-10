@@ -12,7 +12,7 @@ import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dar
 import 'package:sport_tech_app/presentation/org/widgets/assign_credentials_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/user_credentials_dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class TeamPlayersPage extends ConsumerStatefulWidget {
   final String teamId;

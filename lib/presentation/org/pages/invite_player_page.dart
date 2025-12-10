@@ -8,7 +8,7 @@ import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/application/org/teams_notifier.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class InvitePlayerPage extends ConsumerStatefulWidget {
   const InvitePlayerPage({super.key});

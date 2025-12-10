@@ -11,6 +11,8 @@ import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/evaluation_score.dart';
 import 'package:sport_tech_app/domain/evaluations/entities/player_evaluation.dart';
+import 'package:sport_tech_app/presentation/coach/pages/coach_evaluations_page.dart';
+import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:intl/intl.dart';
 
 class EvaluationsPage extends ConsumerStatefulWidget {
@@ -67,6 +69,7 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
+    final userProfile = ref.watch(currentUserProfileProvider);
     final playersState = ref.watch(playersNotifierProvider);
     final evaluationsState = ref.watch(playerEvaluationsNotifierProvider);
     final categoriesState = ref.watch(evaluationCategoriesNotifierProvider);
@@ -75,6 +78,12 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
       return const Scaffold(
         body: Center(child: Text('No user authenticated')),
       );
+    }
+
+    // If user is a coach or admin, show the coach evaluations page instead
+    if (userProfile != null &&
+        (userProfile.role == UserRole.coach || userProfile.role.isAdmin)) {
+      return const CoachEvaluationsPage();
     }
 
     if (playersState.isLoading) {

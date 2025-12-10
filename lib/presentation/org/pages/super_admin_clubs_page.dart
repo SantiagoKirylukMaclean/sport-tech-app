@@ -8,7 +8,7 @@ import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/presentation/org/widgets/club_form_dialog.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class SuperAdminClubsPage extends ConsumerStatefulWidget {
   const SuperAdminClubsPage({super.key});

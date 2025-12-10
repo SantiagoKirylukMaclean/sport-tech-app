@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/matches/matches_notifier.dart';
 import 'package:sport_tech_app/application/matches/matches_state.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';

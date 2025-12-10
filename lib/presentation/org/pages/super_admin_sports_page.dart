@@ -6,7 +6,7 @@ import 'package:sport_tech_app/application/org/sports_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/sport.dart';
 import 'package:sport_tech_app/presentation/org/widgets/sport_form_dialog.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class SuperAdminSportsPage extends ConsumerWidget {
   const SuperAdminSportsPage({super.key});

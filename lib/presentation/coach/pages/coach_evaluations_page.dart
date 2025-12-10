@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_notifier.dart';
 import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';

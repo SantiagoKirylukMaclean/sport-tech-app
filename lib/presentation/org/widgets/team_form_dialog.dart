@@ -1,7 +1,7 @@
 // lib/presentation/org/widgets/team_form_dialog.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class TeamFormDialog extends StatefulWidget {
   final String? initialName;

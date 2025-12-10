@@ -1,7 +1,7 @@
 // lib/presentation/org/pages/super_admin_panel_page.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 

@@ -209,7 +209,7 @@ class AppScaffold extends ConsumerWidget {
     );
   }
 
-  /// Get navigation items based on user role
+  /// Get navigation items based on user role (Material Design 3 - max 5 items)
   List<NavigationItem> _getNavigationItems(AuthState authState, BuildContext context) {
     if (authState is! AuthStateAuthenticated) {
       return [];
@@ -218,75 +218,123 @@ class AppScaffold extends ConsumerWidget {
     final role = authState.profile.role;
     final l10n = AppLocalizations.of(context)!;
 
-    // Base items for all users
-    final items = <NavigationItem>[
-      NavigationItem(
-        label: l10n.dashboard,
-        route: AppConstants.dashboardRoute,
-        iconOutlined: Icons.dashboard_outlined,
-        iconFilled: Icons.dashboard,
-      ),
-    ];
-
-    // Coach panel (grouped modules for coaches and super admins)
-    if (role == UserRole.coach || role.isSuperAdmin) {
-      items.add(
+    // PLAYER - 5 items: Home, Trainings, Championship, Stats, More
+    if (role == UserRole.player) {
+      return [
         NavigationItem(
-          label: l10n.coach,
-          route: AppConstants.coachPanelRoute,
-          iconOutlined: Icons.sports_outlined,
-          iconFilled: Icons.sports,
+          label: l10n.home,
+          route: AppConstants.dashboardRoute,
+          iconOutlined: Icons.home_outlined,
+          iconFilled: Icons.home,
         ),
-      );
+        NavigationItem(
+          label: l10n.trainings,
+          route: AppConstants.trainingsRoute,
+          iconOutlined: Icons.fitness_center_outlined,
+          iconFilled: Icons.fitness_center,
+        ),
+        NavigationItem(
+          label: l10n.championship,
+          route: AppConstants.championshipRoute,
+          iconOutlined: Icons.emoji_events_outlined,
+          iconFilled: Icons.emoji_events,
+        ),
+        NavigationItem(
+          label: l10n.stats,
+          route: AppConstants.evaluationsRoute,
+          iconOutlined: Icons.analytics_outlined,
+          iconFilled: Icons.analytics,
+        ),
+        NavigationItem(
+          label: l10n.more,
+          route: AppConstants.moreRoute,
+          iconOutlined: Icons.more_horiz,
+          iconFilled: Icons.more_horiz,
+        ),
+      ];
     }
 
-    // Super admin panel (only for super admins)
-    if (role.isSuperAdmin) {
-      items.add(
+    // COACH - 5 items: Home, Team, Trainings, Stats, More
+    if (role == UserRole.coach) {
+      return [
         NavigationItem(
-          label: l10n.superAdmin,
+          label: l10n.home,
+          route: AppConstants.dashboardRoute,
+          iconOutlined: Icons.home_outlined,
+          iconFilled: Icons.home,
+        ),
+        NavigationItem(
+          label: l10n.team,
+          route: AppConstants.coachPanelRoute,
+          iconOutlined: Icons.sports_soccer_outlined,
+          iconFilled: Icons.sports_soccer,
+        ),
+        NavigationItem(
+          label: l10n.trainings,
+          route: AppConstants.trainingsRoute,
+          iconOutlined: Icons.fitness_center_outlined,
+          iconFilled: Icons.fitness_center,
+        ),
+        NavigationItem(
+          label: l10n.stats,
+          route: AppConstants.evaluationsRoute,
+          iconOutlined: Icons.analytics_outlined,
+          iconFilled: Icons.analytics,
+        ),
+        NavigationItem(
+          label: l10n.more,
+          route: AppConstants.moreRoute,
+          iconOutlined: Icons.more_horiz,
+          iconFilled: Icons.more_horiz,
+        ),
+      ];
+    }
+
+    // SUPER_ADMIN - 5 items: Home, Team, Admin, Stats, More
+    if (role.isSuperAdmin) {
+      return [
+        NavigationItem(
+          label: l10n.home,
+          route: AppConstants.dashboardRoute,
+          iconOutlined: Icons.home_outlined,
+          iconFilled: Icons.home,
+        ),
+        NavigationItem(
+          label: l10n.team,
+          route: AppConstants.coachPanelRoute,
+          iconOutlined: Icons.sports_soccer_outlined,
+          iconFilled: Icons.sports_soccer,
+        ),
+        NavigationItem(
+          label: l10n.admin,
           route: AppConstants.superAdminPanelRoute,
           iconOutlined: Icons.admin_panel_settings_outlined,
           iconFilled: Icons.admin_panel_settings,
         ),
-      );
+        NavigationItem(
+          label: l10n.stats,
+          route: AppConstants.evaluationsRoute,
+          iconOutlined: Icons.analytics_outlined,
+          iconFilled: Icons.analytics,
+        ),
+        NavigationItem(
+          label: l10n.more,
+          route: AppConstants.moreRoute,
+          iconOutlined: Icons.more_horiz,
+          iconFilled: Icons.more_horiz,
+        ),
+      ];
     }
 
-    // Common items for all roles
-    items.addAll([
+    // Default fallback (should not happen)
+    return [
       NavigationItem(
-        label: l10n.trainings,
-        route: AppConstants.trainingsRoute,
-        iconOutlined: Icons.fitness_center_outlined,
-        iconFilled: Icons.fitness_center,
+        label: l10n.home,
+        route: AppConstants.dashboardRoute,
+        iconOutlined: Icons.home_outlined,
+        iconFilled: Icons.home,
       ),
-      NavigationItem(
-        label: l10n.championship,
-        route: AppConstants.championshipRoute,
-        iconOutlined: Icons.emoji_events_outlined,
-        iconFilled: Icons.emoji_events,
-      ),
-      NavigationItem(
-        label: l10n.evaluations,
-        route: AppConstants.evaluationsRoute,
-        iconOutlined: Icons.assessment_outlined,
-        iconFilled: Icons.assessment,
-      ),
-      NavigationItem(
-        label: l10n.notes,
-        route: AppConstants.notesRoute,
-        iconOutlined: Icons.note_outlined,
-        iconFilled: Icons.note,
-      ),
-      NavigationItem(
-        label: l10n.profile,
-        route: AppConstants.profileRoute,
-        iconOutlined: Icons.person_outline,
-        iconFilled: Icons.person,
-      ),
-    ]);
-
-    return items;
+    ];
   }
 
   /// Get the selected index based on current location
@@ -319,13 +367,21 @@ class AppScaffold extends ConsumerWidget {
       if (index >= 0) return index;
     }
 
-    // Check for training routes (these are accessed from Coach Panel)
+    // Check for training routes (these are accessed from trainings or coach panel)
     if (location.startsWith(AppConstants.trainingsRoute)) {
-      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      index = items.indexWhere((item) => item.route == AppConstants.trainingsRoute);
       if (index >= 0) return index;
     }
 
-    // Default to dashboard
+    // Check for routes in "More" section (notes, profile, settings)
+    if (location == AppConstants.notesRoute ||
+        location == AppConstants.profileRoute ||
+        location == AppConstants.settingsRoute) {
+      index = items.indexWhere((item) => item.route == AppConstants.moreRoute);
+      if (index >= 0) return index;
+    }
+
+    // Default to home (index 0)
     return 0;
   }
 
@@ -340,6 +396,8 @@ class AppScaffold extends ConsumerWidget {
       AppConstants.evaluationsRoute => l10n.evaluations,
       AppConstants.notesRoute => l10n.notes,
       AppConstants.profileRoute => l10n.profile,
+      AppConstants.moreRoute => l10n.more,
+      AppConstants.settingsRoute => l10n.settings,
       AppConstants.coachPanelRoute => l10n.coachPanel,
       AppConstants.superAdminPanelRoute => l10n.superAdminPanel,
       AppConstants.teamsManagementRoute => l10n.teamsManagement,

@@ -19,6 +19,7 @@
 
   "@_NAVIGATION": {},
   "dashboard": "Panel",
+  "home": "Inicio",
   "matches": "Partidos",
   "trainings": "Entrenamiento",
   "championship": "Campeonato",
@@ -26,6 +27,11 @@
   "notes": "Notas",
   "profile": "Perfil",
   "coach": "Entrenador",
+  "team": "Equipo",
+  "admin": "Admin",
+  "stats": "Estadísticas",
+  "more": "Más",
+  "settings": "Configuración",
   "superAdmin": "Super Admin",
   "coachPanel": "Panel de Entrenador",
   "superAdminPanel": "Panel de Administración",
@@ -86,6 +92,18 @@
   "language": "Idioma",
   "english": "Inglés",
   "spanish": "Español",
+
+  "@_SETTINGS": {},
+  "appSettings": "Configuración de la App",
+  "appearance": "Apariencia",
+  "darkMode": "Modo Oscuro",
+  "lightMode": "Modo Claro",
+  "systemMode": "Sistema",
+  "preferences": "Preferencias",
+
+  "@_MORE": {},
+  "moreOptions": "Más Opciones",
+  "quickAccess": "Acceso Rápido",
 
   "@_NOTES": {},
   "myNotes": "Mis Notas",

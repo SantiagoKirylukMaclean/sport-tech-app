@@ -56,6 +56,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dashboard => 'Panel';
 
   @override
+  String get home => 'Inicio';
+
+  @override
   String get matches => 'Partidos';
 
   @override
@@ -75,6 +78,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get coach => 'Entrenador';
+
+  @override
+  String get team => 'Equipo *';
+
+  @override
+  String get admin => 'Admin';
+
+  @override
+  String get stats => 'Estadísticas';
+
+  @override
+  String get more => 'Más';
+
+  @override
+  String get settings => 'Configuración';
 
   @override
   String get superAdmin => 'Super Admin';
@@ -226,6 +244,30 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get spanish => 'Español';
+
+  @override
+  String get appSettings => 'Configuración de la App';
+
+  @override
+  String get appearance => 'Apariencia';
+
+  @override
+  String get darkMode => 'Modo Oscuro';
+
+  @override
+  String get lightMode => 'Modo Claro';
+
+  @override
+  String get systemMode => 'Sistema';
+
+  @override
+  String get preferences => 'Preferencias';
+
+  @override
+  String get moreOptions => 'Más Opciones';
+
+  @override
+  String get quickAccess => 'Acceso Rápido';
 
   @override
   String get myNotes => 'Mis Notas';
@@ -471,9 +513,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get noTeamsAvailableCreateFirst =>
       'No hay equipos disponibles. Por favor crea un equipo primero.';
-
-  @override
-  String get team => 'Equipo *';
 
   @override
   String get selectTeamForPlayer => 'Selecciona el equipo para este jugador';

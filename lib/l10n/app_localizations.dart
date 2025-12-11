@@ -188,6 +188,12 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get dashboard;
 
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get home;
+
   /// No description provided for @matches.
   ///
   /// In en, this message translates to:
@@ -229,6 +235,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Coach'**
   String get coach;
+
+  /// No description provided for @team.
+  ///
+  /// In en, this message translates to:
+  /// **'Team *'**
+  String get team;
+
+  /// No description provided for @admin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get admin;
+
+  /// No description provided for @stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get stats;
+
+  /// No description provided for @more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get more;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
 
   /// No description provided for @superAdmin.
   ///
@@ -529,6 +565,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Spanish'**
   String get spanish;
+
+  /// No description provided for @appSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get appSettings;
+
+  /// No description provided for @appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get appearance;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
+
+  /// No description provided for @lightMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get lightMode;
+
+  /// No description provided for @systemMode.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get systemMode;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More Options'**
+  String get moreOptions;
+
+  /// No description provided for @quickAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Access'**
+  String get quickAccess;
 
   /// No description provided for @myNotes.
   ///
@@ -967,12 +1051,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No teams available. Please create a team first.'**
   String get noTeamsAvailableCreateFirst;
-
-  /// No description provided for @team.
-  ///
-  /// In en, this message translates to:
-  /// **'Team *'**
-  String get team;
 
   /// No description provided for @selectTeamForPlayer.
   ///

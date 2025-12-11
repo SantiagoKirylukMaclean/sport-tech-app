@@ -27,6 +27,8 @@ class AppConstants {
   static const String evaluationsRoute = '/evaluations';
   static const String notesRoute = '/notes';
   static const String profileRoute = '/profile';
+  static const String moreRoute = '/more';
+  static const String settingsRoute = '/settings';
 
   // Admin routes
   static const String superAdminPanelRoute = '/admin/panel';

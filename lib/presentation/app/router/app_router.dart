@@ -19,6 +19,8 @@ import 'package:sport_tech_app/presentation/stats/pages/statistics_page.dart';
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
 import 'package:sport_tech_app/presentation/profile/pages/profile_page.dart';
+import 'package:sport_tech_app/presentation/more/pages/more_page.dart';
+import 'package:sport_tech_app/presentation/settings/pages/settings_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_panel_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_sports_page.dart';
 import 'package:sport_tech_app/presentation/org/pages/super_admin_clubs_page.dart';
@@ -211,6 +213,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => NoTransitionPage(
               key: state.pageKey,
               child: const ProfilePage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.moreRoute,
+            name: 'more',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const MorePage(),
+            ),
+          ),
+          GoRoute(
+            path: AppConstants.settingsRoute,
+            name: 'settings',
+            pageBuilder: (context, state) => NoTransitionPage(
+              key: state.pageKey,
+              child: const SettingsPage(),
             ),
           ),
           // Coach routes

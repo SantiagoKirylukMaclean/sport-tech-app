@@ -54,6 +54,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboard => 'Dashboard';
 
   @override
+  String get home => 'Home';
+
+  @override
   String get matches => 'Matches';
 
   @override
@@ -73,6 +76,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coach => 'Coach';
+
+  @override
+  String get team => 'Team *';
+
+  @override
+  String get admin => 'Admin';
+
+  @override
+  String get stats => 'Stats';
+
+  @override
+  String get more => 'More';
+
+  @override
+  String get settings => 'Settings';
 
   @override
   String get superAdmin => 'Super Admin';
@@ -223,6 +241,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spanish => 'Spanish';
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get darkMode => 'Dark Mode';
+
+  @override
+  String get lightMode => 'Light Mode';
+
+  @override
+  String get systemMode => 'System';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get moreOptions => 'More Options';
+
+  @override
+  String get quickAccess => 'Quick Access';
 
   @override
   String get myNotes => 'My Notes';
@@ -461,9 +503,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noTeamsAvailableCreateFirst =>
       'No teams available. Please create a team first.';
-
-  @override
-  String get team => 'Team *';
 
   @override
   String get selectTeamForPlayer => 'Select the team for this player';

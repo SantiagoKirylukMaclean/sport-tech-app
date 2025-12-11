@@ -19,6 +19,7 @@
 
   "@_NAVIGATION": {},
   "dashboard": "Dashboard",
+  "home": "Home",
   "matches": "Matches",
   "trainings": "Trainings",
   "championship": "Championship",
@@ -26,6 +27,11 @@
   "notes": "Notes",
   "profile": "Profile",
   "coach": "Coach",
+  "team": "Team",
+  "admin": "Admin",
+  "stats": "Stats",
+  "more": "More",
+  "settings": "Settings",
   "superAdmin": "Super Admin",
   "coachPanel": "Coach Panel",
   "superAdminPanel": "Administration Panel",
@@ -86,6 +92,18 @@
   "language": "Language",
   "english": "English",
   "spanish": "Spanish",
+
+  "@_SETTINGS": {},
+  "appSettings": "App Settings",
+  "appearance": "Appearance",
+  "darkMode": "Dark Mode",
+  "lightMode": "Light Mode",
+  "systemMode": "System",
+  "preferences": "Preferences",
+
+  "@_MORE": {},
+  "moreOptions": "More Options",
+  "quickAccess": "Quick Access",
 
   "@_NOTES": {},
   "myNotes": "My Notes",

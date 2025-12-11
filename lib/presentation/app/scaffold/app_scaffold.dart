@@ -10,6 +10,7 @@ import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/navigation_item.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
+import 'package:sport_tech_app/application/notes/notes_count_provider.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/presentation/app/widgets/app_breadcrumb.dart';
 
@@ -108,8 +109,8 @@ class AppScaffold extends ConsumerWidget {
               destinations: navigationItems
                   .map(
                     (item) => NavigationRailDestination(
-                      icon: Icon(item.iconOutlined),
-                      selectedIcon: Icon(item.iconFilled),
+                      icon: _buildIconWithBadge(item, ref),
+                      selectedIcon: _buildIconWithBadge(item, ref, selected: true),
                       label: Text(item.label),
                     ),
                   )
@@ -199,14 +200,33 @@ class AppScaffold extends ConsumerWidget {
         destinations: navigationItems
             .map(
               (item) => NavigationDestination(
-                icon: Icon(item.iconOutlined),
-                selectedIcon: Icon(item.iconFilled),
+                icon: _buildIconWithBadge(item, ref),
+                selectedIcon: _buildIconWithBadge(item, ref, selected: true),
                 label: item.label,
               ),
             )
             .toList(),
       ),
     );
+  }
+
+  /// Build icon with badge for navigation items
+  Widget _buildIconWithBadge(NavigationItem item, WidgetRef ref, {bool selected = false}) {
+    final icon = Icon(selected ? item.iconFilled : item.iconOutlined);
+
+    // Add badge to "More" icon if there are notes
+    if (item.route == AppConstants.moreRoute) {
+      final notesCount = ref.watch(notesCountProvider);
+
+      if (notesCount > 0) {
+        return Badge(
+          label: Text('$notesCount'),
+          child: icon,
+        );
+      }
+    }
+
+    return icon;
   }
 
   /// Get navigation items based on user role (Material Design 3 - max 5 items)

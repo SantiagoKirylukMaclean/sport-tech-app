@@ -1,5 +1,6 @@
 // lib/infrastructure/org/supabase_clubs_repository.dart
 
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/core/error/failures.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
@@ -78,12 +79,24 @@ class SupabaseClubsRepository implements ClubsRepository {
   Future<Result<Club>> createClub({
     required String sportId,
     required String name,
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
   }) async {
     try {
-      final response = await _client.from('clubs').insert({
+      final data = {
         'sport_id': sportId,
         'name': name.trim(),
-      }).select().single();
+        if (primaryColor != null) 'primary_color': primaryColor.toARGB32(),
+        if (secondaryColor != null) 'secondary_color': secondaryColor.toARGB32(),
+        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.toARGB32(),
+      };
+
+      final response = await _client
+          .from('clubs')
+          .insert(data)
+          .select()
+          .single();
 
       return Success(ClubMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -97,11 +110,21 @@ class SupabaseClubsRepository implements ClubsRepository {
   Future<Result<Club>> updateClub({
     required String id,
     required String name,
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
   }) async {
     try {
+      final data = {
+        'name': name.trim(),
+        if (primaryColor != null) 'primary_color': primaryColor.toARGB32(),
+        if (secondaryColor != null) 'secondary_color': secondaryColor.toARGB32(),
+        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.toARGB32(),
+      };
+
       final response = await _client
           .from('clubs')
-          .update({'name': name.trim()})
+          .update(data)
           .eq('id', id)
           .select()
           .single();

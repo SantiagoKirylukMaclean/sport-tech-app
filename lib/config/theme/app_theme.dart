@@ -3,9 +3,12 @@
 import 'package:flutter/material.dart';
 
 /// Application theme configuration using Material 3
+///
+/// This class provides both static default themes and a method to build
+/// themes dynamically from color schemes (for club-based theming).
 class AppTheme {
-  // Color scheme for light theme
-  static const ColorScheme _lightColorScheme = ColorScheme(
+  // Default color scheme for light theme
+  static const ColorScheme _defaultLightColorScheme = ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xFF1976D2), // Blue
     onPrimary: Color(0xFFFFFFFF),
@@ -36,8 +39,8 @@ class AppTheme {
     inversePrimary: Color(0xFF90CAF9),
   );
 
-  // Color scheme for dark theme
-  static const ColorScheme _darkColorScheme = ColorScheme(
+  // Default color scheme for dark theme
+  static const ColorScheme _defaultDarkColorScheme = ColorScheme(
     brightness: Brightness.dark,
     primary: Color(0xFF90CAF9), // Light Blue
     onPrimary: Color(0xFF003258),
@@ -68,11 +71,14 @@ class AppTheme {
     inversePrimary: Color(0xFF1976D2),
   );
 
-  /// Light theme
-  static ThemeData get lightTheme {
+  /// Build a complete theme from a color scheme
+  ///
+  /// This allows dynamic theme generation while maintaining consistent
+  /// component styling across all themes.
+  static ThemeData buildTheme(ColorScheme colorScheme) {
     return ThemeData(
       useMaterial3: true,
-      colorScheme: _lightColorScheme,
+      colorScheme: colorScheme,
       appBarTheme: const AppBarTheme(
         centerTitle: false,
         elevation: 0,
@@ -96,69 +102,29 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
         ),
         filled: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: _lightColorScheme.surface,
+        backgroundColor: colorScheme.surface,
         selectedIconTheme: IconThemeData(
-          color: _lightColorScheme.primary,
+          color: colorScheme.primary,
         ),
         selectedLabelTextStyle: TextStyle(
-          color: _lightColorScheme.primary,
+          color: colorScheme.primary,
           fontWeight: FontWeight.w600,
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: _lightColorScheme.surface,
-        indicatorColor: _lightColorScheme.primaryContainer,
+        backgroundColor: colorScheme.surface,
+        indicatorColor: colorScheme.primaryContainer,
       ),
     );
   }
 
-  /// Dark theme
-  static ThemeData get darkTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: _darkColorScheme,
-      appBarTheme: const AppBarTheme(
-        centerTitle: false,
-        elevation: 0,
-      ),
-      cardTheme: const CardThemeData(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        filled: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
-      navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: _darkColorScheme.surface,
-        selectedIconTheme: IconThemeData(
-          color: _darkColorScheme.primary,
-        ),
-        selectedLabelTextStyle: TextStyle(
-          color: _darkColorScheme.primary,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: _darkColorScheme.surface,
-        indicatorColor: _darkColorScheme.primaryContainer,
-      ),
-    );
-  }
+  /// Default light theme (for backward compatibility)
+  static ThemeData get lightTheme => buildTheme(_defaultLightColorScheme);
+
+  /// Default dark theme (for backward compatibility)
+  static ThemeData get darkTheme => buildTheme(_defaultDarkColorScheme);
 }

@@ -164,15 +164,30 @@ class _SuperAdminClubsPageState extends ConsumerState<SuperAdminClubsPage> {
     showDialog(
       context: context,
       builder: (context) => ClubFormDialog(
-        onSubmit: (name) async {
+        onSubmit: (
+          name, {
+          primaryColor,
+          secondaryColor,
+          tertiaryColor,
+        }) async {
           final success = await ref
               .read(clubsNotifierProvider.notifier)
-              .createClub(_selectedSport!.id, name);
+              .createClub(
+                _selectedSport!.id,
+                name,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                tertiaryColor: tertiaryColor,
+              );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.clubCreatedSuccessfully)),
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.clubCreatedSuccessfully,
+                ),
+              ),
             );
           }
         },
@@ -273,15 +288,33 @@ class _ClubCard extends ConsumerWidget {
       context: context,
       builder: (context) => ClubFormDialog(
         initialName: club.name,
-        onSubmit: (name) async {
+        initialPrimaryColor: club.primaryColor,
+        initialSecondaryColor: club.secondaryColor,
+        initialTertiaryColor: club.tertiaryColor,
+        onSubmit: (
+          name, {
+          primaryColor,
+          secondaryColor,
+          tertiaryColor,
+        }) async {
           final success = await ref
               .read(clubsNotifierProvider.notifier)
-              .updateClub(club.id, name);
+              .updateClub(
+                club.id,
+                name,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                tertiaryColor: tertiaryColor,
+              );
 
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.clubUpdatedSuccessfully)),
+              SnackBar(
+                content: Text(
+                  AppLocalizations.of(context)!.clubUpdatedSuccessfully,
+                ),
+              ),
             );
           }
         },

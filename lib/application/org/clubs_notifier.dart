@@ -1,5 +1,6 @@
 // lib/application/org/clubs_notifier.dart
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/domain/org/entities/club.dart';
 import 'package:sport_tech_app/domain/org/repositories/clubs_repository.dart';
@@ -59,8 +60,20 @@ class ClubsNotifier extends StateNotifier<ClubsState> {
   }
 
   /// Create a new club
-  Future<bool> createClub(String sportId, String name) async {
-    final result = await _repository.createClub(sportId: sportId, name: name);
+  Future<bool> createClub(
+    String sportId,
+    String name, {
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
+  }) async {
+    final result = await _repository.createClub(
+      sportId: sportId,
+      name: name,
+      primaryColor: primaryColor,
+      secondaryColor: secondaryColor,
+      tertiaryColor: tertiaryColor,
+    );
 
     return result.when(
       success: (club) {
@@ -77,15 +90,25 @@ class ClubsNotifier extends StateNotifier<ClubsState> {
   }
 
   /// Update a club
-  Future<bool> updateClub(String id, String name) async {
-    final result = await _repository.updateClub(id: id, name: name);
+  Future<bool> updateClub(
+    String id,
+    String name, {
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
+  }) async {
+    final result = await _repository.updateClub(
+      id: id,
+      name: name,
+      primaryColor: primaryColor,
+      secondaryColor: secondaryColor,
+      tertiaryColor: tertiaryColor,
+    );
 
     return result.when(
       success: (updatedClub) {
         state = state.copyWith(
-          clubs: state.clubs
-              .map((c) => c.id == id ? updatedClub : c)
-              .toList(),
+          clubs: state.clubs.map((c) => c.id == id ? updatedClub : c).toList(),
         );
         return true;
       },

@@ -5,7 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/supabase_config.dart';
-import 'package:sport_tech_app/config/theme/app_theme.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/presentation/app/router/app_router.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
@@ -53,17 +52,37 @@ class SportTechApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
+
+    // Watch club colors and update theme when active team changes
+    final clubColors = ref.watch(activeClubColorsProvider);
+    
+    // Update theme based on club colors
+    clubColors.whenData((colors) {
+      if (colors != null) {
+        final (primaryColor, secondaryColor, tertiaryColor) = colors;
+        ref.read(themeNotifierProvider.notifier).updateClubTheme(
+          primaryColor: primaryColor,
+          secondaryColor: secondaryColor,
+          tertiaryColor: tertiaryColor,
+        );
+      } else {
+        // Reset to default theme when no club colors available
+        ref.read(themeNotifierProvider.notifier).resetToDefaultTheme();
+      }
+    });
+
+    // Get current theme state (includes dynamic themes based on club colors)
+    final themeState = ref.watch(themeNotifierProvider);
 
     return MaterialApp.router(
       title: 'Sport Tech',
       debugShowCheckedModeBanner: false,
 
-      // Theme configuration
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
+      // Dynamic theme configuration (updates based on club colors)
+      theme: themeState.lightTheme,
+      darkTheme: themeState.darkTheme,
+      themeMode: themeState.themeMode,
 
       // Router configuration
       routerConfig: router,

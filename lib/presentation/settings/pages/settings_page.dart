@@ -89,7 +89,7 @@ class SettingsPage extends ConsumerWidget {
               ],
               selected: {currentTheme},
               onSelectionChanged: (Set<ThemeMode> newSelection) {
-                ref.read(themeModeProvider.notifier).setThemeMode(newSelection.first);
+                ref.read(themeNotifierProvider.notifier).setThemeMode(newSelection.first);
               },
             ),
           ),

@@ -1,5 +1,6 @@
 // lib/domain/org/repositories/clubs_repository.dart
 
+import 'package:flutter/material.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/org/entities/club.dart';
 
@@ -23,6 +24,9 @@ abstract class ClubsRepository {
   Future<Result<Club>> createClub({
     required String sportId,
     required String name,
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
   });
 
   /// Update an existing club
@@ -30,6 +34,9 @@ abstract class ClubsRepository {
   Future<Result<Club>> updateClub({
     required String id,
     required String name,
+    Color? primaryColor,
+    Color? secondaryColor,
+    Color? tertiaryColor,
   });
 
   /// Delete a club

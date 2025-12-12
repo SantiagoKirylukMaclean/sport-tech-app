@@ -88,7 +88,7 @@ class AppScaffold extends ConsumerWidget {
                                 : Icons.light_mode_outlined,
                           ),
                           onPressed: () {
-                            ref.read(themeModeProvider.notifier).toggle();
+                            ref.read(themeNotifierProvider.notifier).toggle();
                           },
                           tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
                         ),
@@ -169,7 +169,7 @@ class AppScaffold extends ConsumerWidget {
                   : Icons.light_mode_outlined,
             ),
             onPressed: () {
-              ref.read(themeModeProvider.notifier).toggle();
+              ref.read(themeNotifierProvider.notifier).toggle();
             },
             tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
           ),

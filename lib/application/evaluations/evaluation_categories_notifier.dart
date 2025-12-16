@@ -33,11 +33,6 @@ class EvaluationCategoriesNotifier
         uniqueCriteriaByCategory[categoryId] = uniqueCriteriaMap.values.toList();
       });
 
-      print('DEBUG: Loaded ${uniqueCategoriesMap.length} unique categories');
-      uniqueCriteriaByCategory.forEach((catId, criteria) {
-        print('DEBUG: Category $catId has ${criteria.length} unique criteria');
-      });
-
       state = EvaluationCategoriesLoaded(
         categories: uniqueCategoriesMap.values.toList(),
         criteriaByCategory: uniqueCriteriaByCategory,

@@ -80,6 +80,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get coach => 'Entrenador';
 
   @override
+  String get mister => 'Mister';
+
+  @override
   String get team => 'Equipo *';
 
   @override

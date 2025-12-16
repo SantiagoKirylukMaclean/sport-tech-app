@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Coach'**
   String get coach;
 
+  /// No description provided for @mister.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get mister;
+
   /// No description provided for @team.
   ///
   /// In en, this message translates to:

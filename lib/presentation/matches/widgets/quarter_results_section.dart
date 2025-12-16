@@ -37,12 +37,14 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
     final state = ref.watch(matchLineupNotifierProvider(widget.matchId));
     final notifier = ref.read(matchLineupNotifierProvider(widget.matchId).notifier);
 
-    // Update controllers when quarter result changes
+    // Auto-calculate team goals from added goals
+    final calculatedTeamGoals = state.currentQuarterGoals.length;
+    _teamGoalsController.text = calculatedTeamGoals.toString();
+
+    // Update opponent goals controller when quarter result changes
     if (state.currentQuarterResult != null) {
-      _teamGoalsController.text = state.currentQuarterResult!.teamGoals.toString();
       _opponentGoalsController.text = state.currentQuarterResult!.opponentGoals.toString();
     } else {
-      _teamGoalsController.text = '0';
       _opponentGoalsController.text = '0';
     }
 
@@ -77,9 +79,10 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                     decoration: const InputDecoration(
                       labelText: 'Team Goals',
                       border: OutlineInputBorder(),
+                      helperText: 'Calculated from goals',
                     ),
+                    enabled: false,
                     keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -103,7 +106,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: () {
-                  final teamGoals = int.tryParse(_teamGoalsController.text) ?? 0;
+                  final teamGoals = state.currentQuarterGoals.length;
                   final opponentGoals = int.tryParse(_opponentGoalsController.text) ?? 0;
 
                   notifier.saveQuarterResult(teamGoals, opponentGoals);
@@ -201,7 +204,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                   border: OutlineInputBorder(),
                 ),
                 initialValue: selectedScorerId,
-                items: state.calledUpPlayers.map((player) {
+                items: state.fieldPlayers.map((player) {
                   return DropdownMenuItem(
                     value: player.id,
                     child: Text('${player.jerseyNumber ?? '?'} - ${player.fullName}'),
@@ -225,7 +228,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                     value: null,
                     child: Text('None'),
                   ),
-                  ...state.calledUpPlayers
+                  ...state.fieldPlayers
                       .where((p) => p.id != selectedScorerId)
                       .map((player) {
                     return DropdownMenuItem(

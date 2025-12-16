@@ -274,7 +274,7 @@ class AppScaffold extends ConsumerWidget {
       ];
     }
 
-    // COACH - 5 items: Home, Team, Trainings, Stats, More
+    // COACH - 5 items: Home, Mister/Coach, Trainings, Stats, More
     if (role == UserRole.coach) {
       return [
         NavigationItem(
@@ -284,7 +284,7 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.home,
         ),
         NavigationItem(
-          label: l10n.team,
+          label: l10n.mister,
           route: AppConstants.coachPanelRoute,
           iconOutlined: Icons.sports_soccer_outlined,
           iconFilled: Icons.sports_soccer,
@@ -310,7 +310,7 @@ class AppScaffold extends ConsumerWidget {
       ];
     }
 
-    // SUPER_ADMIN - 5 items: Home, Team, Admin, Stats, More
+    // SUPER_ADMIN - 5 items: Home, Mister/Coach, Admin, Stats, More
     if (role.isSuperAdmin) {
       return [
         NavigationItem(
@@ -320,7 +320,7 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.home,
         ),
         NavigationItem(
-          label: l10n.team,
+          label: l10n.mister,
           route: AppConstants.coachPanelRoute,
           iconOutlined: Icons.sports_soccer_outlined,
           iconFilled: Icons.sports_soccer,

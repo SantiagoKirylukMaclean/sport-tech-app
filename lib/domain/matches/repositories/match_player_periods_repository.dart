@@ -1,6 +1,7 @@
 // lib/domain/matches/repositories/match_player_periods_repository.dart
 
 import 'package:sport_tech_app/core/utils/result.dart';
+import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
 
 /// Repository interface for match player periods operations
@@ -30,6 +31,16 @@ abstract class MatchPlayerPeriodsRepository {
     required String playerId,
     required int period,
     required Fraction fraction,
+    FieldZone? fieldZone,
+  });
+
+  /// Update a player's field zone for a specific period
+  /// Returns updated [MatchPlayerPeriod] on success, [Failure] on error
+  Future<Result<MatchPlayerPeriod>> updatePlayerFieldZone({
+    required String matchId,
+    required String playerId,
+    required int period,
+    required FieldZone fieldZone,
   });
 
   /// Remove a player's participation for a specific period

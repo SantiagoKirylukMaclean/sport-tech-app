@@ -1,5 +1,6 @@
 // lib/infrastructure/matches/mappers/match_player_period_mapper.dart
 
+import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
 
 /// Mapper for converting between Supabase JSON and MatchPlayerPeriod entity
@@ -12,17 +13,26 @@ class MatchPlayerPeriodMapper {
       period: json['period'] as int,
       fraction: Fraction.fromString(json['fraction'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
+      fieldZone: json['field_zone'] != null
+          ? FieldZone.fromString(json['field_zone'] as String)
+          : null,
     );
   }
 
   /// Convert from MatchPlayerPeriod entity to Supabase JSON
   static Map<String, dynamic> toJson(MatchPlayerPeriod period) {
-    return {
+    final json = {
       'match_id': int.parse(period.matchId),
       'player_id': int.parse(period.playerId),
       'period': period.period,
       'fraction': period.fraction.value,
       'created_at': period.createdAt.toIso8601String(),
     };
+
+    if (period.fieldZone != null) {
+      json['field_zone'] = period.fieldZone!.value;
+    }
+
+    return json;
   }
 }

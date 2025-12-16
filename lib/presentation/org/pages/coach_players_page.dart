@@ -21,10 +21,7 @@ class _CoachPlayersPageState extends ConsumerState<CoachPlayersPage> {
     // Load players when page initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final activeTeam = ref.read(activeTeamNotifierProvider).activeTeam;
-      print('DEBUG CoachPlayersPage: activeTeam = $activeTeam');
       if (activeTeam != null) {
-        print('DEBUG CoachPlayersPage: activeTeam.id = "${activeTeam.id}" (type: ${activeTeam.id.runtimeType})');
-        print('DEBUG CoachPlayersPage: Loading players for team ID: ${activeTeam.id}');
         // TODO: Get sport ID from team
         // For now, we'll need to fetch this from the team entity or use a default
         ref

@@ -92,3 +92,6 @@ GoogleService-Info.plist
 supabase/.branches/
 supabase/.temp/
 .env.android.json
+
+# Vercel
+.vercel/

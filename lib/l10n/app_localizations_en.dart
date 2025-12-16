@@ -78,6 +78,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coach => 'Coach';
 
   @override
+  String get mister => 'Coach';
+
+  @override
   String get team => 'Team *';
 
   @override

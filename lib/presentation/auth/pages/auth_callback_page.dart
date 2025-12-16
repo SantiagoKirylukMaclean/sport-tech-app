@@ -27,8 +27,6 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
 
   Future<void> _handleAuthCallback() async {
     try {
-      debugPrint('AuthCallbackPage: Starting auth callback handling');
-
       final supabase = Supabase.instance.client;
 
       // Wait for Supabase to process the deep link
@@ -41,13 +39,10 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
         await Future.delayed(Duration(milliseconds: 500 + (attempts * 200)));
         session = supabase.auth.currentSession;
         attempts++;
-        debugPrint('AuthCallbackPage: Attempt $attempts - Session: ${session != null ? 'Found' : 'Not found'}');
       }
 
       if (mounted) {
         if (session != null) {
-          debugPrint('AuthCallbackPage: User authenticated - ${session.user.email}');
-
           // User is authenticated, redirect to dashboard
           // The auth notifier will handle loading the profile
           context.go(AppConstants.dashboardRoute);
@@ -63,7 +58,6 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
           }
         } else {
           // No session found after multiple attempts
-          debugPrint('AuthCallbackPage: No session found after $maxAttempts attempts');
           setState(() {
             _errorMessage = 'No se pudo completar la autenticación.\n\n'
                 'Por favor, verifica que:\n'
@@ -80,7 +74,6 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
         }
       }
     } catch (e) {
-      debugPrint('AuthCallbackPage: Error - $e');
       if (mounted) {
         setState(() {
           _errorMessage = 'Error al procesar la autenticación:\n$e';

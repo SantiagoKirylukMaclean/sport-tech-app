@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import '../../../domain/trainings/entities/training_session.dart';
 
 class TrainingSessionFormDialog extends StatefulWidget {
@@ -77,10 +78,11 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.session != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Training Session' : 'New Training Session'),
+      title: Text(isEditing ? l10n.editTrainingSession : l10n.newTrainingSession),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -92,7 +94,7 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.calendar_today),
-                title: const Text('Date'),
+                title: Text(l10n.date),
                 subtitle: Text(
                   '${_sessionDate.day}/${_sessionDate.month}/${_sessionDate.year}',
                 ),
@@ -104,7 +106,7 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.access_time),
-                title: const Text('Time'),
+                title: Text(l10n.time),
                 subtitle: Text(_sessionTime.format(context)),
                 onTap: _selectTime,
               ),
@@ -113,10 +115,10 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
               // Notes
               TextFormField(
                 controller: _notesController,
-                decoration: const InputDecoration(
-                  labelText: 'Notes',
-                  hintText: 'Add training notes (optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: l10n.notes,
+                  hintText: l10n.addTrainingNotes,
+                  border: const OutlineInputBorder(),
                 ),
                 maxLines: 3,
               ),
@@ -127,7 +129,7 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: () {
@@ -141,7 +143,7 @@ class _TrainingSessionFormDialogState extends State<TrainingSessionFormDialog> {
               Navigator.of(context).pop(result);
             }
           },
-          child: Text(isEditing ? 'Update' : 'Create'),
+          child: Text(isEditing ? l10n.update : l10n.create),
         ),
       ],
     );

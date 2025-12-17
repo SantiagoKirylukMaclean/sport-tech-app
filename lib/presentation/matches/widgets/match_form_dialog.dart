@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/matches_notifier.dart';
 import 'package:sport_tech_app/domain/matches/entities/match.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class MatchFormDialog extends ConsumerStatefulWidget {
   final String teamId;
@@ -101,10 +102,11 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.matchToEdit != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Match' : 'New Match'),
+      title: Text(isEditing ? l10n.editMatch : l10n.newMatch),
       content: Form(
         key: _formKey,
         child: SizedBox(
@@ -115,14 +117,14 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
               children: [
                 TextFormField(
                   controller: _opponentController,
-                  decoration: const InputDecoration(
-                    labelText: 'Opponent',
-                    hintText: 'Enter opponent name',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.opponent,
+                    hintText: l10n.enterOpponentName,
+                    border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Opponent name is required';
+                      return l10n.opponentNameRequired;
                     }
                     return null;
                   },
@@ -131,9 +133,9 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
                 InkWell(
                   onTap: () => _selectDate(context),
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Match Date',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.matchDate,
+                      border: const OutlineInputBorder(),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,19 +151,19 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _locationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Location (Optional)',
-                    hintText: 'Enter match location',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.locationOptional,
+                    hintText: l10n.enterMatchLocation,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _notesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Notes (Optional)',
-                    hintText: 'Enter any notes',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.notesOptional,
+                    hintText: l10n.enterAnyNotes,
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 3,
                 ),
@@ -173,7 +175,7 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         FilledButton(
           onPressed: _isLoading ? null : _submit,
@@ -183,7 +185,7 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(isEditing ? 'Update' : 'Create'),
+              : Text(isEditing ? l10n.update : l10n.create),
         ),
       ],
     );

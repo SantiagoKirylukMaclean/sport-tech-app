@@ -3,17 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class CoachPanelPage extends ConsumerWidget {
   const CoachPanelPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Panel Coach'),
+        title: Text(l10n.panelCoach),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -42,7 +44,7 @@ class CoachPanelPage extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Active Team',
+                            l10n.activeTeamLabel,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                             ),
@@ -75,7 +77,7 @@ class CoachPanelPage extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'No team selected. Please select a team from the Dashboard.',
+                        l10n.noTeamSelectedSelectFromDashboard,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onErrorContainer,
                         ),
@@ -88,8 +90,8 @@ class CoachPanelPage extends ConsumerWidget {
           const SizedBox(height: 16),
           _CoachOptionTile(
             icon: Icons.groups_outlined,
-            title: 'Jugadores',
-            subtitle: 'Gestionar jugadores del equipo',
+            title: l10n.players,
+            subtitle: l10n.manageTeamPlayers,
             onTap: () {
               context.go('/coach-players');
             },
@@ -97,8 +99,8 @@ class CoachPanelPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _CoachOptionTile(
             icon: Icons.fitness_center_outlined,
-            title: 'Entrenamiento',
-            subtitle: 'Gestionar entrenamientos y asistencia',
+            title: l10n.trainings,
+            subtitle: l10n.manageTrainingsAndAttendance,
             onTap: () {
               context.go(AppConstants.trainingsRoute);
             },
@@ -106,8 +108,8 @@ class CoachPanelPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _CoachOptionTile(
             icon: Icons.sports_soccer_outlined,
-            title: 'Partidos',
-            subtitle: 'Gestionar partidos, alineaciones y resultados',
+            title: l10n.matches,
+            subtitle: l10n.manageMatchesLineupsResults,
             onTap: () {
               context.go(AppConstants.matchesRoute);
             },
@@ -115,8 +117,8 @@ class CoachPanelPage extends ConsumerWidget {
           const SizedBox(height: 12),
           _CoachOptionTile(
             icon: Icons.assessment_outlined,
-            title: 'Evaluaciones',
-            subtitle: 'Evaluar el rendimiento de los jugadores',
+            title: l10n.evaluations,
+            subtitle: l10n.evaluatePlayerPerformance,
             onTap: () {
               context.go('/coach-evaluations');
             },

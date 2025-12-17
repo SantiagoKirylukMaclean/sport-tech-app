@@ -810,5 +810,14 @@
       }
     }
   },
-  "selectColor": "Select Color"
+  "selectColor": "Select Color",
+  "changeColor": "Change Color",
+  "clearColor": "Clear color",
+  "notSelected": "Not selected",
+
+  "@_SPORT_FORM": {},
+  "editSport": "Edit Sport",
+  "createSport": "Create Sport",
+  "sportName": "Sport Name",
+  "pleaseEnterSportName": "Please enter a sport name"
 }

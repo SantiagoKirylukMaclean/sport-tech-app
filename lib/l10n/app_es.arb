@@ -490,5 +490,14 @@
   "minPlayersRequired": "{count} / 7 mín",
   "welcomeEmail": "¡Bienvenido, {email}!",
   "evaluationFor": "Evaluación - {playerName}",
-  "selectColor": "Seleccionar Color"
+  "selectColor": "Seleccionar Color",
+  "changeColor": "Cambiar Color",
+  "clearColor": "Limpiar color",
+  "notSelected": "No seleccionado",
+
+  "@_SPORT_FORM": {},
+  "editSport": "Editar Deporte",
+  "createSport": "Crear Deporte",
+  "sportName": "Nombre del Deporte",
+  "pleaseEnterSportName": "Por favor ingresa un nombre de deporte"
 }

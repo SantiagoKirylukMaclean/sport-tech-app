@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/sport_form_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class SportFormDialog extends StatefulWidget {
   final String? initialName;
@@ -35,22 +36,23 @@ class _SportFormDialogState extends State<SportFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isEditing = widget.initialName != null;
 
     return AlertDialog(
-      title: Text(isEditing ? 'Edit Sport' : 'Create Sport'),
+      title: Text(isEditing ? l10n.editSport : l10n.createSport),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'Sport Name',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: l10n.sportName,
+            border: const OutlineInputBorder(),
           ),
           autofocus: true,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return 'Please enter a sport name';
+              return l10n.pleaseEnterSportName;
             }
             return null;
           },
@@ -59,7 +61,7 @@ class _SportFormDialogState extends State<SportFormDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,
@@ -69,7 +71,7 @@ class _SportFormDialogState extends State<SportFormDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(isEditing ? 'Update' : 'Create'),
+              : Text(isEditing ? l10n.update : l10n.create),
         ),
       ],
     );

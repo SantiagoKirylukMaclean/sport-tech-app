@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/assign_credentials_dialog.dart
 
 import 'package:flutter/material.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 /// Dialog to assign email and password to a player
 class AssignCredentialsDialog extends StatefulWidget {
@@ -54,8 +55,10 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: const Text('Asignar Credenciales'),
+      title: Text(l10n.assignCredentials),
       content: SizedBox(
         width: 400,
         child: Form(
@@ -65,14 +68,14 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Jugador: ${widget.playerName}',
+                l10n.playerLabel(widget.playerName),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Crea una cuenta para que el jugador pueda acceder a la app.',
+                l10n.createAccountForPlayer,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -80,20 +83,20 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
               const SizedBox(height: 24),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
+                decoration: InputDecoration(
+                  labelText: l10n.email,
+                  border: const OutlineInputBorder(),
+                  prefixIcon: const Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 enabled: !_isLoading,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Ingresa un email';
+                    return l10n.enterAnEmail;
                   }
                   final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
                   if (!emailRegex.hasMatch(value)) {
-                    return 'Email inválido';
+                    return l10n.invalidEmailFormat;
                   }
                   return null;
                 },
@@ -102,7 +105,7 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
               TextFormField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Contraseña',
+                  labelText: l10n.password,
                   border: const OutlineInputBorder(),
                   prefixIcon: const Icon(Icons.lock),
                   suffixIcon: IconButton(
@@ -118,10 +121,10 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
                 enabled: !_isLoading,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Ingresa una contraseña';
+                    return l10n.enterAPassword;
                   }
                   if (value.length < 6) {
-                    return 'La contraseña debe tener al menos 6 caracteres';
+                    return l10n.passwordMinLength;
                   }
                   return null;
                 },
@@ -140,7 +143,7 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'El jugador podrá usar estas credenciales para iniciar sesión en la app.',
+                        l10n.playerCanUseCredentials,
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.blue[900],
@@ -157,7 +160,7 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(false),
-          child: const Text('Cancelar'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : _submit,
@@ -167,7 +170,7 @@ class _AssignCredentialsDialogState extends State<AssignCredentialsDialog> {
                   width: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Crear Cuenta'),
+              : Text(l10n.createAccount),
         ),
       ],
     );

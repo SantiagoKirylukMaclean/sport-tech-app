@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
-import 'package:sport_tech_app/application/evaluations/player_evaluations_notifier.dart';
-import 'package:sport_tech_app/application/evaluations/player_evaluations_state.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
-import 'package:intl/intl.dart';
 
 class CoachEvaluationsPage extends ConsumerStatefulWidget {
   const CoachEvaluationsPage({super.key});
@@ -20,7 +17,8 @@ class CoachEvaluationsPage extends ConsumerStatefulWidget {
 }
 
 class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
-  Player? _selectedPlayer;
+  Map<String, int> _playerEvaluationCounts = {};
+  bool _loadingCounts = false;
 
   @override
   void initState() {
@@ -35,14 +33,36 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
     if (activeTeamState.activeTeam != null) {
       ref
           .read(playersNotifierProvider.notifier)
-          .loadPlayersByTeam(activeTeamState.activeTeam!.id, '1'); // Using placeholder sport ID
+          .loadPlayersByTeam(activeTeamState.activeTeam!.id, '1')
+          .then((_) => _loadEvaluationCounts());
     }
   }
 
-  void _loadEvaluationsForPlayer(Player player) {
-    ref
-        .read(playerEvaluationsNotifierProvider.notifier)
-        .loadEvaluationsForPlayer(player.id);
+  Future<void> _loadEvaluationCounts() async {
+    setState(() {
+      _loadingCounts = true;
+    });
+
+    final playersState = ref.read(playersNotifierProvider);
+    final Map<String, int> counts = {};
+
+    for (final player in playersState.players) {
+      try {
+        final count = await ref
+            .read(playerEvaluationsRepositoryProvider)
+            .getEvaluationsCount(player.id);
+        counts[player.id] = count;
+      } catch (e) {
+        counts[player.id] = 0;
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _playerEvaluationCounts = counts;
+        _loadingCounts = false;
+      });
+    }
   }
 
   @override
@@ -50,7 +70,6 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
     final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final playersState = ref.watch(playersNotifierProvider);
-    final evaluationsState = ref.watch(playerEvaluationsNotifierProvider);
 
     if (activeTeamState.activeTeam == null) {
       return Scaffold(
@@ -67,358 +86,283 @@ class _CoachEvaluationsPageState extends ConsumerState<CoachEvaluationsPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.playerEvaluations),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(AppConstants.dashboardRoute),
+    if (playersState.isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.playerEvaluations),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go(AppConstants.dashboardRoute),
+          ),
         ),
-      ),
-      body: Row(
-        children: [
-          // Left sidebar - Player selector
-          Container(
-            width: 280,
-            decoration: BoxDecoration(
-              border: Border(
-                right: BorderSide(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (playersState.error != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.playerEvaluations),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go(AppConstants.dashboardRoute),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.error,
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    l10n.selectAPlayer,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ),
-                Expanded(
-                  child: _buildPlayersList(playersState),
-                ),
-              ],
-            ),
-          ),
-
-          // Right content - Evaluations list
-          Expanded(
-            child: _selectedPlayer == null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.assessment_outlined,
-                          size: 80,
-                          color:
-                              Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.selectPlayer,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.5),
-                              ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          l10n.choosePlayerFromList,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.5),
-                              ),
-                        ),
-                      ],
-                    ),
-                  )
-                : _buildEvaluationsContent(evaluationsState),
-          ),
-        ],
-      ),
-      floatingActionButton: _selectedPlayer != null
-          ? FloatingActionButton.extended(
-              onPressed: () {
-                context.push(
-                  '/coach-evaluations/new?playerId=${_selectedPlayer!.id}',
-                );
-              },
-              icon: const Icon(Icons.add),
-              label: Text(l10n.newEvaluation),
-            )
-          : null,
-    );
-  }
-
-  Widget _buildPlayersList(PlayersState state) {
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state.error != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            'Error: ${state.error}',
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-            textAlign: TextAlign.center,
+              const SizedBox(height: 16),
+              Text(
+                l10n.error,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Text('${playersState.error}'),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _loadPlayers,
+                icon: const Icon(Icons.refresh),
+                label: Text(l10n.retry),
+              ),
+            ],
           ),
         ),
       );
     }
 
-    if (state.players.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'No hay jugadores en este equipo',
-            textAlign: TextAlign.center,
+    if (playersState.players.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.playerEvaluations),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go(AppConstants.dashboardRoute),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.people_outline,
+                size: 80,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.noPlayersFoundForTeam,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ],
           ),
         ),
       );
     }
 
-    final players = state.players;
-    players.sort((a, b) {
+    // Sort players by jersey number
+    final sortedPlayers = List<Player>.from(playersState.players);
+    sortedPlayers.sort((a, b) {
       final aNum = a.jerseyNumber ?? 999;
       final bNum = b.jerseyNumber ?? 999;
       return aNum.compareTo(bNum);
     });
 
-    return ListView.builder(
-      itemCount: players.length,
-      itemBuilder: (context, index) {
-        final player = players[index];
-        final isSelected = _selectedPlayer?.id == player.id;
-
-        return ListTile(
-          selected: isSelected,
-          leading: CircleAvatar(
-            backgroundColor: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.surfaceContainerHighest,
-            foregroundColor: isSelected
-                ? Theme.of(context).colorScheme.onPrimary
-                : Theme.of(context).colorScheme.onSurface,
-            child: Text(
-              player.jerseyNumber?.toString() ?? '?',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _loadEvaluationCounts,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar.large(
+              title: Text(l10n.playerEvaluations),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.go(AppConstants.dashboardRoute),
+              ),
             ),
-          ),
-          title: Text(player.fullName),
-          onTap: () {
-            setState(() {
-              _selectedPlayer = player;
-            });
-            _loadEvaluationsForPlayer(player);
-          },
-        );
-      },
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final player = sortedPlayers[index];
+                    final evaluationCount = _playerEvaluationCounts[player.id] ?? 0;
+
+                    return Card(
+                      elevation: 0,
+                      color: Theme.of(context).colorScheme.surfaceContainerLow,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: InkWell(
+                        onTap: () {
+                          context.push(
+                            '/evaluations/player/${player.id}',
+                            extra: {
+                              'playerId': player.id,
+                              'playerName': player.fullName,
+                            },
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              // Jersey number badge
+                              Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    player.jerseyNumber?.toString() ?? '?',
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              // Player name and evaluation count
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      player.fullName,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    if (_loadingCounts)
+                                      SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                        ),
+                                      )
+                                    else
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.assessment_outlined,
+                                            size: 16,
+                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            l10n.evaluationsCount(evaluationCount.toString()),
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              // Evaluation count badge
+                              if (!_loadingCounts)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: evaluationCount > 0
+                                        ? Theme.of(context).colorScheme.secondaryContainer
+                                        : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    evaluationCount.toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: evaluationCount > 0
+                                          ? Theme.of(context).colorScheme.onSecondaryContainer
+                                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                    ),
+                                  ),
+                                ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.chevron_right,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  childCount: sortedPlayers.length,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Show player selection dialog for creating new evaluation
+          _showPlayerSelectionDialog(context, sortedPlayers);
+        },
+        icon: const Icon(Icons.add),
+        label: Text(l10n.newEvaluation),
+      ),
     );
   }
 
-  Widget _buildEvaluationsContent(PlayerEvaluationsState state) {
+  void _showPlayerSelectionDialog(BuildContext context, List<Player> players) {
     final l10n = AppLocalizations.of(context)!;
-    if (state is PlayerEvaluationsLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
-    if (state is PlayerEvaluationsError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.error,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(state.message),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => _loadEvaluationsForPlayer(_selectedPlayer!),
-              icon: const Icon(Icons.refresh),
-              label: Text(l10n.retry),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (state is! PlayerEvaluationsLoaded) {
-      return const SizedBox.shrink();
-    }
-
-    if (state.evaluations.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.assignment_outlined,
-              size: 80,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.evaluations,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.noData,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                context.push(
-                  '/coach-evaluations/new?playerId=${_selectedPlayer!.id}',
-                );
-              },
-              icon: const Icon(Icons.add),
-              label: Text(l10n.createFirstEvaluation),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor:
-                    Theme.of(context).colorScheme.primaryContainer,
-                foregroundColor:
-                    Theme.of(context).colorScheme.onPrimaryContainer,
-                child: Text(
-                  _selectedPlayer!.jerseyNumber?.toString() ?? '?',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _selectedPlayer!.fullName,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    Text(
-                      '${state.evaluations.length} evaluación${state.evaluations.length != 1 ? 'es' : ''}',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.7),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Divider(height: 1),
-        Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: state.evaluations.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.selectAPlayer),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: players.length,
             itemBuilder: (context, index) {
-              final evaluation = state.evaluations[index];
-              return Card(
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
-                    foregroundColor:
-                        Theme.of(context).colorScheme.onSecondaryContainer,
-                    child: const Icon(Icons.assessment),
-                  ),
-                  title: Text(
-                    DateFormat('dd MMM yyyy').format(evaluation.evaluationDate),
+              final player = players[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                  child: Text(
+                    player.jerseyNumber?.toString() ?? '?',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: evaluation.generalNotes != null
-                      ? Text(
-                          evaluation.generalNotes!,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      : null,
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () async {
-                      final confirmed = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(l10n.deleteEvaluation),
-                          content: Text(l10n.confirmDelete),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(l10n.cancel),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: Text(l10n.delete),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirmed == true && mounted) {
-                        ref
-                            .read(playerEvaluationsNotifierProvider.notifier)
-                            .deleteEvaluation(
-                              evaluation.id,
-                              _selectedPlayer!.id,
-                            );
-                      }
-                    },
-                  ),
-                  onTap: () {
-                    context.push(
-                      '/coach-evaluations/${evaluation.id}?playerId=${_selectedPlayer!.id}',
-                    );
-                  },
                 ),
+                title: Text(player.fullName),
+                onTap: () {
+                  Navigator.pop(context);
+                  context.push(
+                    '/coach-evaluations/new?playerId=${player.id}',
+                  );
+                },
               );
             },
           ),
         ),
-      ],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+        ],
+      ),
     );
   }
 }

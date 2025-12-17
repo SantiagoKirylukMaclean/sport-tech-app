@@ -30,7 +30,7 @@
   "mister": "Coach",
   "team": "Team",
   "admin": "Admin",
-  "stats": "Stats",
+  "stats": "Evaluations",
   "more": "More",
   "settings": "Settings",
   "superAdmin": "Super Admin",
@@ -306,6 +306,18 @@
   "evaluationNotFound": "Evaluation not found",
   "errorNoAuthenticatedUser": "Error: No authenticated user",
   "loadingData": "Loading data...",
+  "noEvaluationsYet": "No evaluations yet",
+  "latestEvaluation": "Latest Evaluation",
+  "coachNotes": "Coach Notes",
+  "evaluationHistory": "Evaluation History",
+  "evaluationsCount": "{count} evaluation(s)",
+  "@evaluationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
 
   "@_MATCHES": {},
   "noTeamSelected": "No Team Selected",
@@ -348,6 +360,17 @@
   "manageAttendance": "Manage Attendance",
   "viewDetails": "View Details",
   "sessionNotFound": "Session not found",
+  "trainingSessions": "Training Sessions",
+  "noTrainingSessions": "No training sessions",
+  "noTrainingSessionsMessage": "Training sessions will appear here",
+  "sessionInformation": "Session Information",
+  "attendanceList": "Attendance List",
+  "attendanceStatistics": "Attendance Statistics",
+  "totalPlayers": "Total Players",
+  "attendanceRate": "Attendance Rate",
+  "notMarked": "Not Marked",
+  "noPlayersInTeam": "No players in team",
+  "notes": "Notes",
   "errorLoadingPlayers": "Error loading players: {message}",
   "@errorLoadingPlayers": {
     "placeholders": {
@@ -372,12 +395,66 @@
   "trainingSessionDetails": "Training Session Details",
 
   "@_STATISTICS": {},
+  "statistics": "Evaluations",
+  "general": "General",
   "noTrainingAttendanceData": "No training attendance data available",
   "noGoalsOrAssistsData": "No goals or assists data available",
   "player": "Player",
   "assists": "Assists",
   "total": "Total",
   "noMatchesPlayedYet": "No matches played yet",
+  "matchesPlayed": "Matches Played",
+  "winPercentage": "Win %",
+  "goalDifference": "Goal Difference",
+  "cleanSheets": "Clean Sheets",
+  "averageGoals": "Average Goals",
+  "trainingAttendance": "Training Attendance",
+  "matchAttendance": "Match Attendance",
+  "winsDrawsLosses": "{wins}W - {draws}D - {losses}L",
+  "@winsDrawsLosses": {
+    "placeholders": {
+      "wins": {
+        "type": "String"
+      },
+      "draws": {
+        "type": "String"
+      },
+      "losses": {
+        "type": "String"
+      }
+    }
+  },
+  "goalsForAgainst": "{goalsFor} for - {goalsAgainst} against",
+  "@goalsForAgainst": {
+    "placeholders": {
+      "goalsFor": {
+        "type": "String"
+      },
+      "goalsAgainst": {
+        "type": "String"
+      }
+    }
+  },
+  "percentageOfMatches": "{percentage}% of matches",
+  "@percentageOfMatches": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+  "forAgainstAverage": "For: {forAvg} | Against: {againstAvg}",
+  "@forAgainstAverage": {
+    "placeholders": {
+      "forAvg": {
+        "type": "String"
+      },
+      "againstAvg": {
+        "type": "String"
+      }
+    }
+  },
+  "seeDetails": "See details",
 
   "@_PROFILE": {},
   "accountInformation": "Account Information",

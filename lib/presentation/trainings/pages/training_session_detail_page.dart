@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
-import '../../../application/auth/auth_providers.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
+import '../../../application/trainings/training_attendance_notifier.dart';
 import '../../../domain/org/entities/player.dart';
 import '../../../domain/trainings/entities/training_attendance.dart';
 import '../../../domain/trainings/entities/training_session.dart';
@@ -14,8 +14,8 @@ class TrainingSessionDetailPage extends ConsumerStatefulWidget {
   final String sessionId;
 
   const TrainingSessionDetailPage({
-    super.key,
     required this.sessionId,
+    super.key,
   });
 
   @override
@@ -101,8 +101,7 @@ class _TrainingSessionDetailPageState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final currentUser = ref.watch(currentUserProfileProvider);
-    ref.watch(trainingAttendanceNotifierProvider);
+    final attendanceState = ref.watch(trainingAttendanceNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -120,11 +119,24 @@ class _TrainingSessionDetailPageState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Session Info Card
                         _buildSessionInfo(context),
                         const SizedBox(height: 24),
-                        if (currentUser != null) ...[
-                          _buildPlayerAttendance(context, currentUser.userId),
-                        ],
+
+                        // Attendance Statistics
+                        _buildAttendanceStatistics(context, attendanceState),
+                        const SizedBox(height: 24),
+
+                        // Attendance List Section
+                        Text(
+                          l10n.attendanceList,
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildAttendanceList(context, attendanceState),
                       ],
                     ),
                   ),
@@ -133,7 +145,8 @@ class _TrainingSessionDetailPageState
   }
 
   Widget _buildSessionInfo(BuildContext context) {
-    final dateFormat = DateFormat('EEEE, MMMM d, yyyy');
+    final l10n = AppLocalizations.of(context)!;
+    final dateFormat = DateFormat('EEEE, MMMM d, yyyy', 'es');
     final timeFormat = DateFormat('HH:mm');
 
     return Card(
@@ -151,7 +164,7 @@ class _TrainingSessionDetailPageState
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Session Information',
+                  l10n.sessionInformation,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -162,14 +175,14 @@ class _TrainingSessionDetailPageState
             _buildInfoRow(
               context,
               icon: Icons.event,
-              label: 'Date',
+              label: l10n.date,
               value: dateFormat.format(_session!.sessionDate),
             ),
             const SizedBox(height: 12),
             _buildInfoRow(
               context,
               icon: Icons.access_time,
-              label: 'Time',
+              label: l10n.time,
               value: timeFormat.format(_session!.sessionDate),
             ),
             if (_session!.notes != null && _session!.notes!.isNotEmpty) ...[
@@ -177,7 +190,7 @@ class _TrainingSessionDetailPageState
               _buildInfoRow(
                 context,
                 icon: Icons.notes,
-                label: 'Notes',
+                label: l10n.notes,
                 value: _session!.notes!,
               ),
             ],
@@ -224,17 +237,41 @@ class _TrainingSessionDetailPageState
     );
   }
 
-  Widget _buildPlayerAttendance(BuildContext context, String userId) {
-    // Find the player corresponding to this user
-    final player = _players.where((p) => p.userId == userId).firstOrNull;
-
-    if (player == null) {
-      return const SizedBox.shrink();
-    }
-
+  Widget _buildAttendanceStatistics(
+      BuildContext context, TrainingAttendanceState attendanceState) {
+    final l10n = AppLocalizations.of(context)!;
     final attendanceNotifier =
         ref.read(trainingAttendanceNotifierProvider.notifier);
-    final status = attendanceNotifier.getPlayerStatus(player.id);
+
+    // Count attendance by status
+    int onTimeCount = 0;
+    int lateCount = 0;
+    int absentCount = 0;
+    int notMarkedCount = 0;
+
+    for (final player in _players) {
+      final status = attendanceNotifier.getPlayerStatus(player.id);
+      if (status == null) {
+        notMarkedCount++;
+      } else {
+        switch (status) {
+          case AttendanceStatus.onTime:
+            onTimeCount++;
+            break;
+          case AttendanceStatus.late:
+            lateCount++;
+            break;
+          case AttendanceStatus.absent:
+            absentCount++;
+            break;
+        }
+      }
+    }
+
+    final totalPlayers = _players.length;
+    final attendancePercentage = totalPlayers > 0
+        ? ((onTimeCount + lateCount) / totalPlayers * 100).toStringAsFixed(1)
+        : '0.0';
 
     return Card(
       child: Padding(
@@ -245,13 +282,13 @@ class _TrainingSessionDetailPageState
             Row(
               children: [
                 Icon(
-                  Icons.person,
+                  Icons.bar_chart,
                   size: 24,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  'Your Attendance',
+                  l10n.attendanceStatistics,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -259,65 +296,235 @@ class _TrainingSessionDetailPageState
               ],
             ),
             const Divider(height: 24),
-            _buildAttendanceStatus(context, status),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.totalPlayers,
+                    value: totalPlayers.toString(),
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.attendanceRate,
+                    value: '$attendancePercentage%',
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.onTime,
+                    value: onTimeCount.toString(),
+                    color: Colors.green,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.late,
+                    value: lateCount.toString(),
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.absent,
+                    value: absentCount.toString(),
+                    color: Colors.red,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _buildStatChip(
+                    context,
+                    label: l10n.notMarked,
+                    value: notMarkedCount.toString(),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAttendanceStatus(
-      BuildContext context, AttendanceStatus? status) {
-    final l10n = AppLocalizations.of(context)!;
-    IconData icon;
-    String label;
-    Color color;
-
-    if (status == null) {
-      icon = Icons.help_outline;
-      label = 'Not marked';
-      color = Theme.of(context).colorScheme.onSurfaceVariant;
-    } else {
-      switch (status) {
-        case AttendanceStatus.onTime:
-          icon = Icons.check_circle;
-          label = l10n.onTime;
-          color = Colors.green;
-          break;
-        case AttendanceStatus.late:
-          icon = Icons.schedule;
-          label = l10n.late;
-          color = Colors.orange;
-          break;
-        case AttendanceStatus.absent:
-          icon = Icons.cancel;
-          label = l10n.absent;
-          color = Colors.red;
-          break;
-      }
-    }
-
+  Widget _buildStatChip(
+    BuildContext context, {
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
-      child: Row(
+      child: Column(
         children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(width: 12),
           Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            value,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: color,
                   fontWeight: FontWeight.bold,
                 ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: color,
+                ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
 
+  Widget _buildAttendanceList(
+      BuildContext context, TrainingAttendanceState attendanceState) {
+    final l10n = AppLocalizations.of(context)!;
+    final attendanceNotifier =
+        ref.read(trainingAttendanceNotifierProvider.notifier);
+
+    if (_players.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Text(l10n.noPlayersInTeam),
+          ),
+        ),
+      );
+    }
+
+    // Sort players: attended first (on time, then late), then not marked, then absent
+    final sortedPlayers = List<Player>.from(_players)
+      ..sort((a, b) {
+        final statusA = attendanceNotifier.getPlayerStatus(a.id);
+        final statusB = attendanceNotifier.getPlayerStatus(b.id);
+
+        // Helper function to get sort priority
+        int getPriority(AttendanceStatus? status) {
+          if (status == AttendanceStatus.onTime) return 0;
+          if (status == AttendanceStatus.late) return 1;
+          if (status == null) return 2;
+          return 3; // absent
+        }
+
+        final priorityA = getPriority(statusA);
+        final priorityB = getPriority(statusB);
+
+        if (priorityA != priorityB) {
+          return priorityA.compareTo(priorityB);
+        }
+
+        // If same priority, sort alphabetically
+        return a.fullName.compareTo(b.fullName);
+      });
+
+    return Card(
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: sortedPlayers.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final player = sortedPlayers[index];
+          final status = attendanceNotifier.getPlayerStatus(player.id);
+
+          return _buildPlayerAttendanceTile(context, player, status, l10n);
+        },
+      ),
+    );
+  }
+
+  Widget _buildPlayerAttendanceTile(
+    BuildContext context,
+    Player player,
+    AttendanceStatus? status,
+    AppLocalizations l10n,
+  ) {
+    IconData icon;
+    String statusLabel;
+    Color color;
+
+    if (status == null) {
+      icon = Icons.help_outline;
+      statusLabel = l10n.notMarked;
+      color = Theme.of(context).colorScheme.onSurfaceVariant;
+    } else {
+      switch (status) {
+        case AttendanceStatus.onTime:
+          icon = Icons.check_circle;
+          statusLabel = l10n.onTime;
+          color = Colors.green;
+          break;
+        case AttendanceStatus.late:
+          icon = Icons.schedule;
+          statusLabel = l10n.late;
+          color = Colors.orange;
+          break;
+        case AttendanceStatus.absent:
+          icon = Icons.cancel;
+          statusLabel = l10n.absent;
+          color = Colors.red;
+          break;
+      }
+    }
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: color.withValues(alpha: 0.1),
+        child: Text(
+          player.jerseyNumber?.toString() ?? '?',
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      title: Text(
+        player.fullName,
+        style: const TextStyle(fontWeight: FontWeight.w500),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 4),
+          Text(
+            statusLabel,
+            style: TextStyle(
+              color: color,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

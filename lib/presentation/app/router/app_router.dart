@@ -11,12 +11,16 @@ import 'package:sport_tech_app/presentation/auth/pages/login_page.dart';
 import 'package:sport_tech_app/presentation/dashboard/pages/dashboard_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/matches_list_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/match_detail_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_attendance_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_session_detail_page.dart';
+import 'package:sport_tech_app/presentation/trainings/pages/training_sessions_list_page.dart';
 import 'package:sport_tech_app/presentation/championship/pages/championship_page.dart';
 import 'package:sport_tech_app/presentation/stats/pages/statistics_page.dart';
 import 'package:sport_tech_app/presentation/evaluations/pages/evaluations_page.dart';
+import 'package:sport_tech_app/presentation/evaluations/pages/player_evaluation_detail_page.dart';
 import 'package:sport_tech_app/presentation/notes/pages/notes_page.dart';
 import 'package:sport_tech_app/presentation/profile/pages/profile_page.dart';
 import 'package:sport_tech_app/presentation/more/pages/more_page.dart';
@@ -200,6 +204,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
+            path: '/evaluations/player/:playerId',
+            name: 'player-evaluation-detail',
+            pageBuilder: (context, state) {
+              final playerId = state.pathParameters['playerId'] ?? '';
+              final extra = state.extra as Map<String, dynamic>?;
+              final playerName = extra?['playerName'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: PlayerEvaluationDetailPage(
+                  playerId: playerId,
+                  playerName: playerName,
+                ),
+              );
+            },
+          ),
+          GoRoute(
             path: AppConstants.notesRoute,
             name: 'notes',
             pageBuilder: (context, state) => NoTransitionPage(
@@ -360,6 +380,25 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
+            path: '/dashboard/matches',
+            name: 'matches-list',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const MatchesListPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/dashboard/matches/:matchId',
+            name: 'match-detail',
+            pageBuilder: (context, state) {
+              final matchId = state.pathParameters['matchId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: MatchDetailPage(matchId: matchId),
+              );
+            },
+          ),
+          GoRoute(
             path: '/matches/:matchId/lineup',
             name: 'match-lineup',
             pageBuilder: (context, state) {
@@ -367,6 +406,25 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 key: state.pageKey,
                 child: MatchLineupPage(matchId: matchId),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/dashboard/trainings',
+            name: 'trainings-list',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const TrainingSessionsListPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/dashboard/trainings/:sessionId',
+            name: 'training-detail',
+            pageBuilder: (context, state) {
+              final sessionId = state.pathParameters['sessionId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: TrainingSessionDetailPage(sessionId: sessionId),
               );
             },
           ),

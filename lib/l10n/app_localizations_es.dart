@@ -53,10 +53,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logout => 'Cerrar sesión';
 
   @override
-  String get dashboard => 'Panel';
+  String get dashboard => 'Dashboard';
 
   @override
-  String get home => 'Inicio';
+  String get home => 'Dashboard';
 
   @override
   String get matches => 'Partidos';
@@ -89,7 +89,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get admin => 'Admin';
 
   @override
-  String get stats => 'Estadísticas';
+  String get stats => 'Evaluaciones';
 
   @override
   String get more => 'Más';
@@ -621,6 +621,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get loadingData => 'Cargando datos...';
 
   @override
+  String get noEvaluationsYet => 'Aún no hay evaluaciones';
+
+  @override
+  String get latestEvaluation => 'Última Evaluación';
+
+  @override
+  String get coachNotes => 'Notas del Entrenador';
+
+  @override
+  String get evaluationHistory => 'Historial de Evaluaciones';
+
+  @override
+  String evaluationsCount(String count) {
+    return '$count evaluación(es)';
+  }
+
+  @override
   String get noTeamSelected => 'No hay Equipo Seleccionado';
 
   @override
@@ -700,6 +717,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sessionNotFound => 'Sesión no encontrada';
 
   @override
+  String get trainingSessions => 'Entrenamientos';
+
+  @override
+  String get noTrainingSessions => 'No hay entrenamientos';
+
+  @override
+  String get noTrainingSessionsMessage => 'Los entrenamientos aparecerán aquí';
+
+  @override
+  String get sessionInformation => 'Información de la Sesión';
+
+  @override
+  String get attendanceList => 'Lista de Asistencia';
+
+  @override
+  String get attendanceStatistics => 'Estadísticas de Asistencia';
+
+  @override
+  String get totalPlayers => 'Total Jugadores';
+
+  @override
+  String get attendanceRate => 'Tasa de Asistencia';
+
+  @override
+  String get notMarked => 'Sin Marcar';
+
+  @override
+  String get noPlayersInTeam => 'No hay jugadores en el equipo';
+
+  @override
   String errorLoadingPlayers(String message) {
     return 'Error al cargar jugadores: $message';
   }
@@ -710,7 +757,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get trainingAttendance => 'Asistencia de Entrenamiento';
+  String get trainingAttendance => 'Asistencia a Entrenamientos';
 
   @override
   String get onTime => 'A Tiempo';
@@ -723,6 +770,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get trainingSessionDetails => 'Detalles de la Sesión de Entrenamiento';
+
+  @override
+  String get statistics => 'Evaluaciones';
+
+  @override
+  String get general => 'General';
 
   @override
   String get noTrainingAttendanceData =>
@@ -743,6 +796,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noMatchesPlayedYet => 'Aún no se han jugado partidos';
+
+  @override
+  String get matchesPlayed => 'Partidos Jugados';
+
+  @override
+  String get winPercentage => '% Victorias';
+
+  @override
+  String get goalDifference => 'Diferencia de Goles';
+
+  @override
+  String get cleanSheets => 'Vallas Invictas';
+
+  @override
+  String get averageGoals => 'Promedio de Goles';
+
+  @override
+  String get matchAttendance => 'Asistencia a Partidos';
+
+  @override
+  String winsDrawsLosses(String wins, String draws, String losses) {
+    return '${wins}V - ${draws}E - ${losses}D';
+  }
+
+  @override
+  String goalsForAgainst(String goalsFor, String goalsAgainst) {
+    return '$goalsFor a favor - $goalsAgainst en contra';
+  }
+
+  @override
+  String percentageOfMatches(String percentage) {
+    return '$percentage% de los partidos';
+  }
+
+  @override
+  String forAgainstAverage(String forAvg, String againstAvg) {
+    return 'A favor: $forAvg | En contra: $againstAvg';
+  }
+
+  @override
+  String get seeDetails => 'Ver detalles';
 
   @override
   String get accountInformation => 'Información de la Cuenta';

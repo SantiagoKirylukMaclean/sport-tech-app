@@ -98,41 +98,6 @@ class _TrainingSessionDetailPageState
     }
   }
 
-  Map<String, int> _getAttendanceStats() {
-    final attendanceNotifier =
-        ref.read(trainingAttendanceNotifierProvider.notifier);
-    int onTime = 0;
-    int late = 0;
-    int absent = 0;
-    int notMarked = 0;
-
-    for (final player in _players) {
-      final status = attendanceNotifier.getPlayerStatus(player.id);
-      if (status == null) {
-        notMarked++;
-      } else {
-        switch (status) {
-          case AttendanceStatus.onTime:
-            onTime++;
-            break;
-          case AttendanceStatus.late:
-            late++;
-            break;
-          case AttendanceStatus.absent:
-            absent++;
-            break;
-        }
-      }
-    }
-
-    return {
-      'onTime': onTime,
-      'late': late,
-      'absent': absent,
-      'notMarked': notMarked,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -159,9 +124,7 @@ class _TrainingSessionDetailPageState
                         const SizedBox(height: 24),
                         if (currentUser != null) ...[
                           _buildPlayerAttendance(context, currentUser.userId),
-                          const SizedBox(height: 24),
                         ],
-                        _buildAttendanceStats(context),
                       ],
                     ),
                   ),
@@ -357,117 +320,4 @@ class _TrainingSessionDetailPageState
     );
   }
 
-  Widget _buildAttendanceStats(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final stats = _getAttendanceStats();
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.bar_chart,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'Attendance Summary',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ],
-            ),
-            const Divider(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatItem(
-                    context,
-                    icon: Icons.check_circle,
-                    label: l10n.onTime,
-                    value: stats['onTime']!,
-                    color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildStatItem(
-                    context,
-                    icon: Icons.schedule,
-                    label: l10n.late,
-                    value: stats['late']!,
-                    color: Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatItem(
-                    context,
-                    icon: Icons.cancel,
-                    label: l10n.absent,
-                    value: stats['absent']!,
-                    color: Colors.red,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildStatItem(
-                    context,
-                    icon: Icons.help_outline,
-                    label: 'Not Marked',
-                    value: stats['notMarked']!,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required int value,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            value.toString(),
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-          ),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
 }

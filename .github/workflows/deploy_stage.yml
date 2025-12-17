@@ -1,0 +1,49 @@
+name: Deploy to Vercel Preview (Stage)
+
+on:
+  push:
+    branches:
+      - stage
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    environment: stage
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+        continue-on-error: false
+
+      - name: Build Flutter Web
+        run: |
+          flutter build web \
+            --release \
+            --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel Preview
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel deploy build/web \
+            --yes \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --target=preview

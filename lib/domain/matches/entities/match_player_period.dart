@@ -1,6 +1,7 @@
 // lib/domain/matches/entities/match_player_period.dart
 
 import 'package:equatable/equatable.dart';
+import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 
 /// Fraction of a period played by a player
 enum Fraction {
@@ -25,6 +26,7 @@ class MatchPlayerPeriod extends Equatable {
   final String playerId;
   final int period; // 1-4 (quarters)
   final Fraction fraction;
+  final FieldZone? fieldZone; // Position on the field
   final DateTime createdAt;
 
   const MatchPlayerPeriod({
@@ -33,6 +35,7 @@ class MatchPlayerPeriod extends Equatable {
     required this.period,
     required this.fraction,
     required this.createdAt,
+    this.fieldZone,
   });
 
   @override
@@ -41,12 +44,13 @@ class MatchPlayerPeriod extends Equatable {
         playerId,
         period,
         fraction,
+        fieldZone,
         createdAt,
       ];
 
   @override
   String toString() =>
-      'MatchPlayerPeriod(matchId: $matchId, playerId: $playerId, period: $period, fraction: ${fraction.value})';
+      'MatchPlayerPeriod(matchId: $matchId, playerId: $playerId, period: $period, fraction: ${fraction.value}, fieldZone: ${fieldZone?.value})';
 
   /// Create a copy with updated fields
   MatchPlayerPeriod copyWith({
@@ -54,6 +58,8 @@ class MatchPlayerPeriod extends Equatable {
     String? playerId,
     int? period,
     Fraction? fraction,
+    FieldZone? fieldZone,
+    bool clearFieldZone = false,
     DateTime? createdAt,
   }) {
     return MatchPlayerPeriod(
@@ -61,6 +67,7 @@ class MatchPlayerPeriod extends Equatable {
       playerId: playerId ?? this.playerId,
       period: period ?? this.period,
       fraction: fraction ?? this.fraction,
+      fieldZone: clearFieldZone ? null : (fieldZone ?? this.fieldZone),
       createdAt: createdAt ?? this.createdAt,
     );
   }

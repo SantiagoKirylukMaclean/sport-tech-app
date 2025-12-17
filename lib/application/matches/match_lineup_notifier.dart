@@ -2,6 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_state.dart';
+import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_call_ups_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_goals_repository.dart';
@@ -85,10 +86,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       final match = matchResult.dataOrNull!;
 
       // Load all team players
-      print('Fetching players for teamId: ${match.teamId}');
       final teamPlayersResult = await _playersRepository.getPlayersByTeam(match.teamId);
       final teamPlayers = teamPlayersResult.dataOrNull ?? [];
-      print('Fetched ${teamPlayers.length} players');
       
       // Load call-ups
       final callUpsResult = await _callUpsRepository.getCallUpsByMatch(matchId);
@@ -258,6 +257,29 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     );
   }
 
+  /// Add player to field for current quarter with a specific field zone
+  Future<void> addPlayerToFieldWithZone(String playerId, FieldZone fieldZone) async {
+    if (state.isFieldFull) {
+      state = state.copyWith(
+        error: 'Field is full (maximum 7 players)',
+      );
+      return;
+    }
+
+    final result = await _periodsRepository.setPlayerPeriod(
+      matchId: matchId,
+      playerId: playerId,
+      period: state.currentQuarter,
+      fraction: Fraction.full,
+      fieldZone: fieldZone,
+    );
+
+    result.when(
+      success: (_) => loadMatchData(),
+      failure: (failure) => state = state.copyWith(error: failure.message),
+    );
+  }
+
   /// Remove player from field for current quarter
   Future<void> removePlayerFromField(String playerId) async {
     final result = await _periodsRepository.removePlayerPeriod(
@@ -330,6 +352,24 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
   /// Delete a goal
   Future<void> deleteGoal(String goalId) async {
     final result = await _goalsRepository.deleteGoal(goalId);
+
+    result.when(
+      success: (_) => loadMatchData(),
+      failure: (failure) => state = state.copyWith(error: failure.message),
+    );
+  }
+
+  /// Update a player's field zone for the current quarter
+  Future<void> updatePlayerFieldZone({
+    required String playerId,
+    required FieldZone fieldZone,
+  }) async {
+    final result = await _periodsRepository.updatePlayerFieldZone(
+      matchId: matchId,
+      playerId: playerId,
+      period: state.currentQuarter,
+      fieldZone: fieldZone,
+    );
 
     result.when(
       success: (_) => loadMatchData(),

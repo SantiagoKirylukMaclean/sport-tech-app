@@ -1,6 +1,5 @@
 // lib/config/supabase_config.dart
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/config/env_config.dart';
@@ -25,11 +24,7 @@ Future<void> initializeSupabase() async {
       // Auto-refresh the session when it expires
       autoRefreshToken: true,
     ),
-    // Enable debug mode to see auth logs
-    debug: kDebugMode,
+    // Disable debug mode in production
+    debug: false,
   );
-
-  // Log current auth state
-  final session = Supabase.instance.client.auth.currentSession;
-  debugPrint('Supabase initialized. Current session: ${session != null ? 'Active' : 'None'}');
 }

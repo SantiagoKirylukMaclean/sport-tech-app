@@ -16,18 +16,13 @@ class SupabasePlayersRepository implements PlayersRepository {
   @override
   Future<Result<List<Player>>> getPlayersByTeam(String teamId) async {
     try {
-      print('DEBUG SupabasePlayersRepository: getPlayersByTeam called with teamId: $teamId (type: ${teamId.runtimeType})');
       final parsedTeamId = int.tryParse(teamId) ?? teamId;
-      print('DEBUG SupabasePlayersRepository: parsedTeamId: $parsedTeamId (type: ${parsedTeamId.runtimeType})');
-      
+
       final response = await _client
           .from('players')
           .select()
           .eq('team_id', parsedTeamId)
           .order('full_name', ascending: true);
-
-      print('DEBUG SupabasePlayersRepository: response type: ${response.runtimeType}');
-      print('DEBUG SupabasePlayersRepository: response: $response');
 
       final players = (response as List)
           .map((json) => PlayerMapper.fromJson(json as Map<String, dynamic>))
@@ -35,10 +30,8 @@ class SupabasePlayersRepository implements PlayersRepository {
 
       return Success(players);
     } on PostgrestException catch (e) {
-      print('DEBUG SupabasePlayersRepository: PostgrestException: ${e.message}');
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
-      print('DEBUG SupabasePlayersRepository: Exception: $e');
       return Failed(ServerFailure('Error getting players: $e'));
     }
   }

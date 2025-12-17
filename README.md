@@ -266,7 +266,264 @@ The app supports English and Spanish. To add or modify translations:
 4. Write tests for business logic
 5. Follow Dart style guide
 
-## Next Steps
+## CI/CD with Vercel and GitHub Actions
+
+This project uses GitHub Actions for automated deployment to Vercel with environment-specific Supabase configurations.
+
+### Deployment Architecture
+
+- **Branch: `stage`** → Deploys to **Vercel Preview** with **Supabase STAGE** environment
+- **Branch: `main`** → Deploys to **Vercel Production** with **Supabase PROD** environment
+- **Vercel Project ID**: `prj_WJvw9LJiZZ8gda7EdsdsCWFjBifw`
+
+### Prerequisites
+
+#### 1. Vercel Setup
+
+**Create a Vercel Access Token:**
+1. Go to [Vercel Account Settings > Tokens](https://vercel.com/account/tokens)
+2. Click "Create Token"
+3. Give it a name (e.g., "GitHub Actions CI/CD")
+4. Copy the token (you'll only see it once)
+
+**Get your Vercel Organization ID and Project ID:**
+
+Option 1: Use Vercel CLI
+```bash
+npm install -g vercel@latest
+vercel login
+cd /path/to/your/project
+vercel link
+```
+
+This creates a `.vercel/project.json` file with:
+```json
+{
+  "orgId": "your-org-id",
+  "projectId": "prj_WJvw9LJiZZ8gda7EdsdsCWFjBifw"
+}
+```
+
+Option 2: Get from Vercel Dashboard
+- **Org ID**: Found in your Vercel team settings URL: `vercel.com/<team-name>/settings`
+- **Project ID**: Found in project settings or use the one provided: `prj_WJvw9LJiZZ8gda7EdsdsCWFjBifw`
+
+**Important**: `.vercel/` directory is already in `.gitignore` and should NOT be committed.
+
+#### 2. GitHub Secrets Configuration
+
+Go to your GitHub repository → Settings → Secrets and variables → Actions
+
+**Repository Secrets** (available to all branches):
+
+| Secret Name | Description | Example |
+|------------|-------------|---------|
+| `VERCEL_TOKEN` | Vercel access token | `abc123...` |
+| `VERCEL_ORG_ID` | Your Vercel organization/team ID | `team_abc123...` |
+| `VERCEL_PROJECT_ID` | Vercel project ID | `prj_WJvw9LJiZZ8gda7EdsdsCWFjBifw` |
+
+**Environment: `stage`**
+
+Go to Settings → Environments → Create environment "stage"
+
+| Secret Name | Description | Example |
+|------------|-------------|---------|
+| `SUPABASE_URL` | Supabase staging project URL | `https://xxxstage.supabase.co` |
+| `SUPABASE_ANON_KEY` | Supabase staging anon key | `eyJhbGc...` |
+
+**Environment: `production`**
+
+Go to Settings → Environments → Create environment "production"
+
+| Secret Name | Description | Example |
+|------------|-------------|---------|
+| `SUPABASE_URL` | Supabase production project URL | `https://xxxprod.supabase.co` |
+| `SUPABASE_ANON_KEY` | Supabase production anon key | `eyJhbGc...` |
+
+### How It Works
+
+#### Development Workflow
+
+1. **Feature Development**
+   ```bash
+   git checkout -b feature/my-feature
+   # Make changes
+   git add .
+   git commit -m "feat: add new feature"
+   git push origin feature/my-feature
+   ```
+   Create a PR to merge into `stage`
+
+2. **Deploy to Staging**
+   ```bash
+   git checkout stage
+   git merge feature/my-feature
+   git push origin stage
+   ```
+   This triggers [.github/workflows/deploy_stage.yml](.github/workflows/deploy_stage.yml):
+   - Runs tests
+   - Builds Flutter web with STAGE Supabase config
+   - Deploys to Vercel Preview
+   - URL: `https://sport-tech-app-<unique-id>.vercel.app`
+
+3. **Deploy to Production**
+   ```bash
+   git checkout main
+   git merge stage
+   git push origin main
+   ```
+   This triggers [.github/workflows/deploy_prod.yml](.github/workflows/deploy_prod.yml):
+   - Runs tests
+   - Builds Flutter web with PROD Supabase config
+   - Deploys to Vercel Production
+   - URL: Your production domain (e.g., `sport-tech-app.vercel.app`)
+
+#### CI/CD Pipeline Steps
+
+Both workflows perform the same steps with environment-specific configurations:
+
+1. **Checkout Code**: Downloads the repository
+2. **Setup Flutter**: Installs Flutter SDK (stable channel with caching)
+3. **Install Dependencies**: Runs `flutter pub get`
+4. **Run Tests**: Executes `flutter test` (build fails if tests fail)
+5. **Build Web App**:
+   ```bash
+   flutter build web --release \
+     --dart-define=SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+     --dart-define=SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+   ```
+6. **Install Vercel CLI**: Installs latest Vercel CLI globally
+7. **Deploy to Vercel**:
+   - **Stage**: `vercel deploy build/web --yes --token=$VERCEL_TOKEN --target=preview`
+   - **Prod**: `vercel deploy build/web --yes --token=$VERCEL_TOKEN --prod`
+
+### Environment Configuration in Code
+
+The app uses compile-time environment variables via `--dart-define`.
+
+**[lib/config/env_config.dart](lib/config/env_config.dart):**
+```dart
+class EnvConfig {
+  static const String supabaseUrl = String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: '',
+  );
+
+  static const String supabaseAnonKey = String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: '',
+  );
+
+  /// Validates that all required environment variables are set
+  static void validate() {
+    if (supabaseUrl.isEmpty) {
+      throw Exception('SUPABASE_URL is not configured.');
+    }
+    if (supabaseAnonKey.isEmpty) {
+      throw Exception('SUPABASE_ANON_KEY is not configured.');
+    }
+  }
+}
+```
+
+**[lib/config/supabase_config.dart](lib/config/supabase_config.dart:16-35):**
+```dart
+Future<void> initializeSupabase() async {
+  // Validate environment configuration
+  EnvConfig.validate();
+
+  await Supabase.initialize(
+    url: EnvConfig.supabaseUrl,
+    anonKey: EnvConfig.supabaseAnonKey,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+      autoRefreshToken: true,
+    ),
+    debug: kDebugMode,
+  );
+}
+```
+
+**[lib/main.dart](lib/main.dart:13-18):**
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Supabase with environment-specific config
+  await initializeSupabase();
+
+  runApp(const ProviderScope(child: SportTechApp()));
+}
+```
+
+### Local Development
+
+For local development, you have two options:
+
+**Option 1: Using `--dart-define`** (Recommended)
+```bash
+flutter run -d chrome \
+  --dart-define=SUPABASE_URL=https://your-dev-project.supabase.co \
+  --dart-define=SUPABASE_ANON_KEY=your-dev-anon-key
+```
+
+**Option 2: VS Code Launch Configuration**
+
+Create/edit `.vscode/launch.json`:
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Development",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define=SUPABASE_URL=https://your-dev-project.supabase.co",
+        "--dart-define=SUPABASE_ANON_KEY=your-dev-anon-key"
+      ]
+    }
+  ]
+}
+```
+
+### Security Best Practices
+
+1. **Never commit credentials**: `.env*` files are in `.gitignore`
+2. **Never commit `.vercel/` directory**: Already in `.gitignore`
+3. **Use GitHub Environments**: Secrets are scoped to specific branches
+4. **Rotate tokens periodically**: Regenerate Vercel tokens and GitHub secrets regularly
+5. **Use different Supabase projects**: Separate STAGE and PROD databases
+
+### Troubleshooting
+
+**Build fails with "SUPABASE_URL is not configured":**
+- Check that GitHub Environment secrets are correctly set
+- Ensure the environment name matches exactly (`stage` or `production`)
+- Verify workflow is using the correct `environment:` key
+
+**Vercel deployment fails:**
+- Verify `VERCEL_TOKEN` is valid (tokens can expire)
+- Check `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are correct
+- Ensure Vercel project exists and is linked to the organization
+
+**Tests fail in CI but pass locally:**
+- Run `flutter test` locally to reproduce
+- Check if tests depend on environment variables
+- Ensure all dependencies are in `pubspec.yaml`
+
+**Web app shows blank screen:**
+- Check browser console for errors
+- Verify Supabase URL and anon key are correct
+- Ensure CORS is configured in Supabase for your Vercel domain
+
+### Monitoring Deployments
+
+- **GitHub Actions**: Check Actions tab in your repository for build logs
+- **Vercel Dashboard**: View deployments at [vercel.com/dashboard](https://vercel.com/dashboard)
+- **Vercel CLI**: Check deployment status with `vercel ls`
+
+### Next Steps
 
 - [ ] Implement remaining domain entities (Sports, Clubs, Teams, etc.)
 - [ ] Add matches management features
@@ -275,7 +532,7 @@ The app supports English and Spanish. To add or modify translations:
 - [ ] Add player evaluation system
 - [ ] Implement notes/comments features
 - [ ] Add comprehensive tests
-- [ ] Set up CI/CD pipeline
+- [x] Set up CI/CD pipeline
 - [ ] Add error tracking (e.g., Sentry)
 - [ ] Implement analytics
 

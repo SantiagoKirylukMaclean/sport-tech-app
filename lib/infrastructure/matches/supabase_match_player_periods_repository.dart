@@ -3,6 +3,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/core/error/failures.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
+import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_player_periods_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/mappers/match_player_period_mapper.dart';
@@ -105,6 +106,7 @@ class SupabaseMatchPlayerPeriodsRepository
     required String playerId,
     required int period,
     required Fraction fraction,
+    FieldZone? fieldZone,
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
@@ -117,19 +119,60 @@ class SupabaseMatchPlayerPeriodsRepository
           .eq('player_id', playerId)
           .eq('period', period);
 
-      final response = await _client.from('match_player_periods').insert({
+      final insertData = {
         'match_id': int.parse(matchId),
         'player_id': int.parse(playerId),
         'period': period,
         'fraction': fraction.value,
         'created_at': now,
-      }).select().single();
+      };
+
+      if (fieldZone != null) {
+        insertData['field_zone'] = fieldZone.value;
+      }
+
+      final response = await _client
+          .from('match_player_periods')
+          .insert(insertData)
+          .select()
+          .single();
 
       return Success(MatchPlayerPeriodMapper.fromJson(response));
     } on PostgrestException catch (e) {
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
       return Failed(ServerFailure('Error setting player period: $e'));
+    }
+  }
+
+  @override
+  Future<Result<MatchPlayerPeriod>> updatePlayerFieldZone({
+    required String matchId,
+    required String playerId,
+    required int period,
+    required FieldZone fieldZone,
+  }) async {
+    try {
+      final response = await _client
+          .from('match_player_periods')
+          .update({'field_zone': fieldZone.value})
+          .eq('match_id', matchId)
+          .eq('player_id', playerId)
+          .eq('period', period)
+          .select()
+          .maybeSingle();
+
+      if (response == null) {
+        return Failed(
+          ServerFailure('Player period not found. Player must be on field first.'),
+        );
+      }
+
+      return Success(MatchPlayerPeriodMapper.fromJson(response));
+    } on PostgrestException catch (e) {
+      return Failed(ServerFailure(e.message, code: e.code));
+    } catch (e) {
+      return Failed(ServerFailure('Error updating player field zone: $e'));
     }
   }
 

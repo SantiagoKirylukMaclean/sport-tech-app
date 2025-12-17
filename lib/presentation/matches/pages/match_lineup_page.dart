@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_notifier.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/convocatoria_section.dart';
-import 'package:sport_tech_app/presentation/matches/widgets/lineup_section.dart';
+import 'package:sport_tech_app/presentation/matches/widgets/draggable_field_widget.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/quarter_results_section.dart';
 
 class MatchLineupPage extends ConsumerStatefulWidget {
@@ -92,8 +92,8 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                       if (state.hasMinimumCallUps) ...[
                         const Divider(height: 32),
 
-                        // Lineup Section
-                        LineupSection(matchId: widget.matchId),
+                        // Draggable Field Formation
+                        DraggableFieldWidget(matchId: widget.matchId),
 
                         const Divider(height: 32),
 

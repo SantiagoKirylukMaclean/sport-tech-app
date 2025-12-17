@@ -29,7 +29,6 @@ class LocaleNotifier extends StateNotifier<Locale?> {
       }
     } catch (e) {
       // If loading fails, keep default (null = system locale)
-      debugPrint('Error loading locale: $e');
     }
   }
 
@@ -41,7 +40,7 @@ class LocaleNotifier extends StateNotifier<Locale?> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_kLocaleKey, locale.languageCode);
     } catch (e) {
-      debugPrint('Error saving locale: $e');
+      // Silently fail - locale will still be set in memory
     }
   }
 
@@ -53,7 +52,7 @@ class LocaleNotifier extends StateNotifier<Locale?> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_kLocaleKey);
     } catch (e) {
-      debugPrint('Error clearing locale: $e');
+      // Silently fail - locale already cleared in memory
     }
   }
 

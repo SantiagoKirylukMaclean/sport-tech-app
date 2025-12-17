@@ -215,18 +215,34 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                   children: [
                     // Stats overview cards
                     TeamStatsOverview(matches: statsState.matches),
-                    // Tab bar
+                    // Statistics section with title
                     Container(
                       color: Theme.of(context).colorScheme.surface,
-                      child: TabBar(
-                        controller: _tabController,
-                        isScrollable: true,
-                        tabs: [
-                          Tab(text: l10n.players),
-                          Tab(text: l10n.goals),
-                          Tab(text: l10n.matches),
-                          Tab(text: l10n.quarters),
-                          Tab(text: l10n.training),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                            child: Text(
+                              l10n.statistics,
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          // Tab bar
+                          TabBar(
+                            controller: _tabController,
+                            isScrollable: true,
+                            tabs: [
+                              Tab(text: l10n.general),
+                              Tab(text: l10n.goals),
+                              Tab(text: l10n.matches),
+                              Tab(text: l10n.quarters),
+                              Tab(text: l10n.training),
+                            ],
+                          ),
                         ],
                       ),
                     ),

@@ -32,17 +32,8 @@ void main() async {
 void _setupDeepLinkListener() {
   // Listen to auth state changes
   Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-    final event = data.event;
-    debugPrint('Auth state changed: $event');
-
-    // Handle different auth events
-    if (event == AuthChangeEvent.signedIn) {
-      debugPrint('User signed in: ${data.session?.user.email}');
-    } else if (event == AuthChangeEvent.tokenRefreshed) {
-      debugPrint('Token refreshed');
-    } else if (event == AuthChangeEvent.signedOut) {
-      debugPrint('User signed out');
-    }
+    // Auth state changes are handled silently in production
+    // Events: signedIn, tokenRefreshed, signedOut, etc.
   });
 }
 

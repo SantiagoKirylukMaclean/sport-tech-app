@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// **'Coach'**
   String get coach;
 
+  /// No description provided for @mister.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get mister;
+
   /// No description provided for @team.
   ///
   /// In en, this message translates to:
@@ -251,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @stats.
   ///
   /// In en, this message translates to:
-  /// **'Stats'**
+  /// **'Evaluations'**
   String get stats;
 
   /// No description provided for @more.
@@ -1232,6 +1238,36 @@ abstract class AppLocalizations {
   /// **'Loading data...'**
   String get loadingData;
 
+  /// No description provided for @noEvaluationsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No evaluations yet'**
+  String get noEvaluationsYet;
+
+  /// No description provided for @latestEvaluation.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Evaluation'**
+  String get latestEvaluation;
+
+  /// No description provided for @coachNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach Notes'**
+  String get coachNotes;
+
+  /// No description provided for @evaluationHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluation History'**
+  String get evaluationHistory;
+
+  /// No description provided for @evaluationsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} evaluation(s)'**
+  String evaluationsCount(String count);
+
   /// No description provided for @noTeamSelected.
   ///
   /// In en, this message translates to:
@@ -1376,6 +1412,66 @@ abstract class AppLocalizations {
   /// **'Session not found'**
   String get sessionNotFound;
 
+  /// No description provided for @trainingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Training Sessions'**
+  String get trainingSessions;
+
+  /// No description provided for @noTrainingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No training sessions'**
+  String get noTrainingSessions;
+
+  /// No description provided for @noTrainingSessionsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Training sessions will appear here'**
+  String get noTrainingSessionsMessage;
+
+  /// No description provided for @sessionInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Session Information'**
+  String get sessionInformation;
+
+  /// No description provided for @attendanceList.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance List'**
+  String get attendanceList;
+
+  /// No description provided for @attendanceStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance Statistics'**
+  String get attendanceStatistics;
+
+  /// No description provided for @totalPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Players'**
+  String get totalPlayers;
+
+  /// No description provided for @attendanceRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance Rate'**
+  String get attendanceRate;
+
+  /// No description provided for @notMarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Marked'**
+  String get notMarked;
+
+  /// No description provided for @noPlayersInTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'No players in team'**
+  String get noPlayersInTeam;
+
   /// No description provided for @errorLoadingPlayers.
   ///
   /// In en, this message translates to:
@@ -1418,6 +1514,18 @@ abstract class AppLocalizations {
   /// **'Training Session Details'**
   String get trainingSessionDetails;
 
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Evaluations'**
+  String get statistics;
+
+  /// No description provided for @general.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get general;
+
   /// No description provided for @noTrainingAttendanceData.
   ///
   /// In en, this message translates to:
@@ -1453,6 +1561,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No matches played yet'**
   String get noMatchesPlayedYet;
+
+  /// No description provided for @matchesPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches Played'**
+  String get matchesPlayed;
+
+  /// No description provided for @winPercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Win %'**
+  String get winPercentage;
+
+  /// No description provided for @goalDifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal Difference'**
+  String get goalDifference;
+
+  /// No description provided for @cleanSheets.
+  ///
+  /// In en, this message translates to:
+  /// **'Clean Sheets'**
+  String get cleanSheets;
+
+  /// No description provided for @averageGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Goals'**
+  String get averageGoals;
+
+  /// No description provided for @matchAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Attendance'**
+  String get matchAttendance;
+
+  /// No description provided for @winsDrawsLosses.
+  ///
+  /// In en, this message translates to:
+  /// **'{wins}W - {draws}D - {losses}L'**
+  String winsDrawsLosses(String wins, String draws, String losses);
+
+  /// No description provided for @goalsForAgainst.
+  ///
+  /// In en, this message translates to:
+  /// **'{goalsFor} for - {goalsAgainst} against'**
+  String goalsForAgainst(String goalsFor, String goalsAgainst);
+
+  /// No description provided for @percentageOfMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% of matches'**
+  String percentageOfMatches(String percentage);
+
+  /// No description provided for @forAgainstAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'For: {forAvg} | Against: {againstAvg}'**
+  String forAgainstAverage(String forAvg, String againstAvg);
+
+  /// No description provided for @seeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'See details'**
+  String get seeDetails;
 
   /// No description provided for @accountInformation.
   ///

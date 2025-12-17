@@ -10,18 +10,15 @@ class SupabaseTrainingSessionsRepository implements TrainingSessionsRepository {
 
   @override
   Future<List<TrainingSession>> getByTeamId(String teamId) async {
-    print('SupabaseTrainingSessionsRepository: Fetching sessions for team $teamId');
     final response = await _client
         .from('training_sessions')
         .select()
         .eq('team_id', teamId)
         .order('session_date', ascending: false);
 
-    print('SupabaseTrainingSessionsRepository: Raw response: $response');
     final sessions = (response as List)
         .map((json) => TrainingSessionMapper.fromJson(json))
         .toList();
-    print('SupabaseTrainingSessionsRepository: Mapped ${sessions.length} sessions');
     return sessions;
   }
 

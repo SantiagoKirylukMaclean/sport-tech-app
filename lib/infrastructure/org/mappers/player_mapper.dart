@@ -6,27 +6,15 @@ import 'package:sport_tech_app/domain/org/entities/player.dart';
 class PlayerMapper {
   /// Convert from Supabase JSON to Player entity
   static Player fromJson(Map<String, dynamic> json) {
-    try {
-      print('DEBUG PlayerMapper: Converting JSON: $json');
-      print('DEBUG PlayerMapper: team_id value: ${json['team_id']} (type: ${json['team_id'].runtimeType})');
-
-      final player = Player(
-        id: json['id'].toString(),
-        teamId: json['team_id'].toString(),
-        userId: json['user_id']?.toString(),
-        fullName: json['full_name'] as String,
-        jerseyNumber: json['jersey_number'] as int?,
-        email: json['email'] as String?,
-        createdAt: DateTime.parse(json['created_at'] as String),
-      );
-
-      print('DEBUG PlayerMapper: Successfully created player: ${player.fullName}');
-      return player;
-    } catch (e, stackTrace) {
-      print('DEBUG PlayerMapper: ERROR converting JSON: $e');
-      print('DEBUG PlayerMapper: Stack trace: $stackTrace');
-      rethrow;
-    }
+    return Player(
+      id: json['id'].toString(),
+      teamId: json['team_id'].toString(),
+      userId: json['user_id']?.toString(),
+      fullName: json['full_name'] as String,
+      jerseyNumber: json['jersey_number'] as int?,
+      email: json['email'] as String?,
+      createdAt: DateTime.parse(json['created_at'] as String),
+    );
   }
 
   /// Convert from Player entity to Supabase JSON

@@ -46,14 +46,7 @@ class AppScaffold extends ConsumerWidget {
               leading: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Icon(
-                      Icons.sports_soccer,
-                      size: 32,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
+                  const SizedBox(height: 16),
                   // Team selector for coaches in wide screen
                   if (authState is AuthStateAuthenticated &&
                       (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
@@ -238,7 +231,7 @@ class AppScaffold extends ConsumerWidget {
     final role = authState.profile.role;
     final l10n = AppLocalizations.of(context)!;
 
-    // PLAYER - 5 items: Home, Trainings, Championship, Stats, More
+    // PLAYER - 4 items: Home, Trainings, Stats, More
     if (role == UserRole.player) {
       return [
         NavigationItem(
@@ -254,13 +247,43 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.fitness_center,
         ),
         NavigationItem(
+          label: l10n.stats,
+          route: AppConstants.evaluationsRoute,
+          iconOutlined: Icons.analytics_outlined,
+          iconFilled: Icons.analytics,
+        ),
+        NavigationItem(
+          label: l10n.more,
+          route: AppConstants.moreRoute,
+          iconOutlined: Icons.more_horiz,
+          iconFilled: Icons.more_horiz,
+        ),
+      ];
+    }
+
+    // COACH - 5 items: Dashboard, Mister/Coach, Championship, Evaluations, More
+    if (role == UserRole.coach) {
+      return [
+        NavigationItem(
+          label: l10n.dashboard,
+          route: AppConstants.dashboardRoute,
+          iconOutlined: Icons.dashboard_outlined,
+          iconFilled: Icons.dashboard,
+        ),
+        NavigationItem(
+          label: l10n.mister,
+          route: AppConstants.coachPanelRoute,
+          iconOutlined: Icons.sports_outlined,
+          iconFilled: Icons.sports,
+        ),
+        NavigationItem(
           label: l10n.championship,
           route: AppConstants.championshipRoute,
           iconOutlined: Icons.emoji_events_outlined,
           iconFilled: Icons.emoji_events,
         ),
         NavigationItem(
-          label: l10n.stats,
+          label: l10n.evaluations,
           route: AppConstants.evaluationsRoute,
           iconOutlined: Icons.analytics_outlined,
           iconFilled: Icons.analytics,
@@ -274,43 +297,7 @@ class AppScaffold extends ConsumerWidget {
       ];
     }
 
-    // COACH - 5 items: Home, Team, Trainings, Stats, More
-    if (role == UserRole.coach) {
-      return [
-        NavigationItem(
-          label: l10n.home,
-          route: AppConstants.dashboardRoute,
-          iconOutlined: Icons.home_outlined,
-          iconFilled: Icons.home,
-        ),
-        NavigationItem(
-          label: l10n.team,
-          route: AppConstants.coachPanelRoute,
-          iconOutlined: Icons.sports_soccer_outlined,
-          iconFilled: Icons.sports_soccer,
-        ),
-        NavigationItem(
-          label: l10n.trainings,
-          route: AppConstants.trainingsRoute,
-          iconOutlined: Icons.fitness_center_outlined,
-          iconFilled: Icons.fitness_center,
-        ),
-        NavigationItem(
-          label: l10n.stats,
-          route: AppConstants.evaluationsRoute,
-          iconOutlined: Icons.analytics_outlined,
-          iconFilled: Icons.analytics,
-        ),
-        NavigationItem(
-          label: l10n.more,
-          route: AppConstants.moreRoute,
-          iconOutlined: Icons.more_horiz,
-          iconFilled: Icons.more_horiz,
-        ),
-      ];
-    }
-
-    // SUPER_ADMIN - 5 items: Home, Team, Admin, Stats, More
+    // SUPER_ADMIN - 5 items: Home, Mister/Coach, Admin, Stats, More
     if (role.isSuperAdmin) {
       return [
         NavigationItem(
@@ -320,7 +307,7 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.home,
         ),
         NavigationItem(
-          label: l10n.team,
+          label: l10n.mister,
           route: AppConstants.coachPanelRoute,
           iconOutlined: Icons.sports_soccer_outlined,
           iconFilled: Icons.sports_soccer,

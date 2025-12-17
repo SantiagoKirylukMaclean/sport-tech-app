@@ -78,13 +78,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coach => 'Coach';
 
   @override
+  String get mister => 'Coach';
+
+  @override
   String get team => 'Team *';
 
   @override
   String get admin => 'Admin';
 
   @override
-  String get stats => 'Stats';
+  String get stats => 'Evaluations';
 
   @override
   String get more => 'More';
@@ -608,6 +611,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingData => 'Loading data...';
 
   @override
+  String get noEvaluationsYet => 'No evaluations yet';
+
+  @override
+  String get latestEvaluation => 'Latest Evaluation';
+
+  @override
+  String get coachNotes => 'Coach Notes';
+
+  @override
+  String get evaluationHistory => 'Evaluation History';
+
+  @override
+  String evaluationsCount(String count) {
+    return '$count evaluation(s)';
+  }
+
+  @override
   String get noTeamSelected => 'No Team Selected';
 
   @override
@@ -686,6 +706,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionNotFound => 'Session not found';
 
   @override
+  String get trainingSessions => 'Training Sessions';
+
+  @override
+  String get noTrainingSessions => 'No training sessions';
+
+  @override
+  String get noTrainingSessionsMessage => 'Training sessions will appear here';
+
+  @override
+  String get sessionInformation => 'Session Information';
+
+  @override
+  String get attendanceList => 'Attendance List';
+
+  @override
+  String get attendanceStatistics => 'Attendance Statistics';
+
+  @override
+  String get totalPlayers => 'Total Players';
+
+  @override
+  String get attendanceRate => 'Attendance Rate';
+
+  @override
+  String get notMarked => 'Not Marked';
+
+  @override
+  String get noPlayersInTeam => 'No players in team';
+
+  @override
   String errorLoadingPlayers(String message) {
     return 'Error loading players: $message';
   }
@@ -711,6 +761,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trainingSessionDetails => 'Training Session Details';
 
   @override
+  String get statistics => 'Evaluations';
+
+  @override
+  String get general => 'General';
+
+  @override
   String get noTrainingAttendanceData =>
       'No training attendance data available';
 
@@ -728,6 +784,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMatchesPlayedYet => 'No matches played yet';
+
+  @override
+  String get matchesPlayed => 'Matches Played';
+
+  @override
+  String get winPercentage => 'Win %';
+
+  @override
+  String get goalDifference => 'Goal Difference';
+
+  @override
+  String get cleanSheets => 'Clean Sheets';
+
+  @override
+  String get averageGoals => 'Average Goals';
+
+  @override
+  String get matchAttendance => 'Match Attendance';
+
+  @override
+  String winsDrawsLosses(String wins, String draws, String losses) {
+    return '${wins}W - ${draws}D - ${losses}L';
+  }
+
+  @override
+  String goalsForAgainst(String goalsFor, String goalsAgainst) {
+    return '$goalsFor for - $goalsAgainst against';
+  }
+
+  @override
+  String percentageOfMatches(String percentage) {
+    return '$percentage% of matches';
+  }
+
+  @override
+  String forAgainstAverage(String forAvg, String againstAvg) {
+    return 'For: $forAvg | Against: $againstAvg';
+  }
+
+  @override
+  String get seeDetails => 'See details';
 
   @override
   String get accountInformation => 'Account Information';

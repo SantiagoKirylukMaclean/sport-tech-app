@@ -1,6 +1,7 @@
 // lib/presentation/org/widgets/club_color_picker.dart
 
 import 'package:flutter/material.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 /// Color picker widget for club theme colors
 ///
@@ -20,6 +21,8 @@ class ClubColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -56,14 +59,14 @@ class ClubColorPicker extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    color != null ? _colorToHex(color!) : 'No seleccionado',
+                    color != null ? _colorToHex(color!) : l10n.notSelected,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   TextButton.icon(
                     onPressed: () => _showColorPicker(context),
                     icon: const Icon(Icons.edit, size: 16),
                     label: Text(
-                      color == null ? 'Seleccionar Color' : 'Cambiar Color',
+                      color == null ? l10n.selectColor : l10n.changeColor,
                     ),
                   ),
                 ],
@@ -73,7 +76,7 @@ class ClubColorPicker extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () => onColorChanged(null),
-                tooltip: 'Limpiar color',
+                tooltip: l10n.clearColor,
               ),
           ],
         ),
@@ -215,8 +218,10 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: const Text('Seleccionar Color'),
+      title: Text(l10n.selectColor),
       content: SizedBox(
         width: 300,
         child: GridView.builder(
@@ -254,14 +259,14 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Cancelar'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: () {
             widget.onColorSelected(selectedColor);
             Navigator.pop(context);
           },
-          child: const Text('Seleccionar'),
+          child: Text(l10n.confirm),
         ),
       ],
     );

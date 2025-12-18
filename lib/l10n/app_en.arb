@@ -522,5 +522,302 @@
     }
   },
   "copyUrl": "Copy URL",
-  "open": "Open"
+  "open": "Open",
+
+  "@_TRAINING_FORM": {},
+  "editTrainingSession": "Edit Training Session",
+  "newTrainingSession": "New Training Session",
+  "addTrainingNotes": "Add training notes (optional)",
+
+  "@_CREDENTIALS": {},
+  "assignCredentials": "Assign Credentials",
+  "playerLabel": "Player: {playerName}",
+  "@playerLabel": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "createAccountForPlayer": "Create an account so the player can access the app.",
+  "enterAnEmail": "Enter an email",
+  "enterAPassword": "Enter a password",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "playerCanUseCredentials": "The player can use these credentials to log in to the app.",
+  "createAccount": "Create Account",
+  "creatingAccount": "Creating account...",
+  "accountCreatedFor": "Account created for {playerName}",
+  "@accountCreatedFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_SET_PASSWORD": {},
+  "setPassword": "Set Password",
+  "goToLogin": "Go to Login",
+  "welcomeExclamation": "Welcome!",
+  "invitedAsRole": "You have been invited as a {role}",
+  "@invitedAsRole": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "confirmPassword": "Confirm Password",
+  "pleaseEnterPassword": "Please enter a password",
+  "passwordMinEightChars": "Password must be at least 8 characters",
+  "pleaseConfirmPassword": "Please confirm your password",
+  "setPasswordAndJoin": "Set Password & Join",
+  "accountCreatedSuccessfully": "Account created successfully! Please log in.",
+  "failedToCreateAccount": "Failed to create account: {message}",
+  "@failedToCreateAccount": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "anErrorOccurred": "An error occurred",
+
+  "@_COACH_PANEL": {},
+  "panelCoach": "Coach Panel",
+  "activeTeamLabel": "Active Team",
+  "noTeamSelectedSelectFromDashboard": "No team selected. Please select a team from the Dashboard.",
+  "manageTeamPlayers": "Manage team players",
+  "manageTrainingsAndAttendance": "Manage trainings and attendance",
+  "manageMatchesLineupsResults": "Manage matches, lineups and results",
+  "evaluatePlayerPerformance": "Evaluate player performance",
+
+  "@_INVITE_STAFF": {},
+  "inviteStaffMember": "Invite Staff Member",
+  "invitationEmailWillBeSent": "An invitation email will be sent with a link to set their password and join the team.",
+  "sendInvite": "Send Invite",
+  "failedToSendInvite": "Failed to send invite: {error}",
+  "@failedToSendInvite": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_MATCH_FORM": {},
+  "editMatch": "Edit Match",
+  "newMatch": "New Match",
+  "opponent": "Opponent",
+  "enterOpponentName": "Enter opponent name",
+  "matchDate": "Match Date",
+  "locationOptional": "Location (Optional)",
+  "enterMatchLocation": "Enter match location",
+  "notesOptional": "Notes (Optional)",
+  "enterAnyNotes": "Enter any notes",
+
+  "@_TEAM_PLAYERS": {},
+  "teamPlayersTitle": "Team Players",
+  "noPlayersAddOne": "No players found. Add one to get started!",
+  "addPlayer": "Add Player",
+  "deletePlayer": "Delete Player",
+  "confirmDeletePlayer": "Are you sure you want to delete \"{playerName}\"?",
+  "@confirmDeletePlayer": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "playerDeletedSuccessfully": "Player deleted successfully",
+
+  "@_MATCH_DETAIL": {},
+  "matchDetail": "Match Detail",
+  "matchNotFound": "Match not found",
+  "noQuarterResults": "No quarter results recorded",
+  "noGoalsRecorded": "No goals recorded",
+  "assistanceLabel": "Assistance: {playerName}",
+  "@assistanceLabel": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "noPlayerPeriodsInfo": "No player periods information",
+  "noPlayersInQuarter": "No players in this quarter",
+  "zoneLabel": "Zone: {zone}",
+  "@zoneLabel": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_USERS_MANAGEMENT": {},
+  "usersManagement": "Users Management",
+  "allRoles": "All roles",
+  "noUsersFound": "No users found",
+  "registrationDate": "Registration Date",
+  "editUser": "Edit User: {userName}",
+  "@editUser": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "roleUpdatedSuccessfully": "Role updated successfully",
+  "resetPassword": "Reset Password",
+  "passwordResetEmailSent": "Password reset email sent",
+  "failedToSendReset": "Failed to send reset",
+  "sendResetEmail": "Send Reset Email",
+
+  "@_INVITATIONS_MANAGEMENT": {},
+  "invitationsManagement": "Invitations Management",
+  "allStatuses": "All statuses",
+  "expired": "Expired",
+  "noInvitationsFound": "No invitations found",
+  "newInvitation": "New Invitation",
+  "roleLabel": "Role: {role}",
+  "@roleLabel": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "nameLabel": "Name: {name}",
+  "@nameLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerIdLabel": "Player ID: {playerId}",
+  "@playerIdLabel": {
+    "placeholders": {
+      "playerId": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationEmailSentTo": "An invitation email has been sent to:",
+  "shareThisLink": "Share this link with {email}:",
+  "@shareThisLink": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "copyPendingImplementation": "Copy functionality pending implementation",
+  "copy": "Copy",
+  "deleteInvitation": "Delete Invitation",
+  "confirmDeleteInvitation": "Are you sure you want to delete the invitation for \"{email}\"?",
+  "@confirmDeleteInvitation": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationDeletedSuccessfully": "Invitation deleted successfully",
+  "useAdminPanelForInvitations": "Use the admin panel to create new invitations",
+
+  "@_CLUBS_MANAGEMENT": {},
+  "filterBySport": "Filter by sport:",
+  "allSportsFilter": "All sports",
+  "selectSportToViewClubs": "Select a sport to view clubs",
+  "newClub": "New club",
+  "deleteClub": "Delete Club",
+  "confirmDeleteClub": "Are you sure you want to delete \"{clubName}\"?",
+  "@confirmDeleteClub": {
+    "placeholders": {
+      "clubName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_NEW_EVALUATION": {},
+  "pleaseRateAllCriteria": "Please rate all criteria",
+  "evaluationSavedSuccessfully": "Evaluation saved successfully",
+  "errorSaving": "Error saving: {error}",
+  "@errorSaving": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "newEvaluationFor": "New Evaluation - {playerName}",
+  "@newEvaluationFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "evaluationDate": "Evaluation Date",
+  "noteFor": "Note - {criterionName}",
+  "@noteFor": {
+    "placeholders": {
+      "criterionName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_ROUTER": {},
+  "couldNotFindRoute": "Could not find route: {route}",
+  "@couldNotFindRoute": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "goToHome": "Go to Home",
+
+  "@_MISCELLANEOUS": {},
+  "noUserAuthenticated": "No user authenticated",
+  "emailCopied": "Email copied",
+  "openInNewTab": "Open in new tab",
+  "minPlayersRequired": "{count} / 7 min",
+  "@minPlayersRequired": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeEmail": "Welcome, {email}!",
+  "@welcomeEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "evaluationFor": "Evaluation - {playerName}",
+  "@evaluationFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "selectColor": "Select Color",
+  "changeColor": "Change Color",
+  "clearColor": "Clear color",
+  "notSelected": "Not selected",
+
+  "@_SPORT_FORM": {},
+  "editSport": "Edit Sport",
+  "createSport": "Create Sport",
+  "sportName": "Sport Name",
+  "pleaseEnterSportName": "Please enter a sport name"
 }

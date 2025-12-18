@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/auth/auth_notifier.dart';
 import 'package:sport_tech_app/application/auth/auth_state.dart';
 import 'package:sport_tech_app/application/org/pending_invites_notifier.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class InviteStaffDialog extends ConsumerStatefulWidget {
   final String teamId;
@@ -32,8 +33,10 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AlertDialog(
-      title: const Text('Invite Staff Member'),
+      title: Text(l10n.inviteStaffMember),
       content: Form(
         key: _formKey,
         child: Column(
@@ -41,34 +44,34 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
           children: [
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+              decoration: InputDecoration(
+                labelText: l10n.email,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.email),
               ),
               keyboardType: TextInputType.emailAddress,
               autofocus: true,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'Please enter an email';
+                  return l10n.pleaseEnterEmail;
                 }
                 if (!value.contains('@')) {
-                  return 'Please enter a valid email';
+                  return l10n.invalidEmail;
                 }
                 return null;
               },
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
-                labelText: 'Role',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.badge),
+              decoration: InputDecoration(
+                labelText: l10n.role,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.badge),
               ),
-              initialValue: _selectedRole,
-              items: const [
-                DropdownMenuItem(value: 'coach', child: Text('Coach')),
-                DropdownMenuItem(value: 'admin', child: Text('Admin')),
+              value: _selectedRole,
+              items: [
+                DropdownMenuItem(value: 'coach', child: Text(l10n.coachRole)),
+                DropdownMenuItem(value: 'admin', child: Text(l10n.adminRole)),
               ],
               onChanged: (value) {
                 if (value != null) {
@@ -77,9 +80,9 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
               },
             ),
             const SizedBox(height: 16),
-            const Text(
-              'An invitation email will be sent with a link to set their password and join the team.',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              l10n.invitationEmailWillBeSent,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],
         ),
@@ -87,7 +90,7 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
       actions: [
         TextButton(
           onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         ElevatedButton(
           onPressed: _isSubmitting ? null : _submit,
@@ -97,7 +100,7 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text('Send Invite'),
+              : Text(l10n.sendInvite),
         ),
       ],
     );
@@ -106,10 +109,11 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.read(authNotifierProvider);
     if (authState is! AuthStateAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to send invites')),
+        SnackBar(content: Text(l10n.mustBeLoggedIn)),
       );
       return;
     }
@@ -129,13 +133,13 @@ class _InviteStaffDialogState extends ConsumerState<InviteStaffDialog> {
       if (success && mounted) {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invitation sent successfully')),
+          SnackBar(content: Text(l10n.invitationSentSuccessfully)),
         );
       } else if (mounted) {
         final error = ref.read(pendingInvitesNotifierProvider).error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to send invite: ${error ?? "Unknown error"}'),
+            content: Text(l10n.failedToSendInvite(error ?? 'Unknown error')),
             backgroundColor: Colors.red,
           ),
         );

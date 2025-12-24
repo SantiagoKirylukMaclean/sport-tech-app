@@ -15,6 +15,7 @@ import 'package:sport_tech_app/presentation/matches/pages/matches_list_page.dart
 import 'package:sport_tech_app/presentation/matches/pages/match_detail_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/player_matches_list_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/player_match_detail_page.dart';
+import 'package:sport_tech_app/presentation/dashboard/pages/quarters_played_chart_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_attendance_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_session_detail_page.dart';
@@ -395,6 +396,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
               child: const PlayerMatchesListPage(),
+            ),
+          ),
+          GoRoute(
+            path: '/dashboard/quarters-played-chart',
+            name: 'quarters-played-chart',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const QuartersPlayedChartPage(),
             ),
           ),
           GoRoute(

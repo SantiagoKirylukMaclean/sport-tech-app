@@ -137,11 +137,16 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
               SizedBox(
                 width: cardSize,
                 height: cardSize,
-                child: StatCard(
-                  title: l10n.quartersPlayed,
-                  value: '${widget.stats.averagePeriods.toStringAsFixed(1)}',
-                  subtitle: '${(widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)}% • ${l10n.averageOf} 4',
-                  icon: Icons.timer,
+                child: GestureDetector(
+                  onTap: () {
+                    context.push('/dashboard/quarters-played-chart');
+                  },
+                  child: StatCard(
+                    title: l10n.quartersPlayed,
+                    value: '${widget.stats.averagePeriods.toStringAsFixed(1)}',
+                    subtitle: '${(widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)}% • ${l10n.averageOf} 4',
+                    icon: Icons.timer,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

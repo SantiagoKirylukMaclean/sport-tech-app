@@ -206,9 +206,26 @@ class AppScaffold extends ConsumerWidget {
   /// Build icon with badge for navigation items
   Widget _buildIconWithBadge(NavigationItem item, WidgetRef ref, {bool selected = false}) {
     final icon = Icon(selected ? item.iconFilled : item.iconOutlined);
+    final authState = ref.watch(authNotifierProvider);
 
-    // Add badge to "More" icon if there are notes
-    if (item.route == AppConstants.moreRoute) {
+    // Add badge to "Notes" icon for players
+    if (item.route == AppConstants.notesRoute &&
+        authState is AuthStateAuthenticated &&
+        authState.profile.role == UserRole.player) {
+      final notesCount = ref.watch(notesCountProvider);
+
+      if (notesCount > 0) {
+        return Badge(
+          label: Text('$notesCount'),
+          child: icon,
+        );
+      }
+    }
+
+    // Add badge to "More" icon if there are notes (for non-players)
+    if (item.route == AppConstants.moreRoute &&
+        authState is AuthStateAuthenticated &&
+        authState.profile.role != UserRole.player) {
       final notesCount = ref.watch(notesCountProvider);
 
       if (notesCount > 0) {
@@ -231,7 +248,7 @@ class AppScaffold extends ConsumerWidget {
     final role = authState.profile.role;
     final l10n = AppLocalizations.of(context)!;
 
-    // PLAYER - 5 items: Home, Trainings, Championship, Evaluaciones, More
+    // PLAYER - 5 items: Home, Notes, Championship, Evaluaciones, More
     if (role == UserRole.player) {
       return [
         NavigationItem(
@@ -241,10 +258,10 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.home,
         ),
         NavigationItem(
-          label: l10n.trainings,
-          route: AppConstants.trainingsRoute,
-          iconOutlined: Icons.fitness_center_outlined,
-          iconFilled: Icons.fitness_center,
+          label: l10n.notes,
+          route: AppConstants.notesRoute,
+          iconOutlined: Icons.sticky_note_2_outlined,
+          iconFilled: Icons.sticky_note_2,
         ),
         NavigationItem(
           label: l10n.championship,

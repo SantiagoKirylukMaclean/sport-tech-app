@@ -41,37 +41,40 @@ class MorePage extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Quick Access Section
-                  _SectionHeader(
-                    icon: Icons.bolt_outlined,
-                    title: l10n.quickAccess,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Championship (for admins only, not coaches)
-                  if (role.isAdmin)
-                    _MenuCard(
-                      icon: Icons.emoji_events_outlined,
-                      title: l10n.championship,
-                      subtitle: 'Ver información del campeonato',
-                      color: Colors.amber,
-                      onTap: () => context.go(AppConstants.championshipRoute),
+                  // Quick Access Section (only show if there are items to display)
+                  if (role.isAdmin || role == UserRole.coach) ...[
+                    _SectionHeader(
+                      icon: Icons.bolt_outlined,
+                      title: l10n.quickAccess,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
+                    const SizedBox(height: 8),
 
-                  // Notes with badge
-                  _MenuCard(
-                    icon: Icons.sticky_note_2_outlined,
-                    title: l10n.notes,
-                    subtitle: notesCount > 0
-                        ? '$notesCount ${notesCount == 1 ? "nota" : "notas"}'
-                        : 'Tus notas personales',
-                    color: Colors.orange,
-                    badge: notesCount > 0 ? notesCount : null,
-                    onTap: () => context.go(AppConstants.notesRoute),
-                  ),
+                    // Championship (for admins only, not coaches)
+                    if (role.isAdmin)
+                      _MenuCard(
+                        icon: Icons.emoji_events_outlined,
+                        title: l10n.championship,
+                        subtitle: 'Ver información del campeonato',
+                        color: Colors.amber,
+                        onTap: () => context.go(AppConstants.championshipRoute),
+                      ),
 
-                  const SizedBox(height: 24),
+                    // Notes with badge (for coaches and admins, not players)
+                    if (role != UserRole.player)
+                      _MenuCard(
+                        icon: Icons.sticky_note_2_outlined,
+                        title: l10n.notes,
+                        subtitle: notesCount > 0
+                            ? '$notesCount ${notesCount == 1 ? "nota" : "notas"}'
+                            : 'Tus notas personales',
+                        color: Colors.orange,
+                        badge: notesCount > 0 ? notesCount : null,
+                        onTap: () => context.go(AppConstants.notesRoute),
+                      ),
+
+                    const SizedBox(height: 24),
+                  ],
 
                   // Account Section
                   _SectionHeader(

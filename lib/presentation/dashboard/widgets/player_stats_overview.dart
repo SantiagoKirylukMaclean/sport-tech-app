@@ -119,12 +119,17 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
               SizedBox(
                 width: cardSize,
                 height: cardSize,
-                child: StatCard(
-                  title: l10n.trainings,
-                  value: '${widget.stats.trainingsAttended}',
-                  subtitle: '${widget.stats.trainingAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
-                  icon: Icons.fitness_center,
-                  valueColor: _getPercentageColor(widget.stats.trainingAttendancePercentage),
+                child: GestureDetector(
+                  onTap: () {
+                    context.push('/dashboard/trainings');
+                  },
+                  child: StatCard(
+                    title: l10n.trainings,
+                    value: '${widget.stats.trainingsAttended}',
+                    subtitle: '${widget.stats.trainingAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
+                    icon: Icons.fitness_center,
+                    valueColor: _getPercentageColor(widget.stats.trainingAttendancePercentage),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

@@ -107,8 +107,8 @@ class _TrainingSessionDetailPageState
     final attendanceState = ref.watch(trainingAttendanceNotifierProvider);
     final authState = ref.watch(authNotifierProvider);
 
-    // Check if user is coach or admin to show statistics
-    final bool showStatistics = authState is AuthStateAuthenticated &&
+    // Check if user is coach or admin to show full statistics and attendance list
+    final bool isCoachOrAdmin = authState is AuthStateAuthenticated &&
         (authState.profile.role == UserRole.coach ||
          authState.profile.role.isAdmin);
 
@@ -132,22 +132,23 @@ class _TrainingSessionDetailPageState
                         _buildSessionInfo(context),
                         const SizedBox(height: 24),
 
-                        // Attendance Statistics (only for coaches and admins)
-                        if (showStatistics) ...[
-                          _buildAttendanceStatistics(context, attendanceState),
-                          const SizedBox(height: 24),
-                        ],
+                        // Attendance Summary - shown for all users
+                        _buildAttendanceSummary(context, attendanceState, isCoachOrAdmin),
+                        const SizedBox(height: 24),
 
-                        // Attendance List Section
-                        Text(
-                          l10n.attendanceList,
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildAttendanceList(context, attendanceState),
+                        // Full Attendance Statistics and List (only for coaches and admins)
+                        if (isCoachOrAdmin) ...[
+                          // Attendance List Section
+                          Text(
+                            l10n.attendanceList,
+                            style:
+                                Theme.of(context).textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildAttendanceList(context, attendanceState),
+                        ],
                       ],
                     ),
                   ),
@@ -248,8 +249,11 @@ class _TrainingSessionDetailPageState
     );
   }
 
-  Widget _buildAttendanceStatistics(
-      BuildContext context, TrainingAttendanceState attendanceState) {
+  Widget _buildAttendanceSummary(
+    BuildContext context,
+    TrainingAttendanceState attendanceState,
+    bool isCoachOrAdmin,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     final attendanceNotifier =
         ref.read(trainingAttendanceNotifierProvider.notifier);
@@ -280,10 +284,126 @@ class _TrainingSessionDetailPageState
     }
 
     final totalPlayers = _players.length;
+    final attendedCount = onTimeCount + lateCount;
     final attendancePercentage = totalPlayers > 0
-        ? ((onTimeCount + lateCount) / totalPlayers * 100).toStringAsFixed(1)
+        ? (attendedCount / totalPlayers * 100).toStringAsFixed(1)
         : '0.0';
 
+    // For players: show only summary count and their own attendance
+    if (!isCoachOrAdmin) {
+      // Get current user's player ID and attendance status
+      final authState = ref.read(authNotifierProvider);
+      String? currentUserId;
+      if (authState is AuthStateAuthenticated) {
+        currentUserId = authState.user.id;
+      }
+
+      // Find the player record for the current user
+      Player? currentPlayer;
+      if (currentUserId != null) {
+        currentPlayer = _players.cast<Player?>().firstWhere(
+          (p) => p?.userId == currentUserId,
+          orElse: () => null,
+        );
+      }
+
+      // Get the player's attendance status
+      AttendanceStatus? myStatus;
+      if (currentPlayer != null) {
+        myStatus = attendanceNotifier.getPlayerStatus(currentPlayer.id);
+      }
+
+      return Column(
+        children: [
+          // My Attendance Status Card
+          if (currentPlayer != null)
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          l10n.myAttendance,
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 24),
+                    _buildMyAttendanceStatus(context, myStatus, l10n),
+                  ],
+                ),
+              ),
+            ),
+          if (currentPlayer != null) const SizedBox(height: 16),
+          // Team Attendance Summary Card
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.people,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        l10n.teamAttendance,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildSimpleStat(
+                        context,
+                        label: l10n.attended,
+                        value: '$attendedCount/$totalPlayers',
+                        icon: Icons.check_circle,
+                        color: Colors.green,
+                      ),
+                      Container(
+                        height: 60,
+                        width: 1,
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                      ),
+                      _buildSimpleStat(
+                        context,
+                        label: l10n.attendanceRate,
+                        value: '$attendancePercentage%',
+                        icon: Icons.percent,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // For coaches/admins: show detailed statistics
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -375,6 +495,94 @@ class _TrainingSessionDetailPageState
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMyAttendanceStatus(
+    BuildContext context,
+    AttendanceStatus? status,
+    AppLocalizations l10n,
+  ) {
+    IconData icon;
+    String statusLabel;
+    Color color;
+
+    if (status == null) {
+      icon = Icons.help_outline;
+      statusLabel = l10n.notMarked;
+      color = Theme.of(context).colorScheme.onSurfaceVariant;
+    } else {
+      switch (status) {
+        case AttendanceStatus.onTime:
+          icon = Icons.check_circle;
+          statusLabel = l10n.onTime;
+          color = Colors.green;
+          break;
+        case AttendanceStatus.late:
+          icon = Icons.schedule;
+          statusLabel = l10n.late;
+          color = Colors.orange;
+          break;
+        case AttendanceStatus.absent:
+          icon = Icons.cancel;
+          statusLabel = l10n.absent;
+          color = Colors.red;
+          break;
+      }
+    }
+
+    return Center(
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 64,
+            color: color,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            statusLabel,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSimpleStat(
+    BuildContext context, {
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+  }) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 32,
+          color: color,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 

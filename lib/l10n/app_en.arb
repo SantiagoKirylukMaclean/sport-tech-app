@@ -392,6 +392,9 @@
   "onTime": "On Time",
   "late": "Late",
   "absent": "Absent",
+  "attended": "Attended",
+  "myAttendance": "My Attendance",
+  "teamAttendance": "Team Attendance",
   "trainingSessionDetails": "Training Session Details",
 
   "@_STATISTICS": {},

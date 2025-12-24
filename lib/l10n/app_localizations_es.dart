@@ -769,6 +769,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get absent => 'Ausente';
 
   @override
+  String get attended => 'Asistieron';
+
+  @override
+  String get myAttendance => 'Mi Asistencia';
+
+  @override
+  String get teamAttendance => 'Asistencia del Equipo';
+
+  @override
   String get trainingSessionDetails => 'Detalles de la Sesión de Entrenamiento';
 
   @override

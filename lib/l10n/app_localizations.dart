@@ -1508,6 +1508,24 @@ abstract class AppLocalizations {
   /// **'Absent'**
   String get absent;
 
+  /// No description provided for @attended.
+  ///
+  /// In en, this message translates to:
+  /// **'Attended'**
+  String get attended;
+
+  /// No description provided for @myAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'My Attendance'**
+  String get myAttendance;
+
+  /// No description provided for @teamAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Attendance'**
+  String get teamAttendance;
+
   /// No description provided for @trainingSessionDetails.
   ///
   /// In en, this message translates to:

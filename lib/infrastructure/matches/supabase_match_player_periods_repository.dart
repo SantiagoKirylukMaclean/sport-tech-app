@@ -20,10 +20,15 @@ class SupabaseMatchPlayerPeriodsRepository
     String matchId,
   ) async {
     try {
+      final matchIdInt = int.tryParse(matchId);
+      if (matchIdInt == null) {
+        return Failed(ServerFailure('Invalid matchId format: $matchId'));
+      }
+
       final response = await _client
           .from('match_player_periods')
           .select()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .order('period', ascending: true);
 
       final periods = (response as List)
@@ -48,10 +53,17 @@ class SupabaseMatchPlayerPeriodsRepository
     required String playerId,
   }) async {
     try {
+      // Parse matchId as int since it's stored as integer in the database
+      // playerId remains as string (UUID)
+      final matchIdInt = int.tryParse(matchId);
+      if (matchIdInt == null) {
+        return Failed(ServerFailure('Invalid matchId format: $matchId'));
+      }
+
       final response = await _client
           .from('match_player_periods')
           .select()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('player_id', playerId)
           .order('period', ascending: true);
 
@@ -77,10 +89,15 @@ class SupabaseMatchPlayerPeriodsRepository
     required int quarter,
   }) async {
     try {
+      final matchIdInt = int.tryParse(matchId);
+      if (matchIdInt == null) {
+        return Failed(ServerFailure('Invalid matchId format: $matchId'));
+      }
+
       final response = await _client
           .from('match_player_periods')
           .select()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('period', quarter)
           .order('player_id', ascending: true);
 
@@ -110,18 +127,19 @@ class SupabaseMatchPlayerPeriodsRepository
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
+      final matchIdInt = int.parse(matchId);
 
       // Upsert: delete existing + insert new
       await _client
           .from('match_player_periods')
           .delete()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('player_id', playerId)
           .eq('period', period);
 
       final insertData = {
-        'match_id': int.parse(matchId),
-        'player_id': int.parse(playerId),
+        'match_id': matchIdInt,
+        'player_id': playerId, // Keep as string (UUID)
         'period': period,
         'fraction': fraction.value,
         'created_at': now,
@@ -153,10 +171,11 @@ class SupabaseMatchPlayerPeriodsRepository
     required FieldZone fieldZone,
   }) async {
     try {
+      final matchIdInt = int.parse(matchId);
       final response = await _client
           .from('match_player_periods')
           .update({'field_zone': fieldZone.value})
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('player_id', playerId)
           .eq('period', period)
           .select()
@@ -183,10 +202,11 @@ class SupabaseMatchPlayerPeriodsRepository
     required int period,
   }) async {
     try {
+      final matchIdInt = int.parse(matchId);
       await _client
           .from('match_player_periods')
           .delete()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('player_id', playerId)
           .eq('period', period);
 
@@ -204,10 +224,11 @@ class SupabaseMatchPlayerPeriodsRepository
     required String playerId,
   }) async {
     try {
+      final matchIdInt = int.parse(matchId);
       await _client
           .from('match_player_periods')
           .delete()
-          .eq('match_id', matchId)
+          .eq('match_id', matchIdInt)
           .eq('player_id', playerId);
 
       return const Success(null);

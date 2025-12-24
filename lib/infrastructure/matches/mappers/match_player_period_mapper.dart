@@ -23,7 +23,7 @@ class MatchPlayerPeriodMapper {
   static Map<String, dynamic> toJson(MatchPlayerPeriod period) {
     final json = {
       'match_id': int.parse(period.matchId),
-      'player_id': int.parse(period.playerId),
+      'player_id': period.playerId, // Keep as string (UUID)
       'period': period.period,
       'fraction': period.fraction.value,
       'created_at': period.createdAt.toIso8601String(),

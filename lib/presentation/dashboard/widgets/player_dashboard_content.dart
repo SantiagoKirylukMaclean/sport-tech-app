@@ -7,6 +7,7 @@ import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 import 'package:sport_tech_app/presentation/dashboard/widgets/player_stats_overview.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 /// Widget displaying the complete player dashboard with all sections
 class PlayerDashboardContent extends StatelessWidget {
@@ -23,6 +24,7 @@ class PlayerDashboardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +33,7 @@ class PlayerDashboardContent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'Mis Estadísticas',
+              l10n.myStatistics,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -45,7 +47,7 @@ class PlayerDashboardContent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Text(
-              'Estadísticas del Equipo',
+              l10n.teamStatistics,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -87,14 +89,14 @@ class PlayerDashboardContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Evaluaciones',
+                              l10n.evaluations,
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '$evaluationsCount evaluaciones recibidas',
+                              l10n.evaluationsCount(evaluationsCount.toString()),
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Theme.of(context)
                                         .colorScheme

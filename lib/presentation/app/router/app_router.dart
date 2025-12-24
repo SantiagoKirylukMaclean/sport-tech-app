@@ -13,6 +13,8 @@ import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_list_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_detail_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/player_matches_list_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/player_match_detail_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/trainings_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_attendance_page.dart';
 import 'package:sport_tech_app/presentation/trainings/pages/training_session_detail_page.dart';
@@ -388,6 +390,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(
+            path: '/dashboard/player-matches',
+            name: 'player-matches-list',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const PlayerMatchesListPage(),
+            ),
+          ),
+          GoRoute(
             path: '/dashboard/matches/:matchId',
             name: 'match-detail',
             pageBuilder: (context, state) {
@@ -395,6 +405,17 @@ final routerProvider = Provider<GoRouter>((ref) {
               return MaterialPage(
                 key: state.pageKey,
                 child: MatchDetailPage(matchId: matchId),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/dashboard/player-matches/:matchId',
+            name: 'player-match-detail',
+            pageBuilder: (context, state) {
+              final matchId = state.pathParameters['matchId'] ?? '';
+              return MaterialPage(
+                key: state.pageKey,
+                child: PlayerMatchDetailPage(matchId: matchId),
               );
             },
           ),

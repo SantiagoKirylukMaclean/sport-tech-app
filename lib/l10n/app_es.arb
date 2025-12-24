@@ -248,6 +248,13 @@
   "saveResult": "Guardar Resultado",
   "addGoal": "Agregar Gol",
   "assist": "Asistencia: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  },
   "none": "Ninguno",
   "opponentNameRequired": "El nombre del oponente es obligatorio",
 
@@ -303,6 +310,12 @@
   "percentageOfMatches": "{percentage}% de los partidos",
   "forAgainstAverage": "A favor: {forAvg} | En contra: {againstAvg}",
   "seeDetails": "Ver detalles",
+  "myStatistics": "Mis Estadísticas",
+  "teamStatistics": "Estadísticas del Equipo",
+  "quartersPlayed": "Cuartos Jugados",
+  "interventions": "Intervenciones",
+  "attendance": "asistencia",
+  "averageOf": "Promedio de",
 
   "@_PROFILE": {},
   "accountInformation": "Información de la Cuenta",
@@ -499,5 +512,41 @@
   "editSport": "Editar Deporte",
   "createSport": "Crear Deporte",
   "sportName": "Nombre del Deporte",
-  "pleaseEnterSportName": "Por favor ingresa un nombre de deporte"
+  "pleaseEnterSportName": "Por favor ingresa un nombre de deporte",
+
+  "@_PLAYER_MATCHES": {},
+  "myMatches": "Mis Partidos",
+  "selectTeamToViewMatches": "Por favor selecciona un equipo para ver los partidos",
+  "didNotPlay": "No jugó",
+  "errorLoadingMatches": "Error al cargar los partidos",
+  "noMatchesPlayed": "No hay partidos jugados",
+  "matchesWillAppearHere": "Los partidos aparecerán aquí",
+  "matchDetail": "Detalle del Partido",
+  "errorLoadingMatchDetail": "Error al cargar el detalle del partido",
+  "matchNotFound": "Partido no encontrado",
+  "myPerformance": "Mi Desempeño",
+  "quarters": "Cuartos",
+  "hands": "Asistencias",
+  "didNotPlayInThisMatch": "No jugaste en este partido",
+  "quarter": "Cuarto",
+  "position": "Posición",
+  "fullQuarter": "Cuarto completo",
+  "halfQuarter": "Medio cuarto",
+  "matchResults": "Resultados del Partido",
+  "noQuarterResultsRecorded": "No hay resultados por cuarto registrados",
+  "finalResult": "Resultado Final",
+  "victory": "Victoria",
+  "tie": "Empate",
+  "defeat": "Derrota",
+  "noData": "Sin datos",
+  "comingSoon": "Próximamente",
+  "matchRating": "Puntaje del Partido",
+  "matchRatingDescription": "Tu calificación de desempeño para este partido",
+  "matchNotes": "Notas del Partido",
+  "matchNotesDescription": "Notas personales y observaciones sobre tu desempeño",
+  "videoAnalysis": "Análisis de Video",
+  "videoAnalysisDescription": "Enlace al análisis de video de tu desempeño",
+  "matchGoals": "Goles del Partido",
+  "noGoalsRecorded": "No hay goles registrados",
+  "scorer": "Goleador"
 }

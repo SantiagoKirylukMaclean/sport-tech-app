@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/stat_card.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
-import 'package:sport_tech_app/application/stats/stats_providers.dart';
 
 /// Widget displaying an overview of team statistics
 class TeamStatsOverview extends ConsumerStatefulWidget {
@@ -83,15 +82,6 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
     return totalGoals / matchesPlayed;
   }
 
-  double _getTrainingAttendancePercentage(List players) {
-    if (players.isEmpty) return 0.0;
-    final totalAttendance = players.fold<double>(
-      0.0,
-      (sum, p) => sum + p.trainingAttendancePercentage,
-    );
-    return totalAttendance / players.length;
-  }
-
   /// Get color based on percentage (0% = red, 100% = green)
   Color _getPercentageColor(double percentage) {
     // Clamp percentage to 0-100 range
@@ -135,7 +125,8 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
     final goalsFor = widget.matches.fold(0, (sum, match) => sum + match.teamGoals);
     final goalsAgainst =
         widget.matches.fold(0, (sum, match) => sum + match.opponentGoals);
-    return l10n.goalsForAgainst(goalsFor.toString(), goalsAgainst.toString());
+    final averageGoals = _getAverageGoals();
+    return '${l10n.goalsForAgainst(goalsFor.toString(), goalsAgainst.toString())}\nPromedio: ${averageGoals.toStringAsFixed(1)}';
   }
 
   String _getMatchesPlayedSubtitle(BuildContext context) {
@@ -148,15 +139,6 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
     return '${l10n.winsDrawsLosses(wins.toString(), draws.toString(), losses.toString())} • ${_getWinPercentage().toStringAsFixed(1)}%';
   }
 
-  double _getAverageMatchAttendance(List players) {
-    if (players.isEmpty) return 0.0;
-    final totalAttendance = players.fold<double>(
-      0.0,
-      (sum, p) => sum + p.matchAttendancePercentage,
-    );
-    return totalAttendance / players.length;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.matches.isEmpty) {
@@ -164,17 +146,12 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
     }
 
     final l10n = AppLocalizations.of(context)!;
-    final statsState = ref.watch(statsNotifierProvider);
-    final players = statsState.playerStatistics;
 
     // Calculate values
     final matchesPlayed = _getMatchesPlayed();
     final winPercentage = _getWinPercentage();
     final goalDifference = _getGoalDifference();
     final cleanSheets = _getCleanSheets();
-    final averageGoals = _getAverageGoals();
-    final trainingAttendance = _getTrainingAttendancePercentage(players);
-    final matchAttendance = _getAverageMatchAttendance(players);
 
     // Define a fixed size for all cards (square cards)
     const cardSize = 180.0;
@@ -194,7 +171,7 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                   title: l10n.matchesPlayed,
                   value: '$matchesPlayed',
                   subtitle: _getMatchesPlayedSubtitle(context),
-                  icon: Icons.sports_soccer,
+                  icon: Icons.sports,
                   valueColor: _getPercentageColor(winPercentage),
                   onTap: () {
                     // Navigate to matches page
@@ -213,7 +190,7 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                   value: goalDifference >= 0
                       ? '+$goalDifference'
                       : '$goalDifference',
-                  subtitle: '${_getGoalDifferenceSubtitle(context)}\n${l10n.averageGoals}: ${averageGoals.toStringAsFixed(1)}',
+                  subtitle: _getGoalDifferenceSubtitle(context),
                   icon: Icons.sports_score,
                   valueColor: _getGoalDifferenceColor(context, goalDifference),
                 ),
@@ -232,44 +209,6 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                       : '',
                   icon: Icons.shield,
                   valueColor: cleanSheets > 0 ? Colors.green.shade700 : null,
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: cardSize,
-                height: cardSize,
-                child: StatCard(
-                  title: l10n.matchAttendance,
-                  value: '${matchAttendance.toStringAsFixed(1)}%',
-                  subtitle: players.isNotEmpty
-                      ? l10n.percentageOfMatches(
-                          matchAttendance.toStringAsFixed(1),
-                        )
-                      : '',
-                  icon: Icons.groups,
-                  valueColor: _getPercentageColor(matchAttendance),
-                ),
-              ),
-              const SizedBox(width: 12),
-              SizedBox(
-                width: cardSize,
-                height: cardSize,
-                child: StatCard(
-                  title: l10n.trainingAttendance,
-                  value: '${trainingAttendance.toStringAsFixed(1)}%',
-                  subtitle: players.isNotEmpty
-                      ? l10n.percentageOfMatches(
-                          trainingAttendance.toStringAsFixed(1),
-                        )
-                      : '',
-                  icon: Icons.fitness_center,
-                  valueColor: _getPercentageColor(trainingAttendance),
-                  onTap: () {
-                    // Navigate to training sessions page
-                    if (context.mounted) {
-                      context.push('/dashboard/trainings');
-                    }
-                  },
                 ),
               ),
             ],

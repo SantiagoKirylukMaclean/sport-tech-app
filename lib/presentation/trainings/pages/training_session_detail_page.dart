@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
+import '../../../application/auth/auth_notifier.dart';
+import '../../../application/auth/auth_state.dart';
 import '../../../application/org/active_team_notifier.dart';
 import '../../../application/trainings/trainings_providers.dart';
 import '../../../application/trainings/training_attendance_notifier.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../domain/org/entities/player.dart';
 import '../../../domain/trainings/entities/training_attendance.dart';
 import '../../../domain/trainings/entities/training_session.dart';
@@ -102,6 +105,12 @@ class _TrainingSessionDetailPageState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final attendanceState = ref.watch(trainingAttendanceNotifierProvider);
+    final authState = ref.watch(authNotifierProvider);
+
+    // Check if user is coach or admin to show statistics
+    final bool showStatistics = authState is AuthStateAuthenticated &&
+        (authState.profile.role == UserRole.coach ||
+         authState.profile.role.isAdmin);
 
     return Scaffold(
       appBar: AppBar(
@@ -123,9 +132,11 @@ class _TrainingSessionDetailPageState
                         _buildSessionInfo(context),
                         const SizedBox(height: 24),
 
-                        // Attendance Statistics
-                        _buildAttendanceStatistics(context, attendanceState),
-                        const SizedBox(height: 24),
+                        // Attendance Statistics (only for coaches and admins)
+                        if (showStatistics) ...[
+                          _buildAttendanceStatistics(context, attendanceState),
+                          const SizedBox(height: 24),
+                        ],
 
                         // Attendance List Section
                         Text(

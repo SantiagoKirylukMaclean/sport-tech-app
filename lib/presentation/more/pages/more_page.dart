@@ -49,8 +49,8 @@ class MorePage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Championship (for coaches and super admins only)
-                  if (role.isAdmin || role == UserRole.coach)
+                  // Championship (for admins only, not coaches)
+                  if (role.isAdmin)
                     _MenuCard(
                       icon: Icons.emoji_events_outlined,
                       title: l10n.championship,

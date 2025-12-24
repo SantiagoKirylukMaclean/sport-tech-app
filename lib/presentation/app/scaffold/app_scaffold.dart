@@ -231,7 +231,7 @@ class AppScaffold extends ConsumerWidget {
     final role = authState.profile.role;
     final l10n = AppLocalizations.of(context)!;
 
-    // PLAYER - 4 items: Home, Trainings, Stats, More
+    // PLAYER - 4 items: Home, Trainings, Evaluaciones, More
     if (role == UserRole.player) {
       return [
         NavigationItem(
@@ -247,7 +247,7 @@ class AppScaffold extends ConsumerWidget {
           iconFilled: Icons.fitness_center,
         ),
         NavigationItem(
-          label: l10n.stats,
+          label: l10n.evaluations,
           route: AppConstants.evaluationsRoute,
           iconOutlined: Icons.analytics_outlined,
           iconFilled: Icons.analytics,

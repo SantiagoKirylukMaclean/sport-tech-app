@@ -18,14 +18,26 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
     try {
       final response = await _client
           .from('match_goals')
-          .select()
+          .select('''
+            *,
+            scorer:scorer_id(full_name),
+            assister:assister_id(full_name)
+          ''')
           .eq('match_id', matchId)
           .order('quarter', ascending: true)
           .order('created_at', ascending: true);
 
-      final goals = (response as List)
-          .map((json) => MatchGoalMapper.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final goals = (response as List).map((json) {
+        // Flatten the nested structure for the mapper
+        final flatJson = Map<String, dynamic>.from(json as Map<String, dynamic>);
+        if (json['scorer'] != null) {
+          flatJson['scorer_name'] = json['scorer']['full_name'];
+        }
+        if (json['assister'] != null) {
+          flatJson['assister_name'] = json['assister']['full_name'];
+        }
+        return MatchGoalMapper.fromJson(flatJson);
+      }).toList();
 
       return Success(goals);
     } on PostgrestException catch (e) {
@@ -43,14 +55,26 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
     try {
       final response = await _client
           .from('match_goals')
-          .select()
+          .select('''
+            *,
+            scorer:scorer_id(full_name),
+            assister:assister_id(full_name)
+          ''')
           .eq('match_id', matchId)
           .eq('quarter', quarter)
           .order('created_at', ascending: true);
 
-      final goals = (response as List)
-          .map((json) => MatchGoalMapper.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final goals = (response as List).map((json) {
+        // Flatten the nested structure for the mapper
+        final flatJson = Map<String, dynamic>.from(json as Map<String, dynamic>);
+        if (json['scorer'] != null) {
+          flatJson['scorer_name'] = json['scorer']['full_name'];
+        }
+        if (json['assister'] != null) {
+          flatJson['assister_name'] = json['assister']['full_name'];
+        }
+        return MatchGoalMapper.fromJson(flatJson);
+      }).toList();
 
       return Success(goals);
     } on PostgrestException catch (e) {
@@ -75,9 +99,22 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
         'scorer_id': int.parse(scorerId),
         'assister_id': assisterId != null ? int.parse(assisterId) : null,
         'created_at': now,
-      }).select().single();
+      }).select('''
+        *,
+        scorer:scorer_id(full_name),
+        assister:assister_id(full_name)
+      ''').single();
 
-      return Success(MatchGoalMapper.fromJson(response));
+      // Flatten the nested structure for the mapper
+      final flatJson = Map<String, dynamic>.from(response);
+      if (response['scorer'] != null) {
+        flatJson['scorer_name'] = response['scorer']['full_name'];
+      }
+      if (response['assister'] != null) {
+        flatJson['assister_name'] = response['assister']['full_name'];
+      }
+
+      return Success(MatchGoalMapper.fromJson(flatJson));
     } on PostgrestException catch (e) {
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
@@ -105,10 +142,23 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
           .from('match_goals')
           .update(updates)
           .eq('id', id)
-          .select()
+          .select('''
+            *,
+            scorer:scorer_id(full_name),
+            assister:assister_id(full_name)
+          ''')
           .single();
 
-      return Success(MatchGoalMapper.fromJson(response));
+      // Flatten the nested structure for the mapper
+      final flatJson = Map<String, dynamic>.from(response);
+      if (response['scorer'] != null) {
+        flatJson['scorer_name'] = response['scorer']['full_name'];
+      }
+      if (response['assister'] != null) {
+        flatJson['assister_name'] = response['assister']['full_name'];
+      }
+
+      return Success(MatchGoalMapper.fromJson(flatJson));
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST116') {
         return Failed(NotFoundFailure('Goal not found', code: e.code));

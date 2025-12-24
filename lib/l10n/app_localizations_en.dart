@@ -174,7 +174,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get success => 'Success';
 
   @override
-  String get noData => 'No data available';
+  String get noData => 'No data';
 
   @override
   String get name => 'Name';
@@ -631,8 +631,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noTeamSelected => 'No Team Selected';
 
   @override
-  String get selectTeamToViewMatches =>
-      'Please select a team from the Dashboard to view and manage matches.';
+  String get selectTeamToViewMatches => 'Please select a team to view matches';
 
   @override
   String get noMatchesYet => 'No matches yet';
@@ -665,7 +664,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String assist(String assisterName) {
-    return 'Assist: $assisterName';
+    return 'Assist';
   }
 
   @override
@@ -827,6 +826,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeDetails => 'See details';
 
   @override
+  String get myStatistics => 'My Statistics';
+
+  @override
+  String get teamStatistics => 'Team Statistics';
+
+  @override
+  String get quartersPlayed => 'Quarters Played';
+
+  @override
+  String get interventions => 'Interventions';
+
+  @override
+  String get attendance => 'Attendance';
+
+  @override
+  String get averageOf => 'Average of';
+
+  @override
   String get accountInformation => 'Account Information';
 
   @override
@@ -912,9 +929,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lineup => 'Lineup';
 
   @override
-  String get attendance => 'Attendance';
-
-  @override
   String get playerRole => 'Player';
 
   @override
@@ -953,4 +967,478 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get open => 'Open';
+
+  @override
+  String get editTrainingSession => 'Edit Training Session';
+
+  @override
+  String get newTrainingSession => 'New Training Session';
+
+  @override
+  String get addTrainingNotes => 'Add training notes (optional)';
+
+  @override
+  String get assignCredentials => 'Assign Credentials';
+
+  @override
+  String playerLabel(String playerName) {
+    return 'Player: $playerName';
+  }
+
+  @override
+  String get createAccountForPlayer =>
+      'Create an account so the player can access the app.';
+
+  @override
+  String get enterAnEmail => 'Enter an email';
+
+  @override
+  String get enterAPassword => 'Enter a password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get playerCanUseCredentials =>
+      'The player can use these credentials to log in to the app.';
+
+  @override
+  String get createAccount => 'Create Account';
+
+  @override
+  String get creatingAccount => 'Creating account...';
+
+  @override
+  String accountCreatedFor(String playerName) {
+    return 'Account created for $playerName';
+  }
+
+  @override
+  String get setPassword => 'Set Password';
+
+  @override
+  String get goToLogin => 'Go to Login';
+
+  @override
+  String get welcomeExclamation => 'Welcome!';
+
+  @override
+  String invitedAsRole(String role) {
+    return 'You have been invited as a $role';
+  }
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter a password';
+
+  @override
+  String get passwordMinEightChars => 'Password must be at least 8 characters';
+
+  @override
+  String get pleaseConfirmPassword => 'Please confirm your password';
+
+  @override
+  String get setPasswordAndJoin => 'Set Password & Join';
+
+  @override
+  String get accountCreatedSuccessfully =>
+      'Account created successfully! Please log in.';
+
+  @override
+  String failedToCreateAccount(String message) {
+    return 'Failed to create account: $message';
+  }
+
+  @override
+  String get anErrorOccurred => 'An error occurred';
+
+  @override
+  String get panelCoach => 'Coach Panel';
+
+  @override
+  String get activeTeamLabel => 'Active Team';
+
+  @override
+  String get noTeamSelectedSelectFromDashboard =>
+      'No team selected. Please select a team from the Dashboard.';
+
+  @override
+  String get manageTeamPlayers => 'Manage team players';
+
+  @override
+  String get manageTrainingsAndAttendance => 'Manage trainings and attendance';
+
+  @override
+  String get manageMatchesLineupsResults =>
+      'Manage matches, lineups and results';
+
+  @override
+  String get evaluatePlayerPerformance => 'Evaluate player performance';
+
+  @override
+  String get inviteStaffMember => 'Invite Staff Member';
+
+  @override
+  String get invitationEmailWillBeSent =>
+      'An invitation email will be sent with a link to set their password and join the team.';
+
+  @override
+  String get sendInvite => 'Send Invite';
+
+  @override
+  String failedToSendInvite(String error) {
+    return 'Failed to send invite: $error';
+  }
+
+  @override
+  String get editMatch => 'Edit Match';
+
+  @override
+  String get newMatch => 'New Match';
+
+  @override
+  String get opponent => 'Opponent';
+
+  @override
+  String get enterOpponentName => 'Enter opponent name';
+
+  @override
+  String get matchDate => 'Match Date';
+
+  @override
+  String get locationOptional => 'Location (Optional)';
+
+  @override
+  String get enterMatchLocation => 'Enter match location';
+
+  @override
+  String get notesOptional => 'Notes (Optional)';
+
+  @override
+  String get enterAnyNotes => 'Enter any notes';
+
+  @override
+  String get teamPlayersTitle => 'Team Players';
+
+  @override
+  String get noPlayersAddOne => 'No players found. Add one to get started!';
+
+  @override
+  String get addPlayer => 'Add Player';
+
+  @override
+  String get deletePlayer => 'Delete Player';
+
+  @override
+  String confirmDeletePlayer(String playerName) {
+    return 'Are you sure you want to delete \"$playerName\"?';
+  }
+
+  @override
+  String get playerDeletedSuccessfully => 'Player deleted successfully';
+
+  @override
+  String get matchDetail => 'Match Detail';
+
+  @override
+  String get matchNotFound => 'Match not found';
+
+  @override
+  String get noQuarterResults => 'No quarter results recorded';
+
+  @override
+  String get noGoalsRecorded => 'No goals recorded';
+
+  @override
+  String assistanceLabel(String playerName) {
+    return 'Assistance: $playerName';
+  }
+
+  @override
+  String get noPlayerPeriodsInfo => 'No player periods information';
+
+  @override
+  String get noPlayersInQuarter => 'No players in this quarter';
+
+  @override
+  String zoneLabel(String zone) {
+    return 'Zone: $zone';
+  }
+
+  @override
+  String get usersManagement => 'Users Management';
+
+  @override
+  String get allRoles => 'All roles';
+
+  @override
+  String get noUsersFound => 'No users found';
+
+  @override
+  String get registrationDate => 'Registration Date';
+
+  @override
+  String editUser(String userName) {
+    return 'Edit User: $userName';
+  }
+
+  @override
+  String get roleUpdatedSuccessfully => 'Role updated successfully';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get passwordResetEmailSent => 'Password reset email sent';
+
+  @override
+  String get failedToSendReset => 'Failed to send reset';
+
+  @override
+  String get sendResetEmail => 'Send Reset Email';
+
+  @override
+  String get invitationsManagement => 'Invitations Management';
+
+  @override
+  String get allStatuses => 'All statuses';
+
+  @override
+  String get expired => 'Expired';
+
+  @override
+  String get noInvitationsFound => 'No invitations found';
+
+  @override
+  String get newInvitation => 'New Invitation';
+
+  @override
+  String roleLabel(String role) {
+    return 'Role: $role';
+  }
+
+  @override
+  String nameLabel(String name) {
+    return 'Name: $name';
+  }
+
+  @override
+  String playerIdLabel(String playerId) {
+    return 'Player ID: $playerId';
+  }
+
+  @override
+  String get invitationEmailSentTo => 'An invitation email has been sent to:';
+
+  @override
+  String shareThisLink(String email) {
+    return 'Share this link with $email:';
+  }
+
+  @override
+  String get copyPendingImplementation =>
+      'Copy functionality pending implementation';
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get deleteInvitation => 'Delete Invitation';
+
+  @override
+  String confirmDeleteInvitation(String email) {
+    return 'Are you sure you want to delete the invitation for \"$email\"?';
+  }
+
+  @override
+  String get invitationDeletedSuccessfully => 'Invitation deleted successfully';
+
+  @override
+  String get useAdminPanelForInvitations =>
+      'Use the admin panel to create new invitations';
+
+  @override
+  String get filterBySport => 'Filter by sport:';
+
+  @override
+  String get allSportsFilter => 'All sports';
+
+  @override
+  String get selectSportToViewClubs => 'Select a sport to view clubs';
+
+  @override
+  String get newClub => 'New club';
+
+  @override
+  String get deleteClub => 'Delete Club';
+
+  @override
+  String confirmDeleteClub(String clubName) {
+    return 'Are you sure you want to delete \"$clubName\"?';
+  }
+
+  @override
+  String get pleaseRateAllCriteria => 'Please rate all criteria';
+
+  @override
+  String get evaluationSavedSuccessfully => 'Evaluation saved successfully';
+
+  @override
+  String errorSaving(String error) {
+    return 'Error saving: $error';
+  }
+
+  @override
+  String newEvaluationFor(String playerName) {
+    return 'New Evaluation - $playerName';
+  }
+
+  @override
+  String get evaluationDate => 'Evaluation Date';
+
+  @override
+  String noteFor(String criterionName) {
+    return 'Note - $criterionName';
+  }
+
+  @override
+  String couldNotFindRoute(String route) {
+    return 'Could not find route: $route';
+  }
+
+  @override
+  String get goToHome => 'Go to Home';
+
+  @override
+  String get noUserAuthenticated => 'No user authenticated';
+
+  @override
+  String get emailCopied => 'Email copied';
+
+  @override
+  String get openInNewTab => 'Open in new tab';
+
+  @override
+  String minPlayersRequired(String count) {
+    return '$count / 7 min';
+  }
+
+  @override
+  String welcomeEmail(String email) {
+    return 'Welcome, $email!';
+  }
+
+  @override
+  String evaluationFor(String playerName) {
+    return 'Evaluation - $playerName';
+  }
+
+  @override
+  String get selectColor => 'Select Color';
+
+  @override
+  String get changeColor => 'Change Color';
+
+  @override
+  String get clearColor => 'Clear color';
+
+  @override
+  String get notSelected => 'Not selected';
+
+  @override
+  String get editSport => 'Edit Sport';
+
+  @override
+  String get createSport => 'Create Sport';
+
+  @override
+  String get sportName => 'Sport Name';
+
+  @override
+  String get myMatches => 'My Matches';
+
+  @override
+  String get didNotPlay => 'Did not play';
+
+  @override
+  String get errorLoadingMatches => 'Error loading matches';
+
+  @override
+  String get noMatchesPlayed => 'No matches played';
+
+  @override
+  String get matchesWillAppearHere => 'Matches will appear here';
+
+  @override
+  String get errorLoadingMatchDetail => 'Error loading match detail';
+
+  @override
+  String get myPerformance => 'My Performance';
+
+  @override
+  String get hands => 'Assists';
+
+  @override
+  String get didNotPlayInThisMatch => 'Did not play in this match';
+
+  @override
+  String get quarter => 'Quarter';
+
+  @override
+  String get position => 'Position';
+
+  @override
+  String get fullQuarter => 'Full quarter';
+
+  @override
+  String get halfQuarter => 'Half quarter';
+
+  @override
+  String get matchResults => 'Match Results';
+
+  @override
+  String get noQuarterResultsRecorded => 'No quarter results recorded';
+
+  @override
+  String get finalResult => 'Final Result';
+
+  @override
+  String get victory => 'Victory';
+
+  @override
+  String get tie => 'Tie';
+
+  @override
+  String get defeat => 'Defeat';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get matchRating => 'Match Rating';
+
+  @override
+  String get matchRatingDescription => 'Your performance rating for this match';
+
+  @override
+  String get matchNotes => 'Match Notes';
+
+  @override
+  String get matchNotesDescription =>
+      'Personal notes and observations about your performance';
+
+  @override
+  String get videoAnalysis => 'Video Analysis';
+
+  @override
+  String get videoAnalysisDescription =>
+      'Link to video analysis of your performance';
+
+  @override
+  String get matchGoals => 'Match Goals';
+
+  @override
+  String get scorer => 'Scorer';
 }

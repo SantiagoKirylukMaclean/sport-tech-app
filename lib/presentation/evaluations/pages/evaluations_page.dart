@@ -5,9 +5,11 @@ import 'package:sport_tech_app/application/auth/auth_providers.dart';
 import 'package:sport_tech_app/application/evaluations/evaluations_providers.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/application/org/players_notifier.dart';
+import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/presentation/coach/pages/coach_evaluations_page.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
+import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class EvaluationsPage extends ConsumerStatefulWidget {
@@ -20,6 +22,7 @@ class EvaluationsPage extends ConsumerStatefulWidget {
 class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
   Map<String, int> _playerEvaluationCounts = {};
   bool _loadingCounts = false;
+  bool _redirectingPlayer = false;
 
   @override
   void initState() {
@@ -93,6 +96,46 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
     if (userProfile != null &&
         (userProfile.role == UserRole.coach || userProfile.role.isAdmin)) {
       return const CoachEvaluationsPage();
+    }
+
+    // If user is a player, redirect to their own evaluation detail page
+    if (userProfile != null && userProfile.role == UserRole.player) {
+      // Use post frame callback to avoid calling navigation during build
+      if (!_redirectingPlayer) {
+        _redirectingPlayer = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (context.mounted) {
+            // Get the player record using the user ID
+            final playersRepo = ref.read(playersRepositoryProvider);
+            final playerResult = await playersRepo.getPlayerByUserId(user.id);
+
+            if (playerResult is Success && (playerResult as Success).data != null) {
+              final player = (playerResult as Success).data!;
+              if (context.mounted) {
+                context.replace(
+                  '/evaluations/player/${player.id}',
+                  extra: {
+                    'playerId': player.id,
+                    'playerName': player.fullName,
+                  },
+                );
+              }
+            } else {
+              // Player record not found - show error
+              if (context.mounted) {
+                setState(() {
+                  _redirectingPlayer = false;
+                });
+              }
+            }
+          }
+        });
+      }
+
+      // Return empty scaffold while redirecting
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
     if (playersState.isLoading) {

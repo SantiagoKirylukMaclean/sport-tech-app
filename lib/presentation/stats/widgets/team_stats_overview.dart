@@ -8,9 +8,11 @@ import 'package:sport_tech_app/l10n/app_localizations.dart';
 /// Widget displaying an overview of team statistics
 class TeamStatsOverview extends ConsumerStatefulWidget {
   final List<MatchSummary> matches;
+  final bool enableInteraction;
 
   const TeamStatsOverview({
     required this.matches,
+    this.enableInteraction = true,
     super.key,
   });
 
@@ -173,12 +175,14 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                   subtitle: _getMatchesPlayedSubtitle(context),
                   icon: Icons.sports,
                   valueColor: _getPercentageColor(winPercentage),
-                  onTap: () {
-                    // Navigate to matches page
-                    if (context.mounted) {
-                      context.push('/dashboard/matches');
-                    }
-                  },
+                  onTap: widget.enableInteraction
+                      ? () {
+                          // Navigate to matches page
+                          if (context.mounted) {
+                            context.push('/dashboard/matches');
+                          }
+                        }
+                      : null,
                 ),
               ),
               const SizedBox(width: 12),

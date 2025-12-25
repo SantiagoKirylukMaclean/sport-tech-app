@@ -53,7 +53,10 @@ class PlayerDashboardContent extends StatelessWidget {
                   ),
             ),
           ),
-          TeamStatsOverview(matches: teamMatches),
+          TeamStatsOverview(
+            matches: teamMatches,
+            enableInteraction: false,
+          ),
 
           const SizedBox(height: 24),
 

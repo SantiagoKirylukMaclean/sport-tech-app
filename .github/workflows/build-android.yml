@@ -39,14 +39,17 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "flavor=prod" >> $GITHUB_OUTPUT
             echo "app_name=SportTechApp-Prod" >> $GITHUB_OUTPUT
             echo "version_suffix=" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/stage" ]]; then
             echo "environment=stage" >> $GITHUB_OUTPUT
+            echo "flavor=stage" >> $GITHUB_OUTPUT
             echo "app_name=SportTechApp-Stage" >> $GITHUB_OUTPUT
             echo "version_suffix=-stage" >> $GITHUB_OUTPUT
           else
             echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "flavor=stage" >> $GITHUB_OUTPUT
             echo "app_name=SportTechApp-Dev" >> $GITHUB_OUTPUT
             echo "version_suffix=-dev" >> $GITHUB_OUTPUT
           fi
@@ -57,6 +60,7 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           flutter build apk --release \
+            --flavor ${{ steps.env.outputs.flavor }} \
             --dart-define=SUPABASE_URL="${SUPABASE_URL}" \
             --dart-define=SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY}"
 
@@ -70,11 +74,13 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           ENV="${{ steps.env.outputs.environment }}"
+          FLAVOR="${{ steps.env.outputs.flavor }}"
           APP_NAME="${{ steps.env.outputs.app_name }}"
           SUFFIX="${{ steps.env.outputs.version_suffix }}"
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
-          cp build/app/outputs/flutter-apk/app-release.apk \
+          # Flutter with flavors generates app-{flavor}-release.apk
+          cp build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk \
              build/app/outputs/flutter-apk/${APP_NAME}-v${VERSION}${SUFFIX}-${TIMESTAMP}.apk
 
       - name: Upload APK as artifact

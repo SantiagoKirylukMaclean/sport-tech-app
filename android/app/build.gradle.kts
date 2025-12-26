@@ -27,6 +27,20 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "environment"
+    productFlavors {
+        create("prod") {
+            dimension = "environment"
+            applicationId = "com.sporttech.app"
+            resValue("string", "app_name", "SportTech")
+        }
+        create("stage") {
+            dimension = "environment"
+            applicationId = "com.sporttech.app.stage"
+            resValue("string", "app_name", "SportTech (Stage)")
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

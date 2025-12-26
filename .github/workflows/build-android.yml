@@ -95,7 +95,17 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.env.outputs.environment }}-v${{ steps.version.outputs.version }}-${{ github.run_number }}
-          name: ${{ steps.env.outputs.app_name }} v${{ steps.version.outputs.version }}
+          name: ${{ steps.env.outputs.app_name }} v${{ steps.version.outputs.version }} (Build ${{ github.run_number }})
+          body: |
+            ## ${{ steps.env.outputs.app_name }} v${{ steps.version.outputs.version }}
+
+            **Build:** ${{ github.run_number }}
+            **Environment:** ${{ steps.env.outputs.environment }}
+            **Branch:** ${{ github.ref_name }}
+            **Commit:** ${{ github.sha }}
+
+            ### Cambios
+            ${{ github.event.head_commit.message }}
           files: build/app/outputs/flutter-apk/${{ steps.env.outputs.app_name }}-*.apk
           draft: false
           prerelease: ${{ steps.env.outputs.environment == 'stage' }}

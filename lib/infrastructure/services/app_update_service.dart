@@ -21,9 +21,11 @@ class AppUpdateService {
       final currentVersion = packageInfo.version;
       final currentBuildNumber = int.parse(packageInfo.buildNumber);
 
-      // Fetch latest release from GitHub
+      debugPrint('Current version: $currentVersion, build: $currentBuildNumber');
+
+      // Fetch all releases from GitHub (including pre-releases)
       final response = await http.get(
-        Uri.parse('$githubApiUrl/latest'),
+        Uri.parse(githubApiUrl),
         headers: {'Accept': 'application/vnd.github.v3+json'},
       );
 
@@ -32,46 +34,77 @@ class AppUpdateService {
         return null;
       }
 
-      final releaseData = json.decode(response.body) as Map<String, dynamic>;
+      final releases = json.decode(response.body) as List<dynamic>;
 
-      // Extract version from tag_name (e.g., "stage-v1.0.0+1-123" -> "1.0.0+1")
-      final tagName = releaseData['tag_name'] as String;
-      final versionMatch = RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
-
-      if (versionMatch == null) {
-        debugPrint('Could not parse version from tag: $tagName');
+      if (releases.isEmpty) {
+        debugPrint('No releases found');
         return null;
       }
 
-      final latestVersionString = versionMatch.group(1)!;
+      // Find the latest release with a valid version and APK
+      Map<String, dynamic>? latestRelease;
+      int latestBuildNumber = currentBuildNumber;
+
+      for (final release in releases) {
+        final releaseData = release as Map<String, dynamic>;
+        final tagName = releaseData['tag_name'] as String;
+
+        // Extract version from tag_name (e.g., "stage-v1.0.0+2-5" -> "1.0.0+2")
+        final versionMatch = RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
+
+        if (versionMatch == null) {
+          debugPrint('Skipping release with invalid tag: $tagName');
+          continue;
+        }
+
+        final versionString = versionMatch.group(1)!;
+        final versionParts = versionString.split('+');
+        final buildNumber = int.parse(versionParts[1]);
+
+        // Check if this release has an APK
+        final assets = releaseData['assets'] as List<dynamic>;
+        final hasApk = assets.any((asset) => (asset['name'] as String).endsWith('.apk'));
+
+        if (!hasApk) {
+          debugPrint('Skipping release without APK: $tagName');
+          continue;
+        }
+
+        // Keep track of the latest build number
+        if (buildNumber > latestBuildNumber) {
+          latestBuildNumber = buildNumber;
+          latestRelease = releaseData;
+        }
+      }
+
+      // Check if we found a newer version
+      if (latestRelease == null || latestBuildNumber <= currentBuildNumber) {
+        debugPrint('No update available. Latest build: $latestBuildNumber');
+        return null;
+      }
+
+      // Extract version info from the latest release
+      final tagName = latestRelease['tag_name'] as String;
+      final versionMatch = RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
+      final latestVersionString = versionMatch!.group(1)!;
       final versionParts = latestVersionString.split('+');
       final latestVersion = versionParts[0];
-      final latestBuildNumber = int.parse(versionParts[1]);
 
-      // Find APK asset in release
-      final assets = releaseData['assets'] as List<dynamic>;
+      // Find APK asset
+      final assets = latestRelease['assets'] as List<dynamic>;
       final apkAsset = assets.firstWhere(
         (asset) => (asset['name'] as String).endsWith('.apk'),
-        orElse: () => null,
       );
 
-      if (apkAsset == null) {
-        debugPrint('No APK found in release');
-        return null;
-      }
+      debugPrint('Update found! Latest: $latestVersion+$latestBuildNumber');
 
-      // Check if update is available (compare build numbers)
-      if (latestBuildNumber > currentBuildNumber) {
-        return UpdateInfo(
-          currentVersion: currentVersion,
-          latestVersion: latestVersion,
-          downloadUrl: apkAsset['browser_download_url'] as String,
-          releaseNotes: releaseData['body'] as String? ?? '',
-          releaseName: releaseData['name'] as String,
-        );
-      }
-
-      return null; // No update available
+      return UpdateInfo(
+        currentVersion: currentVersion,
+        latestVersion: latestVersion,
+        downloadUrl: apkAsset['browser_download_url'] as String,
+        releaseNotes: latestRelease['body'] as String? ?? '',
+        releaseName: latestRelease['name'] as String,
+      );
     } catch (e) {
       debugPrint('Error checking for updates: $e');
       return null;

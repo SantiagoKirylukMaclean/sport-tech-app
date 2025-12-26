@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
@@ -135,9 +136,59 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
 
+          const Divider(),
+
+          // About Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+            child: Text(
+              currentLocale?.languageCode == 'es' ? 'Acerca de' : 'About',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+          ),
+
+          // App Version
+          _AppVersionTile(currentLocale: currentLocale),
+
           const SizedBox(height: 24),
         ],
       ),
+    );
+  }
+}
+
+/// Widget to display app version information
+class _AppVersionTile extends StatelessWidget {
+  final Locale? currentLocale;
+
+  const _AppVersionTile({required this.currentLocale});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: Text(currentLocale?.languageCode == 'es' ? 'Versión' : 'Version'),
+            subtitle: Text(currentLocale?.languageCode == 'es' ? 'Cargando...' : 'Loading...'),
+          );
+        }
+
+        final packageInfo = snapshot.data!;
+        final version = packageInfo.version;
+        final buildNumber = packageInfo.buildNumber;
+
+        return ListTile(
+          leading: const Icon(Icons.info_outline),
+          title: Text(currentLocale?.languageCode == 'es' ? 'Versión de la app' : 'App Version'),
+          subtitle: Text('$version (Build $buildNumber)'),
+        );
+      },
     );
   }
 }

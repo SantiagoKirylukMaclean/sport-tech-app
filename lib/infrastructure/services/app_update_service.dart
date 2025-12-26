@@ -7,12 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:sport_tech_app/config/github_config.dart';
 
 /// Service to check for app updates from GitHub Releases
 class AppUpdateService {
-  static const String githubOwner = 'TU_USUARIO'; // TODO: Replace with your GitHub username
-  static const String githubRepo = 'sport-tech-app'; // TODO: Replace with your repo name
-  static const String githubApiUrl = 'https://api.github.com/repos/$githubOwner/$githubRepo/releases';
+  static String get githubApiUrl => '${GitHubConfig.releasesUrl}';
 
   /// Check if there's a new version available
   Future<UpdateInfo?> checkForUpdate() async {

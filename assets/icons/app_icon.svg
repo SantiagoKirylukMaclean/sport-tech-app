@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+
+  <!-- Soccer ball pattern -->
+  <!-- Center pentagon -->
+  <polygon points="256,140 306,180 286,240 226,240 206,180" fill="#000000"/>
+
+  <!-- Top hexagons -->
+  <polygon points="256,80 206,100 206,140 256,140 306,100" fill="#FFFFFF" stroke="#000000" stroke-width="3"/>
+
+  <!-- Right hexagons -->
+  <polygon points="306,180 356,160 376,210 356,260 306,240" fill="#FFFFFF" stroke="#000000" stroke-width="3"/>
+  <polygon points="376,210 396,260 376,310 326,290 356,260" fill="#000000"/>
+
+  <!-- Bottom right -->
+  <polygon points="286,240 336,260 326,320 266,320 226,240" fill="#FFFFFF" stroke="#000000" stroke-width="3"/>
+  <polygon points="326,320 336,380 286,400 246,360 266,320" fill="#000000"/>
+
+  <!-- Bottom left -->
+  <polygon points="226,240 266,320 246,360 186,340 176,280" fill="#FFFFFF" stroke="#000000" stroke-width="3"/>
+  <polygon points="186,340 136,360 116,310 136,260 176,280" fill="#000000"/>
+
+  <!-- Left hexagons -->
+  <polygon points="206,180 176,210 136,190 136,150 156,120 206,140" fill="#FFFFFF" stroke="#000000" stroke-width="3"/>
+  <polygon points="176,210 176,280 136,260 136,210" fill="#000000"/>
+</svg>

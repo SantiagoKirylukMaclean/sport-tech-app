@@ -54,10 +54,19 @@ dev_dependencies:
   freezed: ^2.5.2
   json_serializable: ^6.8.0
 
+  # Launcher icons
+  flutter_launcher_icons: ^0.13.1
+
 flutter:
   uses-material-design: true
   generate: true # For localization
 
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  assets:
+    - assets/icons/
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/app_icon.png"

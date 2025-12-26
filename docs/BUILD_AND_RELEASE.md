@@ -57,12 +57,16 @@ Puedes generar un APK manualmente desde GitHub:
 ### Generar APK Localmente
 
 ```bash
-# APK de release
-flutter build apk --release
+# APK de release con credenciales de Supabase
+flutter build apk --release \
+  --dart-define=SUPABASE_URL="tu_supabase_url" \
+  --dart-define=SUPABASE_ANON_KEY="tu_supabase_anon_key"
 
 # APK estará en:
 # build/app/outputs/flutter-apk/app-release.apk
 ```
+
+**Importante:** La app requiere las credenciales de Supabase para funcionar. Sin ellas, crasheará al iniciar.
 
 ### Cambiar Versión
 

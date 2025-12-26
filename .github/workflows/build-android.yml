@@ -1,0 +1,88 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - stage
+      - main
+      - 'claude/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Determine environment
+        id: env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "app_name=SportTechApp-Prod" >> $GITHUB_OUTPUT
+            echo "version_suffix=" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/stage" ]]; then
+            echo "environment=stage" >> $GITHUB_OUTPUT
+            echo "app_name=SportTechApp-Stage" >> $GITHUB_OUTPUT
+            echo "version_suffix=-stage" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "app_name=SportTechApp-Dev" >> $GITHUB_OUTPUT
+            echo "version_suffix=-dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Get version from pubspec
+        id: version
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Rename APK
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ENV="${{ steps.env.outputs.environment }}"
+          APP_NAME="${{ steps.env.outputs.app_name }}"
+          SUFFIX="${{ steps.env.outputs.version_suffix }}"
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/${APP_NAME}-v${VERSION}${SUFFIX}-${TIMESTAMP}.apk
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.env.outputs.app_name }}-${{ steps.version.outputs.version }}${{ steps.env.outputs.version_suffix }}
+          path: build/app/outputs/flutter-apk/${{ steps.env.outputs.app_name }}-*.apk
+          retention-days: 30
+
+      - name: Create Release (on main or stage only)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.env.outputs.environment }}-v${{ steps.version.outputs.version }}-${{ github.run_number }}
+          name: ${{ steps.env.outputs.app_name }} v${{ steps.version.outputs.version }}
+          files: build/app/outputs/flutter-apk/${{ steps.env.outputs.app_name }}-*.apk
+          draft: false
+          prerelease: ${{ steps.env.outputs.environment == 'stage' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

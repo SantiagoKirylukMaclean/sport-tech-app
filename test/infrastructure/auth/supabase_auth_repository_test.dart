@@ -199,7 +199,7 @@ void main() {
         // Assert
         expect(result, isA<Success>());
         expect(result.isSuccess, isTrue);
-        final user = (result as Success).value;
+        final user = (result as Success).data;
         expect(user, isNotNull);
       });
 
@@ -212,7 +212,7 @@ void main() {
 
         // Assert
         expect(result, isA<Success>());
-        final user = (result as Success).value;
+        final user = (result as Success).data;
         expect(user, isNull);
       });
 

@@ -65,7 +65,7 @@ void main() {
         // Assert
         expect(result, isA<Success>());
         expect(result.isSuccess, isTrue);
-        final profile = (result as Success).value;
+        final profile = (result as Success).data;
         expect(profile.id, userId);
         expect(profile.displayName, 'Test User');
       });
@@ -112,7 +112,7 @@ void main() {
 
         // Assert
         expect(result, isA<Success>());
-        final profile = (result as Success).value;
+        final profile = (result as Success).data;
         expect(profile.id, userId);
         expect(profile.displayName, 'Another User');
         expect(profile.role.name, 'coach');

@@ -23,4 +23,7 @@ abstract class StatsRepository {
 
   /// Get quarter performance statistics for a team
   Future<List<QuarterPerformance>> getQuarterPerformance(String teamId);
+
+  /// Get team training attendance percentage
+  Future<double> getTeamTrainingAttendance(String teamId);
 }

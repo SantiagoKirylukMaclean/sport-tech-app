@@ -14,11 +14,13 @@ class PlayerDashboardContent extends StatelessWidget {
   final PlayerStatistics playerStats;
   final List<MatchSummary> teamMatches;
   final int evaluationsCount;
+  final double teamTrainingAttendance;
 
   const PlayerDashboardContent({
     required this.playerStats,
     required this.teamMatches,
     required this.evaluationsCount,
+    required this.teamTrainingAttendance,
     super.key,
   });
 
@@ -55,6 +57,7 @@ class PlayerDashboardContent extends StatelessWidget {
           ),
           TeamStatsOverview(
             matches: teamMatches,
+            teamTrainingAttendance: teamTrainingAttendance,
             enableInteraction: false,
           ),
 

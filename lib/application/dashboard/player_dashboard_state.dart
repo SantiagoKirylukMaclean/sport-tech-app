@@ -11,6 +11,7 @@ class PlayerDashboardState extends Equatable {
   final PlayerStatistics? playerStats;
   final List<MatchSummary> teamMatches;
   final int evaluationsCount;
+  final double teamTrainingAttendance;
   final bool isLoading;
   final String? error;
 
@@ -19,6 +20,7 @@ class PlayerDashboardState extends Equatable {
     this.playerStats,
     this.teamMatches = const [],
     this.evaluationsCount = 0,
+    this.teamTrainingAttendance = 0.0,
     this.isLoading = false,
     this.error,
   });
@@ -28,6 +30,7 @@ class PlayerDashboardState extends Equatable {
     PlayerStatistics? playerStats,
     List<MatchSummary>? teamMatches,
     int? evaluationsCount,
+    double? teamTrainingAttendance,
     bool? isLoading,
     String? error,
   }) {
@@ -36,6 +39,7 @@ class PlayerDashboardState extends Equatable {
       playerStats: playerStats ?? this.playerStats,
       teamMatches: teamMatches ?? this.teamMatches,
       evaluationsCount: evaluationsCount ?? this.evaluationsCount,
+      teamTrainingAttendance: teamTrainingAttendance ?? this.teamTrainingAttendance,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -47,6 +51,7 @@ class PlayerDashboardState extends Equatable {
         playerStats,
         teamMatches,
         evaluationsCount,
+        teamTrainingAttendance,
         isLoading,
         error,
       ];

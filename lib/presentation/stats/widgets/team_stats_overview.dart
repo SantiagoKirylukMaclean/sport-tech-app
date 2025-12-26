@@ -8,10 +8,12 @@ import 'package:sport_tech_app/l10n/app_localizations.dart';
 /// Widget displaying an overview of team statistics
 class TeamStatsOverview extends ConsumerStatefulWidget {
   final List<MatchSummary> matches;
+  final double? teamTrainingAttendance;
   final bool enableInteraction;
 
   const TeamStatsOverview({
     required this.matches,
+    this.teamTrainingAttendance,
     this.enableInteraction = true,
     super.key,
   });
@@ -215,6 +217,20 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                   valueColor: cleanSheets > 0 ? Colors.green.shade700 : null,
                 ),
               ),
+              if (widget.teamTrainingAttendance != null) ...[
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: cardSize,
+                  height: cardSize,
+                  child: StatCard(
+                    title: l10n.trainings,
+                    value: '${widget.teamTrainingAttendance!.toStringAsFixed(1)}%',
+                    subtitle: l10n.teamAttendance,
+                    icon: Icons.fitness_center,
+                    valueColor: _getPercentageColor(widget.teamTrainingAttendance!),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

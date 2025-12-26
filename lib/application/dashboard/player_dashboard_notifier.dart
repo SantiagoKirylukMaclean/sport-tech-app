@@ -43,6 +43,7 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
         _statsRepository.getPlayerStatistics(player.id, player.teamId),
         _statsRepository.getMatchesSummary(player.teamId),
         _evaluationsRepository.getEvaluationsCount(player.id),
+        _statsRepository.getTeamTrainingAttendance(player.teamId),
       ]);
 
       state = state.copyWith(
@@ -50,6 +51,7 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
         playerStats: results[0] as PlayerStatistics?,
         teamMatches: (results[1] as List).cast(),
         evaluationsCount: results[2] as int,
+        teamTrainingAttendance: results[3] as double,
         isLoading: false,
       );
     } catch (e) {
@@ -83,6 +85,7 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
         _statsRepository.getPlayerStatistics(playerId, teamId),
         _statsRepository.getMatchesSummary(teamId),
         _evaluationsRepository.getEvaluationsCount(playerId),
+        _statsRepository.getTeamTrainingAttendance(teamId),
       ]);
 
       state = state.copyWith(
@@ -90,6 +93,7 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
         playerStats: results[0] as PlayerStatistics?,
         teamMatches: (results[1] as List).cast(),
         evaluationsCount: results[2] as int,
+        teamTrainingAttendance: results[3] as double,
         isLoading: false,
       );
     } catch (e) {

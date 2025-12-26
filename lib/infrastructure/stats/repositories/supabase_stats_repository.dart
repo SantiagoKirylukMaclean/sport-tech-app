@@ -298,4 +298,45 @@ class SupabaseStatsRepository implements StatsRepository {
       throw Exception('Failed to get quarter performance: $e');
     }
   }
+
+  @override
+  Future<double> getTeamTrainingAttendance(String teamId) async {
+    try {
+      final teamIdInt = int.parse(teamId);
+
+      // Get all training sessions for the team
+      final trainingsResponse = await _client
+          .from('training_sessions')
+          .select('id')
+          .eq('team_id', teamIdInt);
+
+      final trainingIds = (trainingsResponse as List)
+          .map((t) => t['id'] as int)
+          .toList();
+
+      if (trainingIds.isEmpty) {
+        return 0.0;
+      }
+
+      // Get all training attendance records for these sessions
+      final attendanceResponse = await _client
+          .from('training_attendance')
+          .select('status')
+          .inFilter('training_id', trainingIds);
+
+      final totalRecords = (attendanceResponse as List).length;
+
+      if (totalRecords == 0) {
+        return 0.0;
+      }
+
+      final attendedCount = attendanceResponse
+          .where((a) => a['status'] == 'on_time' || a['status'] == 'late')
+          .length;
+
+      return (attendedCount / totalRecords) * 100;
+    } catch (e) {
+      throw Exception('Failed to get team training attendance: $e');
+    }
+  }
 }

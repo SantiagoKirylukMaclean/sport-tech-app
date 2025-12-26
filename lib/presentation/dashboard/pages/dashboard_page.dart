@@ -172,6 +172,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           playerStats: playerDashboardState.playerStats!,
           teamMatches: playerDashboardState.teamMatches,
           evaluationsCount: playerDashboardState.evaluationsCount,
+          teamTrainingAttendance: playerDashboardState.teamTrainingAttendance,
         ),
       );
     }

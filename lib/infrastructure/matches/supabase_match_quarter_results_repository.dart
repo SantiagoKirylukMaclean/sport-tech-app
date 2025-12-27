@@ -79,7 +79,7 @@ class SupabaseMatchQuarterResultsRepository
       // Check if result exists
       final existing = await _client
           .from('match_quarter_results')
-          .select('id')
+          .select('id, created_at')
           .eq('match_id', matchId)
           .eq('quarter', quarter)
           .maybeSingle();

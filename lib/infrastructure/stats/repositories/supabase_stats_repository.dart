@@ -41,11 +41,12 @@ class SupabaseStatsRepository implements StatsRepository {
           .toList();
 
       if (matchIds.isNotEmpty) {
-        // Get all goals for these matches
+        // Get all goals for these matches (excluding own goals)
         final allGoals = await _client
             .from('match_goals')
             .select('scorer_id, assister_id')
-            .inFilter('match_id', matchIds);
+            .inFilter('match_id', matchIds)
+            .eq('is_own_goal', false);
 
         for (final goal in allGoals as List) {
           final scorerId = goal['scorer_id'].toString();
@@ -111,11 +112,12 @@ class SupabaseStatsRepository implements StatsRepository {
         return [];
       }
 
-      // Get goals grouped by scorer
+      // Get goals grouped by scorer (excluding own goals)
       final goalsResponse = await _client
           .from('match_goals')
           .select('scorer_id, players!match_goals_scorer_id_fkey(id, full_name, jersey_number)')
-          .inFilter('match_id', matchIds);
+          .inFilter('match_id', matchIds)
+          .eq('is_own_goal', false);
 
       // Group and count
       final scorersMap = <String, Map<String, dynamic>>{};
@@ -167,12 +169,13 @@ class SupabaseStatsRepository implements StatsRepository {
         return [];
       }
 
-      // Get goals with assisters grouped by assister
+      // Get goals with assisters grouped by assister (excluding own goals)
       final assistsResponse = await _client
           .from('match_goals')
           .select('assister_id, players!match_goals_assister_id_fkey(id, full_name, jersey_number)')
           .not('assister_id', 'is', null)
-          .inFilter('match_id', matchIds);
+          .inFilter('match_id', matchIds)
+          .eq('is_own_goal', false);
 
       // Group and count
       final assistersMap = <String, Map<String, dynamic>>{};

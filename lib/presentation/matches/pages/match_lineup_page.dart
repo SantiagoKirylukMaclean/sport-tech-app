@@ -6,6 +6,7 @@ import 'package:sport_tech_app/application/matches/match_lineup_notifier.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/convocatoria_section.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/draggable_field_widget.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/quarter_results_section.dart';
+import 'package:sport_tech_app/presentation/matches/widgets/substitutions_section.dart';
 
 class MatchLineupPage extends ConsumerStatefulWidget {
   final String matchId;
@@ -94,6 +95,11 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
 
                         // Draggable Field Formation
                         DraggableFieldWidget(matchId: widget.matchId),
+
+                        const Divider(height: 32),
+
+                        // Substitutions Section
+                        SubstitutionsSection(matchId: widget.matchId),
 
                         const Divider(height: 32),
 

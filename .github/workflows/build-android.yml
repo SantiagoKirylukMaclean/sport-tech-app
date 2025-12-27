@@ -1,19 +1,28 @@
-name: Build Android APK
+name: Build Android APK (Manual)
 
 on:
-  push:
-    branches:
-      - stage
-      - main
-      - 'claude/**'
   workflow_dispatch:
+    inputs:
+      flavor:
+        description: 'Build flavor'
+        required: true
+        type: choice
+        options:
+          - stage
+          - prod
+        default: 'stage'
+      create_release:
+        description: 'Create GitHub Release?'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'stage' }}
+    environment: ${{ github.event.inputs.flavor == 'prod' && 'Production' || 'stage' }}
 
     steps:
       - name: Checkout code
@@ -37,21 +46,16 @@ jobs:
       - name: Determine environment
         id: env
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.event.inputs.flavor }}" == "prod" ]]; then
             echo "environment=prod" >> $GITHUB_OUTPUT
             echo "flavor=prod" >> $GITHUB_OUTPUT
             echo "app_name=SportTechApp-Prod" >> $GITHUB_OUTPUT
             echo "version_suffix=" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/stage" ]]; then
+          else
             echo "environment=stage" >> $GITHUB_OUTPUT
             echo "flavor=stage" >> $GITHUB_OUTPUT
             echo "app_name=SportTechApp-Stage" >> $GITHUB_OUTPUT
             echo "version_suffix=-stage" >> $GITHUB_OUTPUT
-          else
-            echo "environment=dev" >> $GITHUB_OUTPUT
-            echo "flavor=stage" >> $GITHUB_OUTPUT
-            echo "app_name=SportTechApp-Dev" >> $GITHUB_OUTPUT
-            echo "version_suffix=-dev" >> $GITHUB_OUTPUT
           fi
 
       - name: Build APK
@@ -90,8 +94,8 @@ jobs:
           path: build/app/outputs/flutter-apk/${{ steps.env.outputs.app_name }}-*.apk
           retention-days: 30
 
-      - name: Create Release (on main or stage only)
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/stage'
+      - name: Create Release
+        if: github.event.inputs.create_release == 'true'
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.env.outputs.environment }}-v${{ steps.version.outputs.version }}-${{ github.run_number }}
@@ -101,11 +105,12 @@ jobs:
 
             **Build:** ${{ github.run_number }}
             **Environment:** ${{ steps.env.outputs.environment }}
+            **Flavor:** ${{ github.event.inputs.flavor }}
             **Branch:** ${{ github.ref_name }}
             **Commit:** ${{ github.sha }}
 
-            ### Cambios
-            ${{ github.event.head_commit.message }}
+            ### Notas
+            Build manual generado desde GitHub Actions.
           files: build/app/outputs/flutter-apk/${{ steps.env.outputs.app_name }}-*.apk
           draft: false
           prerelease: ${{ steps.env.outputs.environment == 'stage' }}

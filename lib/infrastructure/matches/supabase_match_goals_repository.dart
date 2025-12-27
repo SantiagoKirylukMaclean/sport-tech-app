@@ -90,6 +90,7 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
     required int quarter,
     required String scorerId,
     String? assisterId,
+    bool isOwnGoal = false,
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
@@ -98,6 +99,7 @@ class SupabaseMatchGoalsRepository implements MatchGoalsRepository {
         'quarter': quarter,
         'scorer_id': int.parse(scorerId),
         'assister_id': assisterId != null ? int.parse(assisterId) : null,
+        'is_own_goal': isOwnGoal,
         'created_at': now,
       }).select('''
         *,

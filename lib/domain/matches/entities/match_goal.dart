@@ -12,6 +12,7 @@ class MatchGoal extends Equatable {
   final String scorerName; // Player name who scored
   final String? assisterId; // Optional player ID who assisted
   final String? assisterName; // Optional player name who assisted
+  final bool isOwnGoal; // Whether this is an own goal
   final DateTime createdAt;
 
   const MatchGoal({
@@ -23,6 +24,7 @@ class MatchGoal extends Equatable {
     required this.createdAt,
     this.assisterId,
     this.assisterName,
+    this.isOwnGoal = false,
   });
 
   @override
@@ -34,12 +36,13 @@ class MatchGoal extends Equatable {
         scorerName,
         assisterId,
         assisterName,
+        isOwnGoal,
         createdAt,
       ];
 
   @override
   String toString() =>
-      'MatchGoal(id: $id, quarter: $quarter, scorer: $scorerName${assisterName != null ? ', assist: $assisterName' : ''})';
+      'MatchGoal(id: $id, quarter: $quarter, scorer: $scorerName${isOwnGoal ? ' (Own Goal)' : ''}${assisterName != null ? ', assist: $assisterName' : ''})';
 
   /// Create a copy with updated fields
   MatchGoal copyWith({
@@ -50,6 +53,7 @@ class MatchGoal extends Equatable {
     String? scorerName,
     String? assisterId,
     String? assisterName,
+    bool? isOwnGoal,
     DateTime? createdAt,
   }) {
     return MatchGoal(
@@ -60,6 +64,7 @@ class MatchGoal extends Equatable {
       scorerName: scorerName ?? this.scorerName,
       assisterId: assisterId ?? this.assisterId,
       assisterName: assisterName ?? this.assisterName,
+      isOwnGoal: isOwnGoal ?? this.isOwnGoal,
       createdAt: createdAt ?? this.createdAt,
     );
   }

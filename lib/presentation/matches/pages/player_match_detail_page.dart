@@ -135,7 +135,13 @@ class PlayerMatchDetail {
     required this.allGoals,
   });
 
-  int get quartersPlayed => playerPeriods.length;
+  /// Calculate total quarters played considering fractions
+  /// FULL = 1.0, HALF = 0.5
+  double get quartersPlayed {
+    return playerPeriods.fold<double>(0.0, (sum, period) {
+      return sum + (period.fraction == Fraction.full ? 1.0 : 0.5);
+    });
+  }
 
   List<int> get quartersPlayedList => playerPeriods.map((p) => p.period).toList()..sort();
 
@@ -393,7 +399,7 @@ class _MyPerformanceCard extends StatelessWidget {
             _StatColumn(
               icon: Icons.timer,
               label: l10n.quarters,
-              value: '${detail.quartersPlayed}/4',
+              value: '${detail.quartersPlayed % 1 == 0 ? detail.quartersPlayed.toInt() : detail.quartersPlayed.toStringAsFixed(1)}/4',
               color: Theme.of(context).colorScheme.primary,
             ),
             _StatColumn(
@@ -487,7 +493,10 @@ class _QuartersPlayedSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, (index) {
                 final quarter = index + 1;
-                final played = playerPeriods.any((p) => p.period == quarter);
+                final period = playerPeriods.where((p) => p.period == quarter).firstOrNull;
+                final played = period != null;
+                final isFull = period?.fraction == Fraction.full;
+
                 return Column(
                   children: [
                     Container(
@@ -495,7 +504,9 @@ class _QuartersPlayedSection extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                         color: played
-                            ? Theme.of(context).colorScheme.primary
+                            ? (isFull
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.5))
                             : Theme.of(context).colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -515,7 +526,7 @@ class _QuartersPlayedSection extends StatelessWidget {
                     const SizedBox(height: 8),
                     if (played)
                       Icon(
-                        Icons.check_circle,
+                        isFull ? Icons.check_circle : Icons.check_circle_outline,
                         color: Theme.of(context).colorScheme.primary,
                         size: 20,
                       ),

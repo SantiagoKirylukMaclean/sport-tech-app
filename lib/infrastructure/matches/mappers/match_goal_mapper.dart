@@ -22,6 +22,7 @@ class MatchGoalMapper {
       scorerName: scorerName,
       assisterId: json['assister_id']?.toString(),
       assisterName: assisterName,
+      isOwnGoal: json['is_own_goal'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -35,6 +36,7 @@ class MatchGoalMapper {
       'scorer_id': int.parse(goal.scorerId),
       'assister_id':
           goal.assisterId != null ? int.parse(goal.assisterId!) : null,
+      'is_own_goal': goal.isOwnGoal,
       'created_at': goal.createdAt.toIso8601String(),
     };
   }

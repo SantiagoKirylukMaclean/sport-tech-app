@@ -11,6 +11,7 @@ class StatsState extends Equatable {
   final List<ScorerStats> assisters;
   final List<MatchSummary> matches;
   final List<QuarterPerformance> quarters;
+  final double teamTrainingAttendance;
   final bool isLoading;
   final String? error;
 
@@ -20,6 +21,7 @@ class StatsState extends Equatable {
     this.assisters = const [],
     this.matches = const [],
     this.quarters = const [],
+    this.teamTrainingAttendance = 0.0,
     this.isLoading = false,
     this.error,
   });
@@ -30,6 +32,7 @@ class StatsState extends Equatable {
     List<ScorerStats>? assisters,
     List<MatchSummary>? matches,
     List<QuarterPerformance>? quarters,
+    double? teamTrainingAttendance,
     bool? isLoading,
     String? error,
   }) {
@@ -39,6 +42,7 @@ class StatsState extends Equatable {
       assisters: assisters ?? this.assisters,
       matches: matches ?? this.matches,
       quarters: quarters ?? this.quarters,
+      teamTrainingAttendance: teamTrainingAttendance ?? this.teamTrainingAttendance,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -51,6 +55,7 @@ class StatsState extends Equatable {
         assisters,
         matches,
         quarters,
+        teamTrainingAttendance,
         isLoading,
         error,
       ];

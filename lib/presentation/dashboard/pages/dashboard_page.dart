@@ -215,7 +215,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               : Column(
                   children: [
                     // Stats overview cards
-                    TeamStatsOverview(matches: statsState.matches),
+                    TeamStatsOverview(
+                      matches: statsState.matches,
+                      teamTrainingAttendance: statsState.teamTrainingAttendance,
+                    ),
                     // Statistics section with title
                     Container(
                       color: Theme.of(context).colorScheme.surface,

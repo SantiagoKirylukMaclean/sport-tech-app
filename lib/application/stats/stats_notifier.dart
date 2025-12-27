@@ -23,6 +23,7 @@ class StatsNotifier extends StateNotifier<StatsState> {
         _repository.getAssistersRanking(teamId),
         _repository.getMatchesSummary(teamId),
         _repository.getQuarterPerformance(teamId),
+        _repository.getTeamTrainingAttendance(teamId),
       ]);
 
       state = state.copyWith(
@@ -31,6 +32,7 @@ class StatsNotifier extends StateNotifier<StatsState> {
         assisters: results[2] as List<ScorerStats>,
         matches: results[3] as List<MatchSummary>,
         quarters: results[4] as List<QuarterPerformance>,
+        teamTrainingAttendance: results[5] as double,
         isLoading: false,
       );
     } catch (e) {

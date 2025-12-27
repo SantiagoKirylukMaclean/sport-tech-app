@@ -11,6 +11,16 @@ on:
           - stage
           - prod
         default: 'stage'
+      version_bump:
+        description: 'Version bump type (or leave empty for build number only)'
+        required: false
+        type: choice
+        options:
+          - none
+          - patch
+          - minor
+          - major
+        default: 'none'
       create_release:
         description: 'Create GitHub Release?'
         required: false
@@ -43,6 +53,48 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Auto-increment version
+        id: version
+        run: |
+          # Leer versión actual de pubspec.yaml
+          CURRENT_VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2)
+          VERSION_NAME=$(echo $CURRENT_VERSION | cut -d '+' -f 1)
+
+          # Incrementar versión semántica si se solicita
+          BUMP_TYPE="${{ github.event.inputs.version_bump }}"
+          if [[ "$BUMP_TYPE" != "none" ]]; then
+            IFS='.' read -ra VERSION_PARTS <<< "$VERSION_NAME"
+            MAJOR="${VERSION_PARTS[0]}"
+            MINOR="${VERSION_PARTS[1]}"
+            PATCH="${VERSION_PARTS[2]}"
+
+            if [[ "$BUMP_TYPE" == "major" ]]; then
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+            elif [[ "$BUMP_TYPE" == "minor" ]]; then
+              MINOR=$((MINOR + 1))
+              PATCH=0
+            elif [[ "$BUMP_TYPE" == "patch" ]]; then
+              PATCH=$((PATCH + 1))
+            fi
+
+            VERSION_NAME="${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          # Usar github.run_number como versionCode (build number)
+          BUILD_NUMBER="${{ github.run_number }}"
+          NEW_VERSION="${VERSION_NAME}+${BUILD_NUMBER}"
+
+          # Actualizar pubspec.yaml
+          sed -i "s/^version: .*/version: ${NEW_VERSION}/" pubspec.yaml
+
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+
+          echo "✅ Version updated: $CURRENT_VERSION → $NEW_VERSION"
+
       - name: Determine environment
         id: env
         run: |
@@ -67,12 +119,6 @@ jobs:
             --flavor ${{ steps.env.outputs.flavor }} \
             --dart-define=SUPABASE_URL="${SUPABASE_URL}" \
             --dart-define=SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY}"
-
-      - name: Get version from pubspec
-        id: version
-        run: |
-          VERSION=$(grep '^version:' pubspec.yaml | cut -d ' ' -f 2)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Rename APK
         run: |

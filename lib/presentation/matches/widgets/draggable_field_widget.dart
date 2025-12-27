@@ -16,10 +16,10 @@ class DraggableFieldWidget extends ConsumerWidget {
     final state = ref.watch(matchLineupNotifierProvider(matchId));
     final notifier = ref.read(matchLineupNotifierProvider(matchId).notifier);
 
-    // Get players grouped by field zone
-    final Map<FieldZone, Player?> playersInZones = {};
+    // Get players grouped by field zone (now supports multiple players per zone)
+    final Map<FieldZone, List<Player>> playersInZones = {};
     for (final zone in FieldZone.values) {
-      playersInZones[zone] = null;
+      playersInZones[zone] = [];
     }
 
     // Fill in the players currently on field
@@ -29,7 +29,7 @@ class DraggableFieldWidget extends ConsumerWidget {
             .where((p) => p.id == period.playerId)
             .firstOrNull;
         if (player != null) {
-          playersInZones[period.fieldZone!] = player;
+          playersInZones[period.fieldZone!]!.add(player);
         }
       }
     }
@@ -101,21 +101,21 @@ class DraggableFieldWidget extends ConsumerWidget {
                                 context,
                                 ref,
                                 FieldZone.delanteroIzquierdo,
-                                playersInZones[FieldZone.delanteroIzquierdo],
+                                playersInZones[FieldZone.delanteroIzquierdo]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.delanteroCentro,
-                                playersInZones[FieldZone.delanteroCentro],
+                                playersInZones[FieldZone.delanteroCentro]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.delanteroDerecho,
-                                playersInZones[FieldZone.delanteroDerecho],
+                                playersInZones[FieldZone.delanteroDerecho]!,
                                 notifier,
                               ),
                             ],
@@ -129,21 +129,21 @@ class DraggableFieldWidget extends ConsumerWidget {
                                 context,
                                 ref,
                                 FieldZone.volanteIzquierdo,
-                                playersInZones[FieldZone.volanteIzquierdo],
+                                playersInZones[FieldZone.volanteIzquierdo]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.volanteCentral,
-                                playersInZones[FieldZone.volanteCentral],
+                                playersInZones[FieldZone.volanteCentral]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.volanteDerecho,
-                                playersInZones[FieldZone.volanteDerecho],
+                                playersInZones[FieldZone.volanteDerecho]!,
                                 notifier,
                               ),
                             ],
@@ -157,21 +157,21 @@ class DraggableFieldWidget extends ConsumerWidget {
                                 context,
                                 ref,
                                 FieldZone.defensaIzquierda,
-                                playersInZones[FieldZone.defensaIzquierda],
+                                playersInZones[FieldZone.defensaIzquierda]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.defensaCentral,
-                                playersInZones[FieldZone.defensaCentral],
+                                playersInZones[FieldZone.defensaCentral]!,
                                 notifier,
                               ),
                               _buildFieldZone(
                                 context,
                                 ref,
                                 FieldZone.defensaDerecha,
-                                playersInZones[FieldZone.defensaDerecha],
+                                playersInZones[FieldZone.defensaDerecha]!,
                                 notifier,
                               ),
                             ],
@@ -188,7 +188,7 @@ class DraggableFieldWidget extends ConsumerWidget {
                                   context,
                                   ref,
                                   FieldZone.portero,
-                                  playersInZones[FieldZone.portero],
+                                  playersInZones[FieldZone.portero]!,
                                   notifier,
                                 ),
                               ),
@@ -306,7 +306,7 @@ class DraggableFieldWidget extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     FieldZone zone,
-    Player? currentPlayer,
+    List<Player> playersInZone,
     MatchLineupNotifier notifier,
   ) {
     return Expanded(
@@ -346,19 +346,8 @@ class DraggableFieldWidget extends ConsumerWidget {
                 width: isDraggedOver ? 2 : 1,
               ),
             ),
-            child: currentPlayer != null
-                ? Center(
-                    child: Draggable<Player>(
-                      data: currentPlayer,
-                      feedback: Material(
-                        elevation: 4,
-                        borderRadius: BorderRadius.circular(20),
-                        child: _buildPlayerChip(currentPlayer, isDragging: true),
-                      ),
-                      childWhenDragging: Container(),
-                      child: _buildPlayerChip(currentPlayer, onField: true),
-                    ),
-                  )
+            child: playersInZone.isNotEmpty
+                ? _buildPlayersInZone(playersInZone)
                 : Center(
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -381,17 +370,66 @@ class DraggableFieldWidget extends ConsumerWidget {
     );
   }
 
-  Widget _buildPlayerChip(Player player, {bool onField = false, bool isDragging = false}) {
+  Widget _buildPlayersInZone(List<Player> players) {
+    if (players.isEmpty) {
+      return Container();
+    }
+
+    if (players.length == 1) {
+      // Solo un jugador en esta posición
+      final player = players.first;
+      return Center(
+        child: Draggable<Player>(
+          data: player,
+          feedback: Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(20),
+            child: _buildPlayerChip(player, isDragging: true),
+          ),
+          childWhenDragging: Container(),
+          child: _buildPlayerChip(player, onField: true),
+        ),
+      );
+    } else {
+      // Múltiples jugadores (sustitución): mostrar ambos apilados
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: players.map((player) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Draggable<Player>(
+                data: player,
+                feedback: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(20),
+                  child: _buildPlayerChip(player, isDragging: true),
+                ),
+                childWhenDragging: Opacity(
+                  opacity: 0.3,
+                  child: _buildPlayerChip(player, onField: true, isCompact: true),
+                ),
+                child: _buildPlayerChip(player, onField: true, isCompact: true),
+              ),
+            );
+          }).toList(),
+        ),
+      );
+    }
+  }
+
+  Widget _buildPlayerChip(Player player, {bool onField = false, bool isDragging = false, bool isCompact = false}) {
     return Container(
-      constraints: const BoxConstraints(minWidth: 60),
+      constraints: BoxConstraints(minWidth: isCompact ? 50 : 60),
       child: Chip(
         avatar: CircleAvatar(
           backgroundColor: onField ? Colors.green : Colors.grey,
           child: Text(
             player.jerseyNumber?.toString() ?? '?',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: isCompact ? 10 : 12,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -399,14 +437,14 @@ class DraggableFieldWidget extends ConsumerWidget {
         label: Text(
           player.fullName.split(' ').last, // Last name only for space
           style: TextStyle(
-            fontSize: isDragging ? 13 : 12,
+            fontSize: isDragging ? 13 : (isCompact ? 10 : 12),
             fontWeight: isDragging ? FontWeight.bold : FontWeight.w500,
           ),
           overflow: TextOverflow.ellipsis,
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        visualDensity: isCompact ? VisualDensity.compact : VisualDensity.compact,
+        padding: EdgeInsets.symmetric(horizontal: isCompact ? 2 : 4, vertical: isCompact ? 0 : 2),
       ),
     );
   }

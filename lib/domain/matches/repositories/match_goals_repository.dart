@@ -23,6 +23,7 @@ abstract class MatchGoalsRepository {
     required int quarter,
     required String scorerId,
     String? assisterId,
+    bool isOwnGoal = false,
   });
 
   /// Update an existing goal

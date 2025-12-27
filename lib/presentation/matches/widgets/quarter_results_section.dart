@@ -165,11 +165,23 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                       : null;
 
                   return ListTile(
-                    leading: const Icon(Icons.sports_soccer),
-                    title: Text(scorer?.fullName ?? 'Unknown Player'),
-                    subtitle: assister != null
-                        ? Text('Assist: ${assister.fullName}')
-                        : null,
+                    leading: Icon(
+                      Icons.sports_soccer,
+                      color: goal.isOwnGoal ? Colors.orange : null,
+                    ),
+                    title: Text(
+                      goal.isOwnGoal
+                          ? 'Autogol del Rival'
+                          : scorer?.fullName ?? 'Unknown Player',
+                      style: TextStyle(
+                        fontWeight: goal.isOwnGoal ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    subtitle: !goal.isOwnGoal && assister != null
+                        ? Text('Asistencia: ${assister.fullName}')
+                        : goal.isOwnGoal
+                            ? const Text('Gol a favor del equipo')
+                            : null,
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
@@ -189,61 +201,98 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
     final state = ref.read(matchLineupNotifierProvider(widget.matchId));
     String? selectedScorerId;
     String? selectedAssisterId;
+    bool isOwnGoal = false;
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
           title: const Text('Add Goal'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Scorer',
-                  border: OutlineInputBorder(),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CheckboxListTile(
+                  title: const Text('Gol en Propia (Own Goal)'),
+                  subtitle: const Text('Marca si el gol fue del equipo contrario'),
+                  value: isOwnGoal,
+                  onChanged: (value) {
+                    setState(() {
+                      isOwnGoal = value ?? false;
+                      // Reset selections when toggling
+                      selectedScorerId = null;
+                      selectedAssisterId = null;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
-                initialValue: selectedScorerId,
-                items: state.fieldPlayers.map((player) {
-                  return DropdownMenuItem(
-                    value: player.id,
-                    child: Text('${player.jerseyNumber ?? '?'} - ${player.fullName}'),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedScorerId = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Assister (Optional)',
-                  border: OutlineInputBorder(),
-                ),
-                initialValue: selectedAssisterId,
-                items: [
-                  const DropdownMenuItem(
-                    value: null,
-                    child: Text('None'),
+                const SizedBox(height: 16),
+                if (!isOwnGoal) ...[
+                  // Normal goal - select from our players
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: 'Goleador',
+                      border: OutlineInputBorder(),
+                    ),
+                    initialValue: selectedScorerId,
+                    items: state.fieldPlayers.map((player) {
+                      return DropdownMenuItem(
+                        value: player.id,
+                        child: Text('${player.jerseyNumber ?? '?'} - ${player.fullName}'),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedScorerId = value;
+                      });
+                    },
                   ),
-                  ...state.fieldPlayers
-                      .where((p) => p.id != selectedScorerId)
-                      .map((player) {
-                    return DropdownMenuItem(
-                      value: player.id,
-                      child: Text('${player.jerseyNumber ?? '?'} - ${player.fullName}'),
-                    );
-                  }),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: 'Asistencia (Opcional)',
+                      border: OutlineInputBorder(),
+                    ),
+                    initialValue: selectedAssisterId,
+                    items: [
+                      const DropdownMenuItem(
+                        value: null,
+                        child: Text('Ninguno'),
+                      ),
+                      ...state.fieldPlayers
+                          .where((p) => p.id != selectedScorerId)
+                          .map((player) {
+                        return DropdownMenuItem(
+                          value: player.id,
+                          child: Text('${player.jerseyNumber ?? '?'} - ${player.fullName}'),
+                        );
+                      }),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedAssisterId = value;
+                      });
+                    },
+                  ),
+                ] else ...[
+                  // Own goal - just pick any player as placeholder (required by DB)
+                  // We'll use the first field player
+                  if (state.fieldPlayers.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Este gol será registrado como autogol del equipo contrario a favor de nuestro equipo.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.orange.shade700,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                 ],
-                onChanged: (value) {
-                  setState(() {
-                    selectedAssisterId = value;
-                  });
-                },
-              ),
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -251,14 +300,21 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
               child: const Text('Cancel'),
             ),
             FilledButton(
-              onPressed: selectedScorerId == null
+              onPressed: (!isOwnGoal && selectedScorerId == null) ||
+                      (isOwnGoal && state.fieldPlayers.isEmpty)
                   ? null
                   : () {
+                      // For own goals, use first field player as placeholder
+                      final scorerId = isOwnGoal
+                          ? state.fieldPlayers.first.id
+                          : selectedScorerId!;
+
                       ref
                           .read(matchLineupNotifierProvider(widget.matchId).notifier)
                           .addGoal(
-                            scorerId: selectedScorerId!,
-                            assisterId: selectedAssisterId,
+                            scorerId: scorerId,
+                            assisterId: isOwnGoal ? null : selectedAssisterId,
+                            isOwnGoal: isOwnGoal,
                           );
                       Navigator.pop(context);
                     },

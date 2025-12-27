@@ -282,7 +282,10 @@ class _QuarterResultsSection extends StatelessWidget {
       children: [
         // Total Score Card
         Card(
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[850]
+              : Colors.grey[100],
+          elevation: 2,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
@@ -292,7 +295,6 @@ class _QuarterResultsSection extends StatelessWidget {
                   'Resultado Final',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                 ),
                 const SizedBox(width: 16),
@@ -300,7 +302,6 @@ class _QuarterResultsSection extends StatelessWidget {
                   '$totalTeamGoals - $totalOpponentGoals',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
                       ),
                 ),
               ],
@@ -399,19 +400,27 @@ class _GoalsSection extends StatelessWidget {
           final goal = goals[index];
           return ListTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+              backgroundColor: goal.isOwnGoal
+                  ? Colors.orange.shade100
+                  : Theme.of(context).colorScheme.tertiaryContainer,
               child: Icon(
                 Icons.sports_score,
-                color: Theme.of(context).colorScheme.onTertiaryContainer,
+                color: goal.isOwnGoal
+                    ? Colors.orange.shade800
+                    : Theme.of(context).colorScheme.onTertiaryContainer,
               ),
             ),
             title: Text(
-              _getPlayerName(goal.scorerId),
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              goal.isOwnGoal ? 'Autogol del Rival' : _getPlayerName(goal.scorerId),
+              style: TextStyle(
+                fontWeight: goal.isOwnGoal ? FontWeight.bold : FontWeight.w600,
+              ),
             ),
-            subtitle: goal.assisterId != null
+            subtitle: !goal.isOwnGoal && goal.assisterId != null
                 ? Text('Asistencia: ${_getPlayerName(goal.assisterId)}')
-                : null,
+                : goal.isOwnGoal
+                    ? const Text('Gol a favor del equipo')
+                    : null,
             trailing: Chip(
               label: Text('Q${goal.quarter}'),
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,

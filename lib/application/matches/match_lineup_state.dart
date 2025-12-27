@@ -4,6 +4,7 @@ import 'package:sport_tech_app/domain/matches/entities/match_call_up.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_goal.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_quarter_result.dart';
+import 'package:sport_tech_app/domain/matches/entities/match_substitution.dart';
 import 'package:sport_tech_app/domain/org/entities/player.dart';
 
 /// State for match lineup management
@@ -29,6 +30,10 @@ class MatchLineupState {
   final List<MatchGoal> allGoals;
   final List<MatchGoal> currentQuarterGoals;
 
+  // Substitutions
+  final List<MatchSubstitution> allSubstitutions;
+  final List<MatchSubstitution> currentQuarterSubstitutions;
+
   // Substitution selection
   final String? selectedPlayerOut;
   final String? selectedPlayerIn;
@@ -49,6 +54,8 @@ class MatchLineupState {
     this.currentQuarterResult,
     this.allGoals = const [],
     this.currentQuarterGoals = const [],
+    this.allSubstitutions = const [],
+    this.currentQuarterSubstitutions = const [],
     this.selectedPlayerOut,
     this.selectedPlayerIn,
     this.teamPlayers = const [],
@@ -91,6 +98,8 @@ class MatchLineupState {
     bool clearCurrentQuarterResult = false,
     List<MatchGoal>? allGoals,
     List<MatchGoal>? currentQuarterGoals,
+    List<MatchSubstitution>? allSubstitutions,
+    List<MatchSubstitution>? currentQuarterSubstitutions,
     String? selectedPlayerOut,
     bool clearSelectedPlayerOut = false,
     String? selectedPlayerIn,
@@ -112,6 +121,8 @@ class MatchLineupState {
           : (currentQuarterResult ?? this.currentQuarterResult),
       allGoals: allGoals ?? this.allGoals,
       currentQuarterGoals: currentQuarterGoals ?? this.currentQuarterGoals,
+      allSubstitutions: allSubstitutions ?? this.allSubstitutions,
+      currentQuarterSubstitutions: currentQuarterSubstitutions ?? this.currentQuarterSubstitutions,
       selectedPlayerOut: clearSelectedPlayerOut
           ? null
           : (selectedPlayerOut ?? this.selectedPlayerOut),

@@ -153,6 +153,13 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       final currentQuarterGoals =
           allGoals.where((g) => g.quarter == state.currentQuarter).toList();
 
+      // Load substitutions
+      final substitutionsResult = await _substitutionsRepository.getSubstitutionsByMatch(matchId);
+      final allSubstitutions = substitutionsResult.dataOrNull ?? [];
+
+      final currentQuarterSubstitutions =
+          allSubstitutions.where((s) => s.period == state.currentQuarter).toList();
+
       state = state.copyWith(
         isLoading: false,
         callUps: callUps,
@@ -163,6 +170,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
         currentQuarterResult: currentQuarterResult,
         allGoals: allGoals,
         currentQuarterGoals: currentQuarterGoals,
+        allSubstitutions: allSubstitutions,
+        currentQuarterSubstitutions: currentQuarterSubstitutions,
 
         teamPlayers: teamPlayers,
         clearError: true,
@@ -188,12 +197,16 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     final currentQuarterGoals =
         state.allGoals.where((g) => g.quarter == quarter).toList();
 
+    final currentQuarterSubstitutions =
+        state.allSubstitutions.where((s) => s.period == quarter).toList();
+
     state = state.copyWith(
       currentQuarter: quarter,
       currentQuarterPeriods: currentQuarterPeriods,
       currentQuarterResult: currentQuarterResult,
       clearCurrentQuarterResult: currentQuarterResult == null,
       currentQuarterGoals: currentQuarterGoals,
+      currentQuarterSubstitutions: currentQuarterSubstitutions,
       substitutionMode: false, // Exit substitution mode when changing quarter
       clearSelectedPlayerOut: true,
       clearSelectedPlayerIn: true,
@@ -335,12 +348,14 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
   Future<void> addGoal({
     required String scorerId,
     String? assisterId,
+    bool isOwnGoal = false,
   }) async {
     final result = await _goalsRepository.createGoal(
       matchId: matchId,
       quarter: state.currentQuarter,
       scorerId: scorerId,
       assisterId: assisterId,
+      isOwnGoal: isOwnGoal,
     );
 
     result.when(
@@ -375,5 +390,23 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       success: (_) => loadMatchData(),
       failure: (failure) => state = state.copyWith(error: failure.message),
     );
+  }
+
+  /// Select player to be substituted out
+  void selectPlayerOut(String? playerId) {
+    if (playerId == null) {
+      state = state.copyWith(clearSelectedPlayerOut: true);
+    } else {
+      state = state.copyWith(selectedPlayerOut: playerId);
+    }
+  }
+
+  /// Select player to substitute in
+  void selectPlayerIn(String? playerId) {
+    if (playerId == null) {
+      state = state.copyWith(clearSelectedPlayerIn: true);
+    } else {
+      state = state.copyWith(selectedPlayerIn: playerId);
+    }
   }
 }

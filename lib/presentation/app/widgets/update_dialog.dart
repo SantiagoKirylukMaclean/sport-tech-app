@@ -34,7 +34,7 @@ class UpdateDialog extends ConsumerWidget {
         children: [
           Icon(Icons.system_update, color: Colors.blue),
           SizedBox(width: 8),
-          Text('Nueva versión disponible'),
+          Flexible(child: Text('Nueva versión disponible')),
         ],
       ),
       content: SingleChildScrollView(

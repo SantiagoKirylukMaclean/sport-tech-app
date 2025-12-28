@@ -41,7 +41,13 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
     final assisters = statsState.assisters;
 
     // Combine scorers and assisters into a single list
-    final combinedStats = _combinePlayerStats(scorers, assisters);
+    final combinedStats = _combinePlayerStats(
+      scorers,
+      assisters,
+      statsState.matches,
+      statsState.playerStatistics,
+      l10n,
+    );
 
     if (combinedStats.isEmpty) {
       return Center(
@@ -171,9 +177,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                         ),
                         decoration: BoxDecoration(
                           color: player.goals > 0
-                              ? Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer
+                              ? Theme.of(context).colorScheme.primaryContainer
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -203,9 +207,7 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                         ),
                         decoration: BoxDecoration(
                           color: player.assists > 0
-                              ? Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer
+                              ? Theme.of(context).colorScheme.secondaryContainer
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -234,9 +236,8 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .tertiaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.tertiaryContainer,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Text(
@@ -263,6 +264,9 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
   List<_PlayerGoalsAssists> _combinePlayerStats(
     List scorers,
     List assisters,
+    List matches,
+    List playerStatistics,
+    AppLocalizations l10n,
   ) {
     final Map<String, _PlayerGoalsAssists> playersMap = {};
 
@@ -299,6 +303,32 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
       }
     }
 
+    // Calculate own goals
+    int totalTeamGoals = 0;
+    for (final match in matches) {
+      totalTeamGoals += (match.teamGoals as int);
+    }
+
+    int totalPlayerGoals = 0;
+    for (final scorer in scorers) {
+      totalPlayerGoals += (scorer.count as int);
+    }
+
+    final ownGoals = totalTeamGoals - totalPlayerGoals;
+
+    if (ownGoals > 0) {
+      // Use a special ID for own goals to avoid collisions
+      const ownGoalsId = 'own_goals';
+      playersMap[ownGoalsId] = _PlayerGoalsAssists(
+        playerId: ownGoalsId,
+        playerName: l10n.ownGoals,
+        goals: ownGoals,
+        assists: 0,
+        // No jersey number for own goals
+        jerseyNumber: null,
+      );
+    }
+
     return playersMap.values.toList();
   }
 
@@ -313,8 +343,9 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
         break;
       case 1: // Goals
         stats.sort(
-          (a, b) =>
-              _sortAscending ? a.goals.compareTo(b.goals) : b.goals.compareTo(a.goals),
+          (a, b) => _sortAscending
+              ? a.goals.compareTo(b.goals)
+              : b.goals.compareTo(a.goals),
         );
         break;
       case 2: // Assists
@@ -326,8 +357,9 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
         break;
       case 3: // Total
         stats.sort(
-          (a, b) =>
-              _sortAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total),
+          (a, b) => _sortAscending
+              ? a.total.compareTo(b.total)
+              : b.total.compareTo(a.total),
         );
         break;
     }

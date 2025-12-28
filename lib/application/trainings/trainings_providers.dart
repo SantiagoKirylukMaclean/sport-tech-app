@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/supabase_config.dart';
+import '../../domain/trainings/entities/training_attendance.dart';
 import '../../domain/trainings/repositories/training_attendance_repository.dart';
 import '../../domain/trainings/repositories/training_sessions_repository.dart';
 import '../../infrastructure/trainings/supabase_training_attendance_repository.dart';
@@ -33,4 +34,10 @@ final trainingAttendanceNotifierProvider =
         (ref) {
   final repository = ref.watch(trainingAttendanceRepositoryProvider);
   return TrainingAttendanceNotifier(repository);
+});
+
+final playerAttendanceProvider =
+    FutureProvider.family<List<TrainingAttendance>, String>((ref, playerId) {
+  final repository = ref.watch(trainingAttendanceRepositoryProvider);
+  return repository.getByPlayerId(playerId);
 });

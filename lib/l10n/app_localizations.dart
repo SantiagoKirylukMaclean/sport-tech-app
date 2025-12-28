@@ -746,6 +746,12 @@ abstract class AppLocalizations {
   /// **'Players'**
   String get players;
 
+  /// No description provided for @ownGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Own Goals'**
+  String get ownGoals;
+
   /// No description provided for @goals.
   ///
   /// In en, this message translates to:

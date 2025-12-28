@@ -18,10 +18,10 @@ class AppBreadcrumb extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         border: Border(
           bottom: BorderSide(
-            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
             width: 1,
           ),
         ),
@@ -31,7 +31,7 @@ class AppBreadcrumb extends StatelessWidget {
           Icon(
             Icons.home_outlined,
             size: 16,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -62,7 +62,7 @@ class AppBreadcrumb extends StatelessWidget {
             child: Icon(
               Icons.chevron_right,
               size: 16,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
             ),
           ),
         );
@@ -99,7 +99,7 @@ class _BreadcrumbButton extends StatelessWidget {
     final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
           color: isLast
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
           fontWeight: isLast ? FontWeight.w600 : FontWeight.normal,
         );
 
@@ -116,7 +116,7 @@ class _BreadcrumbButton extends StatelessWidget {
           label,
           style: textStyle?.copyWith(
             decoration: TextDecoration.underline,
-            decorationColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+            decorationColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
           ),
         ),
       ),

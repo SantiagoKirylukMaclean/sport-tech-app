@@ -87,9 +87,9 @@ class SupabaseClubsRepository implements ClubsRepository {
       final data = {
         'sport_id': sportId,
         'name': name.trim(),
-        if (primaryColor != null) 'primary_color': primaryColor.toARGB32(),
-        if (secondaryColor != null) 'secondary_color': secondaryColor.toARGB32(),
-        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.toARGB32(),
+        if (primaryColor != null) 'primary_color': primaryColor.value,
+        if (secondaryColor != null) 'secondary_color': secondaryColor.value,
+        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.value,
       };
 
       final response = await _client
@@ -117,9 +117,9 @@ class SupabaseClubsRepository implements ClubsRepository {
     try {
       final data = {
         'name': name.trim(),
-        if (primaryColor != null) 'primary_color': primaryColor.toARGB32(),
-        if (secondaryColor != null) 'secondary_color': secondaryColor.toARGB32(),
-        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.toARGB32(),
+        if (primaryColor != null) 'primary_color': primaryColor.value,
+        if (secondaryColor != null) 'secondary_color': secondaryColor.value,
+        if (tertiaryColor != null) 'tertiary_color': tertiaryColor.value,
       };
 
       final response = await _client

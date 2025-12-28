@@ -6,6 +6,7 @@ import 'package:sport_tech_app/core/error/failures.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/infrastructure/profiles/supabase_profiles_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'fake_postgrest_builder.dart';
 
 // Mock classes
 class MockSupabaseClient extends Mock implements SupabaseClient {}
@@ -17,28 +18,46 @@ class MockUser extends Mock implements User {}
 class MockPostgrestFilterBuilder extends Mock
     implements PostgrestFilterBuilder<PostgrestList> {}
 
-class MockPostgrestBuilder extends Mock implements PostgrestBuilder<PostgrestList> {}
+class MockSupabaseQueryBuilder extends Mock implements SupabaseQueryBuilder {}
 
 void main() {
   late SupabaseProfilesRepository repository;
   late MockSupabaseClient mockClient;
   late MockGoTrueClient mockAuth;
   late MockPostgrestFilterBuilder mockFilterBuilder;
+  late MockSupabaseQueryBuilder mockQueryBuilder;
 
   setUp(() {
     mockClient = MockSupabaseClient();
     mockAuth = MockGoTrueClient();
     mockFilterBuilder = MockPostgrestFilterBuilder();
+    mockQueryBuilder = MockSupabaseQueryBuilder();
     repository = SupabaseProfilesRepository(mockClient);
 
-    when(() => mockClient.auth).thenReturn(mockAuth);
+    // Register fallbacks
+    registerFallbackValue({});
   });
 
+  void setUpMocks() {
+    when(() => mockClient.auth).thenReturn(mockAuth);
+    when(() => mockClient.from(any())).thenAnswer((_) => mockQueryBuilder);
+    when(() => mockQueryBuilder.select(any())).thenAnswer((_) => mockFilterBuilder);
+    when(() => mockQueryBuilder.insert(any())).thenAnswer((_) => mockFilterBuilder);
+    when(() => mockQueryBuilder.update(any())).thenAnswer((_) => mockFilterBuilder);
+    when(() => mockFilterBuilder.eq(any(), any())).thenAnswer((_) => mockFilterBuilder);
+    when(() => mockFilterBuilder.select(any())).thenAnswer((_) => mockFilterBuilder);
+  }
+
   group('SupabaseProfilesRepository -', () {
+    test('smoke test', () {
+      expect(true, isTrue);
+    });
+
     group('getCurrentUserProfile', () {
       test('should return Success with UserProfile when user is authenticated',
           () async {
         // Arrange
+        setUpMocks();
         const userId = 'user-123';
         final mockUser = MockUser();
         when(() => mockUser.id).thenReturn(userId);
@@ -52,12 +71,9 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => profileData);
+            .thenAnswer((_) => mockFilterBuilder);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(profileData));
 
         // Act
         final result = await repository.getCurrentUserProfile();
@@ -66,13 +82,14 @@ void main() {
         expect(result, isA<Success>());
         expect(result.isSuccess, isTrue);
         final profile = (result as Success).data;
-        expect(profile.id, userId);
+        expect(profile.userId, userId);
         expect(profile.displayName, 'Test User');
       });
 
       test('should return Failed with AuthFailure when no user authenticated',
           () async {
         // Arrange
+        setUpMocks();
         when(() => mockAuth.currentUser).thenReturn(null);
 
         // Act
@@ -92,6 +109,7 @@ void main() {
       test('should return Success with UserProfile when profile exists',
           () async {
         // Arrange
+        setUpMocks();
         final profileData = {
           'id': userId,
           'display_name': 'Another User',
@@ -100,12 +118,10 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
+        when(() => mockClient.from('profiles')).thenAnswer((_) => mockQueryBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => profileData);
+            .thenAnswer((_) => mockFilterBuilder);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(profileData));
 
         // Act
         final result = await repository.getProfileById(userId);
@@ -113,23 +129,22 @@ void main() {
         // Assert
         expect(result, isA<Success>());
         final profile = (result as Success).data;
-        expect(profile.id, userId);
+        expect(profile.userId, userId);
         expect(profile.displayName, 'Another User');
-        expect(profile.role.name, 'coach');
+        expect(profile.role.value, 'coach');
       });
 
       test('should return Failed with NotFoundFailure when profile not found',
           () async {
         // Arrange
+        setUpMocks();
         final exception = PostgrestException(
           message: 'Profile not found',
           code: 'PGRST116',
         );
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
+            .thenAnswer((_) => mockFilterBuilder);
         when(() => mockFilterBuilder.single()).thenThrow(exception);
 
         // Act
@@ -145,15 +160,15 @@ void main() {
       test('should return Failed with ServerFailure on PostgrestException',
           () async {
         // Arrange
+        setUpMocks();
         final exception = PostgrestException(
           message: 'Database error',
           code: '500',
         );
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
+        when(() => mockClient.from('profiles')).thenAnswer((_) => mockQueryBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
+            .thenAnswer((_) => mockFilterBuilder);
         when(() => mockFilterBuilder.single()).thenThrow(exception);
 
         // Act
@@ -172,6 +187,7 @@ void main() {
 
       test('should return Success with updated UserProfile', () async {
         // Arrange
+        setUpMocks();
         final mockUser = MockUser();
         when(() => mockUser.id).thenReturn(userId);
         when(() => mockAuth.currentUser).thenReturn(mockUser);
@@ -184,22 +200,18 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.update(any())).thenReturn(mockFilterBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => updatedData);
+            .thenAnswer((_) => mockFilterBuilder);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(updatedData));
 
         // Act
         final result = await repository.updateProfile(displayName: newDisplayName);
 
         // Assert
         expect(result, isA<Success>());
-        final profile = (result as Success).value;
+        final profile = (result as Success).data;
         expect(profile.displayName, newDisplayName);
-        verify(() => mockFilterBuilder.update(any(
+        verify(() => mockQueryBuilder.update(any(
               that: predicate<Map<String, dynamic>>((map) {
                 return map['display_name'] == newDisplayName &&
                     map.containsKey('updated_at');
@@ -209,6 +221,7 @@ void main() {
 
       test('should return Failed when no user authenticated', () async {
         // Arrange
+        setUpMocks();
         when(() => mockAuth.currentUser).thenReturn(null);
 
         // Act
@@ -222,6 +235,7 @@ void main() {
 
       test('should trim display name before update', () async {
         // Arrange
+        setUpMocks();
         const nameWithSpaces = '  Updated Name  ';
         final mockUser = MockUser();
         when(() => mockUser.id).thenReturn(userId);
@@ -235,19 +249,15 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.update(any())).thenReturn(mockFilterBuilder);
         when(() => mockFilterBuilder.eq('id', userId))
-            .thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => updatedData);
+            .thenAnswer((_) => mockFilterBuilder);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(updatedData));
 
         // Act
         await repository.updateProfile(displayName: nameWithSpaces);
 
         // Assert
-        verify(() => mockFilterBuilder.update(any(
+        verify(() => mockQueryBuilder.update(any(
               that: predicate<Map<String, dynamic>>((map) {
                 return map['display_name'] == newDisplayName;
               }),
@@ -262,6 +272,7 @@ void main() {
 
       test('should return Success with created UserProfile', () async {
         // Arrange
+        setUpMocks();
         final createdData = {
           'id': userId,
           'display_name': displayName,
@@ -270,11 +281,7 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.insert(any())).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => createdData);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(createdData));
 
         // Act
         final result = await repository.createProfile(
@@ -285,10 +292,10 @@ void main() {
 
         // Assert
         expect(result, isA<Success>());
-        final profile = (result as Success).value;
-        expect(profile.id, userId);
+        final profile = (result as Success).data;
+        expect(profile.userId, userId);
         expect(profile.displayName, displayName);
-        verify(() => mockFilterBuilder.insert(any(
+        verify(() => mockQueryBuilder.insert(any(
               that: predicate<Map<String, dynamic>>((map) {
                 return map['id'] == userId &&
                     map['display_name'] == displayName &&
@@ -301,14 +308,12 @@ void main() {
 
       test('should return Failed on PostgrestException', () async {
         // Arrange
+        setUpMocks();
         final exception = PostgrestException(
           message: 'Duplicate key violation',
           code: '23505',
         );
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.insert(any())).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
         when(() => mockFilterBuilder.single()).thenThrow(exception);
 
         // Act
@@ -326,6 +331,7 @@ void main() {
 
       test('should trim display name before create', () async {
         // Arrange
+        setUpMocks();
         const nameWithSpaces = '  New User  ';
         final createdData = {
           'id': userId,
@@ -335,11 +341,7 @@ void main() {
           'updated_at': DateTime.now().toIso8601String(),
         };
 
-        when(() => mockClient.from('profiles')).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.insert(any())).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.select()).thenReturn(mockFilterBuilder);
-        when(() => mockFilterBuilder.single())
-            .thenAnswer((_) async => createdData);
+        when(() => mockFilterBuilder.single()).thenAnswer((_) => FakePostgrestTransformBuilder(createdData));
 
         // Act
         await repository.createProfile(
@@ -349,7 +351,7 @@ void main() {
         );
 
         // Assert
-        verify(() => mockFilterBuilder.insert(any(
+        verify(() => mockQueryBuilder.insert(any(
               that: predicate<Map<String, dynamic>>((map) {
                 return map['display_name'] == displayName;
               }),

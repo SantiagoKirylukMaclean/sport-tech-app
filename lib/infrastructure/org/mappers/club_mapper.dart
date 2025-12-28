@@ -25,9 +25,9 @@ class ClubMapper {
       'sport_id': club.sportId,
       'name': club.name,
       'created_at': club.createdAt.toIso8601String(),
-      'primary_color': club.primaryColor?.toARGB32(),
-      'secondary_color': club.secondaryColor?.toARGB32(),
-      'tertiary_color': club.tertiaryColor?.toARGB32(),
+      'primary_color': club.primaryColor?.value,
+      'secondary_color': club.secondaryColor?.value,
+      'tertiary_color': club.tertiaryColor?.value,
     };
   }
 

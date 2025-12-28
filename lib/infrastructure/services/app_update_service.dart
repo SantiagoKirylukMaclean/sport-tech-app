@@ -135,9 +135,11 @@ class AppUpdateService {
     String downloadUrl, {
     Function(double)? onProgress,
   }) async {
+    final client = http.Client();
     try {
-      // Download APK
-      final response = await http.get(Uri.parse(downloadUrl));
+      // Download APK with progress
+      final request = http.Request('GET', Uri.parse(downloadUrl));
+      final response = await client.send(request);
 
       if (response.statusCode != 200) {
         debugPrint('Failed to download APK: ${response.statusCode}');
@@ -148,7 +150,28 @@ class AppUpdateService {
       final dir = await getExternalStorageDirectory();
       final apkPath = '${dir!.path}/sport_tech_app_update.apk';
       final file = File(apkPath);
-      await file.writeAsBytes(response.bodyBytes);
+
+      final contentLength = response.contentLength ?? 0;
+      var bytesDownloaded = 0;
+      final sink = file.openWrite();
+
+      await response.stream.listen(
+        (chunk) {
+          bytesDownloaded += chunk.length;
+          sink.add(chunk);
+          if (contentLength > 0 && onProgress != null) {
+            onProgress(bytesDownloaded / contentLength);
+          }
+        },
+        onDone: () async {
+          await sink.close();
+        },
+        onError: (e) {
+          debugPrint('Error downloading stream: $e');
+          sink.close();
+        },
+        cancelOnError: true,
+      ).asFuture();
 
       // Open APK for installation
       final result = await OpenFilex.open(apkPath);
@@ -158,6 +181,8 @@ class AppUpdateService {
     } catch (e) {
       debugPrint('Error downloading/installing update: $e');
       return false;
+    } finally {
+      client.close();
     }
   }
 }

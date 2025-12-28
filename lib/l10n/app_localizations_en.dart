@@ -868,6 +868,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get averageOf => 'Average of';
 
   @override
+  String get trainingsDone => 'trainings done';
+
+  @override
+  String get percentageTotalMatches => 'of total matches played';
+
+  @override
+  String get teamAttendanceMatches => 'team training\nattendance';
+
+  @override
+  String get goalsAverage => 'goals average';
+
+  @override
+  String get pointsWin => 'points won';
+
+  @override
   String get accountInformation => 'Account Information';
 
   @override

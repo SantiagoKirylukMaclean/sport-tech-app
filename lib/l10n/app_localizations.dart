@@ -1712,6 +1712,36 @@ abstract class AppLocalizations {
   /// **'Average of'**
   String get averageOf;
 
+  /// No description provided for @trainingsDone.
+  ///
+  /// In en, this message translates to:
+  /// **'trainings done'**
+  String get trainingsDone;
+
+  /// No description provided for @percentageTotalMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'of total matches played'**
+  String get percentageTotalMatches;
+
+  /// No description provided for @teamAttendanceMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'team training\nattendance'**
+  String get teamAttendanceMatches;
+
+  /// No description provided for @goalsAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'goals average'**
+  String get goalsAverage;
+
+  /// No description provided for @pointsWin.
+  ///
+  /// In en, this message translates to:
+  /// **'points won'**
+  String get pointsWin;
+
   /// No description provided for @accountInformation.
   ///
   /// In en, this message translates to:

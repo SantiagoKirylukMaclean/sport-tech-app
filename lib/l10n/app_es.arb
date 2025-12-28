@@ -330,6 +330,11 @@
   "interventions": "Intervenciones",
   "attendance": "asistencia",
   "averageOf": "Promedio de",
+  "trainingsDone": "entrenamientos realizados",
+  "percentageTotalMatches": "del total de partidos jugados",
+  "teamAttendanceMatches": "asistencia del equipo\na entrenamientos",
+  "goalsAverage": "promedio de goles",
+  "pointsWin": "puntos ganados",
 
   "@_PROFILE": {},
   "accountInformation": "Información de la Cuenta",

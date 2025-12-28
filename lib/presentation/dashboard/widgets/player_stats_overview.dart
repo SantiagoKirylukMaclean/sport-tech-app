@@ -56,33 +56,6 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
     }
   }
 
-  /// Get color based on percentage (0% = red, 100% = green)
-  Color _getPercentageColor(double percentage) {
-    // Clamp percentage to 0-100 range
-    final clampedPercentage = percentage.clamp(0.0, 100.0);
-
-    // Use Material Design color scheme
-    // 0-50%: Red to Yellow
-    // 50-100%: Yellow to Green
-    if (clampedPercentage < 50) {
-      // Interpolate between red and yellow
-      final t = clampedPercentage / 50;
-      return Color.lerp(
-        Colors.red.shade700,
-        Colors.amber.shade700,
-        t,
-      )!;
-    } else {
-      // Interpolate between yellow and green
-      final t = (clampedPercentage - 50) / 50;
-      return Color.lerp(
-        Colors.amber.shade700,
-        Colors.green.shade700,
-        t,
-      )!;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -106,16 +79,18 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
                     context.push('/dashboard/player-matches');
                   },
                   child: StatCard(
-                    title: l10n.matchesPlayed,
+                    title: l10n.matchesPlayed, // "played matches"
                     value: '${widget.stats.matchesAttended}',
-                    subtitle: '${widget.stats.matchAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
-                    icon: Icons.sports_soccer,
-                    valueColor: _getPercentageColor(widget.stats.matchAttendancePercentage),
+                    subtitle:
+                        '${widget.stats.matchAttendancePercentage.toStringAsFixed(0)}% ${l10n.attendance}',
+                    icon: Icons
+                        .sports_soccer, // Icon is ignored in new StatCard build but required by constructor
+                    valueColor: const Color(0xFF4CAF50), // Green
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              // Entrenamientos (Training Sessions Attended)
+              // Entrenamientos (Trainings Done)
               SizedBox(
                 width: cardSize,
                 height: cardSize,
@@ -124,16 +99,17 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
                     context.push('/dashboard/trainings');
                   },
                   child: StatCard(
-                    title: l10n.trainings,
+                    title: l10n.trainingsDone, // "trainings done"
                     value: '${widget.stats.trainingsAttended}',
-                    subtitle: '${widget.stats.trainingAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
+                    subtitle:
+                        '${widget.stats.trainingAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
                     icon: Icons.fitness_center,
-                    valueColor: _getPercentageColor(widget.stats.trainingAttendancePercentage),
+                    valueColor: const Color(0xFF4CAF50), // Green
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              // % Cuartos Jugados (Quarters Played Percentage)
+              // % Cuartos Jugados (Quarters Played)
               SizedBox(
                 width: cardSize,
                 height: cardSize,
@@ -142,24 +118,27 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
                     context.push('/dashboard/quarters-played-chart');
                   },
                   child: StatCard(
-                    title: l10n.quartersPlayed,
-                    value: '${widget.stats.averagePeriods.toStringAsFixed(1)}',
-                    subtitle: '${(widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)}% • ${l10n.averageOf} 4',
+                    title: l10n.quartersPlayed, // "quarters played"
+                    value: widget.stats.averagePeriods.toStringAsFixed(1),
+                    subtitle:
+                        '${(widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)}% ${l10n.attendance}', // Using attendance/total key logic
                     icon: Icons.timer,
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              // Intervenciones (Goals + Assists)
+              // Intervenciones (Interventions)
               SizedBox(
                 width: cardSize,
                 height: cardSize,
                 child: StatCard(
-                  title: l10n.interventions,
-                  value: '${widget.stats.totalGoals + widget.stats.totalAssists}',
-                  subtitle: '${widget.stats.totalGoals} ${l10n.goals.toLowerCase()} • ${widget.stats.totalAssists} ${l10n.assists.toLowerCase()}',
+                  title: l10n.interventions, // "interventions"
+                  value:
+                      '${widget.stats.totalGoals + widget.stats.totalAssists}',
+                  subtitle:
+                      '${widget.stats.totalGoals} ${l10n.goals.toLowerCase()} - ${widget.stats.totalAssists} ${l10n.assists.toLowerCase()}',
                   icon: Icons.sports_score,
-                  valueColor: (widget.stats.totalGoals + widget.stats.totalAssists) > 0 ? Colors.green : null,
+                  valueColor: const Color(0xFF4CAF50), // Green
                 ),
               ),
             ],
@@ -179,8 +158,14 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                     colors: [
-                      Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
-                      Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                      Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withValues(alpha: 0.0),
+                      Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withValues(alpha: 0.9),
                     ],
                   ),
                 ),
@@ -190,7 +175,10 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
                     padding: const EdgeInsets.only(right: 8),
                     child: Icon(
                       Icons.chevron_right,
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
                       size: 32,
                     ),
                   ),

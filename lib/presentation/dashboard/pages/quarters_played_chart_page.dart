@@ -26,7 +26,8 @@ class QuartersPlayedDataPoint {
 }
 
 /// Provider for quarters played data
-final quartersPlayedDataProvider = FutureProvider.autoDispose<List<QuartersPlayedDataPoint>>(
+final quartersPlayedDataProvider =
+    FutureProvider.autoDispose<List<QuartersPlayedDataPoint>>(
   (ref) async {
     final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
     if (activeTeam == null) return [];
@@ -45,7 +46,8 @@ final quartersPlayedDataProvider = FutureProvider.autoDispose<List<QuartersPlaye
 
     final playerId = playerResult.dataOrNull!.id;
 
-    final matchesNotifier = ref.watch(matchesNotifierProvider(activeTeam.id).notifier);
+    final matchesNotifier =
+        ref.watch(matchesNotifierProvider(activeTeam.id).notifier);
     await matchesNotifier.loadMatches();
 
     final matchesState = ref.watch(matchesNotifierProvider(activeTeam.id));
@@ -138,8 +140,8 @@ class QuartersPlayedChartPage extends ConsumerWidget {
                   Text(
                     'No hay datos disponibles',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                   const SizedBox(height: 8),
                   Text('Los datos aparecerán cuando juegues partidos'),
@@ -186,11 +188,15 @@ class QuartersPlayedChartPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildSummaryCards(BuildContext context, List<QuartersPlayedDataPoint> dataPoints) {
-    final totalQuarters = dataPoints.fold<double>(0, (sum, point) => sum + point.quarters);
+  Widget _buildSummaryCards(
+      BuildContext context, List<QuartersPlayedDataPoint> dataPoints) {
+    final totalQuarters =
+        dataPoints.fold<double>(0, (sum, point) => sum + point.quarters);
     final avgQuarters = totalQuarters / dataPoints.length;
-    final maxQuarters = dataPoints.map((p) => p.quarters).reduce((a, b) => a > b ? a : b);
-    final minQuarters = dataPoints.map((p) => p.quarters).reduce((a, b) => a < b ? a : b);
+    final maxQuarters =
+        dataPoints.map((p) => p.quarters).reduce((a, b) => a > b ? a : b);
+    final minQuarters =
+        dataPoints.map((p) => p.quarters).reduce((a, b) => a < b ? a : b);
 
     return Row(
       children: [
@@ -224,7 +230,8 @@ class QuartersPlayedChartPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildDataTable(BuildContext context, List<QuartersPlayedDataPoint> dataPoints) {
+  Widget _buildDataTable(
+      BuildContext context, List<QuartersPlayedDataPoint> dataPoints) {
     final dateFormat = DateFormat('dd MMM yyyy', 'es');
 
     return Card(
@@ -354,14 +361,13 @@ class _QuartersPlayedChart extends StatelessWidget {
                 }
 
                 final point = dataPoints[index];
-                final dateFormat = DateFormat('dd/MM', 'es');
 
                 return Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Transform.rotate(
                     angle: -0.5,
                     child: Text(
-                      dateFormat.format(point.date),
+                      point.matchOpponent,
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
@@ -427,7 +433,10 @@ class _QuartersPlayedChart extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-                  Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+                  Theme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withValues(alpha: 0.1),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,

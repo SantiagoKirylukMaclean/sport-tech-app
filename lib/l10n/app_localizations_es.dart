@@ -338,6 +338,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get players => 'Jugadores';
 
   @override
+  String get ownGoals => 'Goles en Propia';
+
+  @override
   String get goals => 'Goles';
 
   @override

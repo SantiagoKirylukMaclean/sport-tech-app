@@ -101,6 +101,10 @@
   "lightMode": "Light Mode",
   "systemMode": "System",
   "preferences": "Preferences",
+  "checkForUpdates": "Check for updates",
+  "checkingForUpdates": "Checking for updates...",
+  "noUpdatesAvailable": "No updates available",
+  "errorCheckingUpdates": "Error checking for updates",
 
   "@_MORE": {},
   "moreOptions": "More Options",

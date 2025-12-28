@@ -264,6 +264,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preferences => 'Preferences';
 
   @override
+  String get checkForUpdates => 'Check for updates';
+
+  @override
+  String get checkingForUpdates => 'Checking for updates...';
+
+  @override
+  String get noUpdatesAvailable => 'No updates available';
+
+  @override
+  String get errorCheckingUpdates => 'Error checking for updates';
+
+  @override
   String get moreOptions => 'More Options';
 
   @override

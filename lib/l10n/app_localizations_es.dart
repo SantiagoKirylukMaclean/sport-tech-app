@@ -267,6 +267,18 @@ class AppLocalizationsEs extends AppLocalizations {
   String get preferences => 'Preferencias';
 
   @override
+  String get checkForUpdates => 'Buscar actualizaciones';
+
+  @override
+  String get checkingForUpdates => 'Buscando actualizaciones...';
+
+  @override
+  String get noUpdatesAvailable => 'No hay actualizaciones disponibles';
+
+  @override
+  String get errorCheckingUpdates => 'Error al buscar actualizaciones';
+
+  @override
   String get moreOptions => 'Más Opciones';
 
   @override

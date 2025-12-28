@@ -21,12 +21,16 @@ class AppUpdateService {
       final currentVersion = packageInfo.version;
       final currentBuildNumber = int.parse(packageInfo.buildNumber);
 
-      debugPrint('Current version: $currentVersion, build: $currentBuildNumber');
+      debugPrint(
+          'Current version: $currentVersion, build: $currentBuildNumber');
 
       // Fetch all releases from GitHub (including pre-releases)
       final response = await http.get(
         Uri.parse(githubApiUrl),
-        headers: {'Accept': 'application/vnd.github.v3+json'},
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'SportTechApp',
+        },
       );
 
       if (response.statusCode != 200) {
@@ -50,7 +54,8 @@ class AppUpdateService {
         final tagName = releaseData['tag_name'] as String;
 
         // Extract version from tag_name (e.g., "stage-v1.0.0+2-5" -> "1.0.0+2")
-        final versionMatch = RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
+        final versionMatch =
+            RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
 
         if (versionMatch == null) {
           debugPrint('Skipping release with invalid tag: $tagName');
@@ -63,7 +68,8 @@ class AppUpdateService {
 
         // Check if this release has an APK
         final assets = releaseData['assets'] as List<dynamic>;
-        final hasApk = assets.any((asset) => (asset['name'] as String).endsWith('.apk'));
+        final hasApk =
+            assets.any((asset) => (asset['name'] as String).endsWith('.apk'));
 
         if (!hasApk) {
           debugPrint('Skipping release without APK: $tagName');
@@ -112,7 +118,8 @@ class AppUpdateService {
   }
 
   /// Download and install APK update
-  Future<bool> downloadAndInstall(String downloadUrl, {
+  Future<bool> downloadAndInstall(
+    String downloadUrl, {
     Function(double)? onProgress,
   }) async {
     try {

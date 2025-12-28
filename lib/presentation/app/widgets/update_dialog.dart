@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/update/update_provider.dart';
 import 'package:sport_tech_app/infrastructure/services/app_update_service.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 /// Dialog to prompt user about available update
 class UpdateDialog extends ConsumerWidget {
@@ -22,8 +23,11 @@ class UpdateDialog extends ConsumerWidget {
     final isCompleted = downloadState is UpdateDownloadCompleted;
     final isError = downloadState is UpdateDownloadError;
 
-    final progress = isDownloading ? (downloadState as UpdateDownloadDownloading).progress : 0.0;
-    final errorMessage = isError ? (downloadState as UpdateDownloadError).message : '';
+    final progress = isDownloading
+        ? (downloadState as UpdateDownloadDownloading).progress
+        : 0.0;
+    final errorMessage =
+        isError ? (downloadState as UpdateDownloadError).message : '';
 
     return AlertDialog(
       title: const Row(
@@ -111,6 +115,64 @@ class UpdateDialog extends ConsumerWidget {
         context: context,
         barrierDismissible: false,
         builder: (context) => UpdateDialog(updateInfo: updateInfo),
+      );
+    }
+  }
+
+  /// Check for updates and show feedback (for manual checks)
+  static Future<void> checkAndShowWithFeedback(
+      BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // Show loading snackbar
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            const SizedBox(width: 8),
+            Text(l10n.checkingForUpdates ?? 'Checking for updates...'),
+          ],
+        ),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+
+    try {
+      // Force a fresh check
+      final updateInfo =
+          await ref.read(appUpdateServiceProvider).checkForUpdate();
+
+      if (!context.mounted) return;
+
+      if (updateInfo != null) {
+        // Update available
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => UpdateDialog(updateInfo: updateInfo),
+        );
+      } else {
+        // No update available
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text(l10n.noUpdatesAvailable ?? 'No updates available'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!context.mounted) return;
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+              '${l10n.errorCheckingUpdates ?? 'Error checking for updates'}: $e'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }

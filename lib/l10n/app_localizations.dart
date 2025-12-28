@@ -608,6 +608,30 @@ abstract class AppLocalizations {
   /// **'Preferences'**
   String get preferences;
 
+  /// No description provided for @checkForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates'**
+  String get checkForUpdates;
+
+  /// No description provided for @checkingForUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates...'**
+  String get checkingForUpdates;
+
+  /// No description provided for @noUpdatesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No updates available'**
+  String get noUpdatesAvailable;
+
+  /// No description provided for @errorCheckingUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Error checking for updates'**
+  String get errorCheckingUpdates;
+
   /// No description provided for @moreOptions.
   ///
   /// In en, this message translates to:

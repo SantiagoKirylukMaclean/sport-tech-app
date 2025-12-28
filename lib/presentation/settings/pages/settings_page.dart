@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
+import 'package:sport_tech_app/presentation/app/widgets/update_dialog.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -35,7 +36,10 @@ class SettingsPage extends ConsumerWidget {
                 Text(
                   l10n.preferences,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.6),
                       ),
                 ),
               ],
@@ -90,7 +94,9 @@ class SettingsPage extends ConsumerWidget {
               ],
               selected: {currentTheme},
               onSelectionChanged: (Set<ThemeMode> newSelection) {
-                ref.read(themeNotifierProvider.notifier).setThemeMode(newSelection.first);
+                ref
+                    .read(themeNotifierProvider.notifier)
+                    .setThemeMode(newSelection.first);
               },
             ),
           ),
@@ -161,21 +167,24 @@ class SettingsPage extends ConsumerWidget {
 }
 
 /// Widget to display app version information
-class _AppVersionTile extends StatelessWidget {
+class _AppVersionTile extends ConsumerWidget {
   final Locale? currentLocale;
 
   const _AppVersionTile({required this.currentLocale});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<PackageInfo>(
       future: PackageInfo.fromPlatform(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return ListTile(
             leading: const Icon(Icons.info_outline),
-            title: Text(currentLocale?.languageCode == 'es' ? 'Versión' : 'Version'),
-            subtitle: Text(currentLocale?.languageCode == 'es' ? 'Cargando...' : 'Loading...'),
+            title: Text(
+                currentLocale?.languageCode == 'es' ? 'Versión' : 'Version'),
+            subtitle: Text(currentLocale?.languageCode == 'es'
+                ? 'Cargando...'
+                : 'Loading...'),
           );
         }
 
@@ -185,8 +194,15 @@ class _AppVersionTile extends StatelessWidget {
 
         return ListTile(
           leading: const Icon(Icons.info_outline),
-          title: Text(currentLocale?.languageCode == 'es' ? 'Versión de la app' : 'App Version'),
+          title: Text(currentLocale?.languageCode == 'es'
+              ? 'Versión de la app'
+              : 'App Version'),
           subtitle: Text('$version (Build $buildNumber)'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            // Check for updates manually
+            UpdateDialog.checkAndShowWithFeedback(context, ref);
+          },
         );
       },
     );

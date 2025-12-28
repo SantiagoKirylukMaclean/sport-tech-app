@@ -22,7 +22,7 @@ class AppUpdateService {
       final currentBuildNumber = int.parse(packageInfo.buildNumber);
 
       debugPrint(
-          'Current version: $currentVersion, build: $currentBuildNumber');
+          'AppUpdateService: Current version: $currentVersion, build: $currentBuildNumber');
 
       // Fetch all releases from GitHub (including pre-releases)
       final response = await http.get(
@@ -34,14 +34,15 @@ class AppUpdateService {
       );
 
       if (response.statusCode != 200) {
-        debugPrint('Failed to fetch updates: ${response.statusCode}');
+        debugPrint(
+            'AppUpdateService: Failed to fetch updates. Status: ${response.statusCode}, Body: ${response.body}');
         return null;
       }
 
       final releases = json.decode(response.body) as List<dynamic>;
 
       if (releases.isEmpty) {
-        debugPrint('No releases found');
+        debugPrint('AppUpdateService: No releases found in repository');
         return null;
       }
 
@@ -58,12 +59,18 @@ class AppUpdateService {
             RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName);
 
         if (versionMatch == null) {
-          debugPrint('Skipping release with invalid tag: $tagName');
+          debugPrint(
+              'AppUpdateService: Skipping release with invalid tag format: $tagName');
           continue;
         }
 
         final versionString = versionMatch.group(1)!;
         final versionParts = versionString.split('+');
+        if (versionParts.length < 2) {
+          debugPrint(
+              'AppUpdateService: Skipping release with invalid version string: $versionString');
+          continue;
+        }
         final buildNumber = int.parse(versionParts[1]);
 
         // Check if this release has an APK
@@ -72,7 +79,8 @@ class AppUpdateService {
             assets.any((asset) => (asset['name'] as String).endsWith('.apk'));
 
         if (!hasApk) {
-          debugPrint('Skipping release without APK: $tagName');
+          debugPrint(
+              'AppUpdateService: Skipping release without APK: $tagName');
           continue;
         }
 
@@ -80,12 +88,15 @@ class AppUpdateService {
         if (buildNumber > latestBuildNumber) {
           latestBuildNumber = buildNumber;
           latestRelease = releaseData;
+          debugPrint(
+              'AppUpdateService: Found potential update: build $buildNumber (Tag: $tagName)');
         }
       }
 
       // Check if we found a newer version
       if (latestRelease == null || latestBuildNumber <= currentBuildNumber) {
-        debugPrint('No update available. Latest build: $latestBuildNumber');
+        debugPrint(
+            'AppUpdateService: No update available. Current: $currentBuildNumber, Latest found: $latestBuildNumber');
         return null;
       }
 
@@ -102,7 +113,8 @@ class AppUpdateService {
         (asset) => (asset['name'] as String).endsWith('.apk'),
       );
 
-      debugPrint('Update found! Latest: $latestVersion+$latestBuildNumber');
+      debugPrint(
+          'AppUpdateService: Update confirmed! New version: $latestVersion+$latestBuildNumber');
 
       return UpdateInfo(
         currentVersion: currentVersion,
@@ -111,8 +123,9 @@ class AppUpdateService {
         releaseNotes: latestRelease['body'] as String? ?? '',
         releaseName: latestRelease['name'] as String,
       );
-    } catch (e) {
-      debugPrint('Error checking for updates: $e');
+    } catch (e, stackTrace) {
+      debugPrint(
+          'AppUpdateService: Error checking for updates: $e\n$stackTrace');
       return null;
     }
   }

@@ -7,7 +7,7 @@ import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/supabase_config.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/presentation/app/router/app_router.dart';
-import 'package:sport_tech_app/presentation/app/widgets/update_checker.dart';
+
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -48,16 +48,16 @@ class SportTechApp extends ConsumerWidget {
 
     // Watch club colors and update theme when active team changes
     final clubColors = ref.watch(activeClubColorsProvider);
-    
+
     // Update theme based on club colors
     clubColors.whenData((colors) {
       if (colors != null) {
         final (primaryColor, secondaryColor, tertiaryColor) = colors;
         ref.read(themeNotifierProvider.notifier).updateClubTheme(
-          primaryColor: primaryColor,
-          secondaryColor: secondaryColor,
-          tertiaryColor: tertiaryColor,
-        );
+              primaryColor: primaryColor,
+              secondaryColor: secondaryColor,
+              tertiaryColor: tertiaryColor,
+            );
       } else {
         // Reset to default theme when no club colors available
         ref.read(themeNotifierProvider.notifier).resetToDefaultTheme();
@@ -67,32 +67,30 @@ class SportTechApp extends ConsumerWidget {
     // Get current theme state (includes dynamic themes based on club colors)
     final themeState = ref.watch(themeNotifierProvider);
 
-    return UpdateChecker(
-      child: MaterialApp.router(
-        title: 'Sport Tech',
-        debugShowCheckedModeBanner: false,
+    return MaterialApp.router(
+      title: 'Sport Tech',
+      debugShowCheckedModeBanner: false,
 
-        // Dynamic theme configuration (updates based on club colors)
-        theme: themeState.lightTheme,
-        darkTheme: themeState.darkTheme,
-        themeMode: themeState.themeMode,
+      // Dynamic theme configuration (updates based on club colors)
+      theme: themeState.lightTheme,
+      darkTheme: themeState.darkTheme,
+      themeMode: themeState.themeMode,
 
-        // Router configuration
-        routerConfig: router,
+      // Router configuration
+      routerConfig: router,
 
-        // Localization
-        locale: locale,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en', ''), // English
-          Locale('es', ''), // Spanish
-        ],
-      ),
+      // Localization
+      locale: locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('es', ''), // Spanish
+      ],
     );
   }
 }

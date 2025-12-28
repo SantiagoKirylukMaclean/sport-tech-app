@@ -1,0 +1,1 @@
+void main() { final tagName = 'prod-v1.0.1+13-13'; final versionMatch = RegExp(r'v(\d+\.\d+\.\d+\+\d+)').firstMatch(tagName); if (versionMatch != null) { print('Match: ${versionMatch.group(1)}'); } else { print('No match'); } }

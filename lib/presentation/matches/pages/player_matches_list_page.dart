@@ -13,7 +13,8 @@ import 'package:sport_tech_app/infrastructure/matches/providers/matches_reposito
 import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
 
 /// Provider for matches with player participation status
-final playerMatchesProvider = FutureProvider.autoDispose<List<PlayerMatchParticipation>>(
+final playerMatchesProvider =
+    FutureProvider.autoDispose<List<PlayerMatchParticipation>>(
   (ref) async {
     final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
     if (activeTeam == null) return [];
@@ -34,13 +35,15 @@ final playerMatchesProvider = FutureProvider.autoDispose<List<PlayerMatchPartici
     final playerId = playerResult.dataOrNull!.id;
     print('[PlayerMatchesList] Found player ID: $playerId for user $userId');
 
-    final matchesNotifier = ref.watch(matchesNotifierProvider(activeTeam.id).notifier);
+    final matchesNotifier =
+        ref.watch(matchesNotifierProvider(activeTeam.id).notifier);
     await matchesNotifier.loadMatches();
 
     final matchesState = ref.watch(matchesNotifierProvider(activeTeam.id));
     if (matchesState is! MatchesStateLoaded) return [];
 
     final periodsRepo = ref.watch(matchPlayerPeriodsRepositoryProvider);
+    final quarterResultsRepo = ref.watch(matchQuarterResultsRepositoryProvider);
     final participations = <PlayerMatchParticipation>[];
 
     for (final match in matchesState.matches) {
@@ -51,7 +54,27 @@ final playerMatchesProvider = FutureProvider.autoDispose<List<PlayerMatchPartici
       );
       final periods = periodsResult.dataOrNull ?? [];
       final participated = periods.isNotEmpty;
-      participations.add(PlayerMatchParticipation(match: match, participated: participated));
+
+      // Fetch match results
+      final resultsResult =
+          await quarterResultsRepo.getResultsByMatch(match.id);
+      final results = resultsResult.dataOrNull ?? [];
+
+      int? teamScore;
+      int? opponentScore;
+
+      if (results.isNotEmpty) {
+        teamScore = results.fold<int>(0, (sum, res) => sum + res.teamGoals);
+        opponentScore =
+            results.fold<int>(0, (sum, res) => sum + res.opponentGoals);
+      }
+
+      participations.add(PlayerMatchParticipation(
+        match: match,
+        participated: participated,
+        teamScore: teamScore,
+        opponentScore: opponentScore,
+      ));
     }
 
     return participations;
@@ -62,8 +85,15 @@ final playerMatchesProvider = FutureProvider.autoDispose<List<PlayerMatchPartici
 class PlayerMatchParticipation {
   final Match match;
   final bool participated;
+  final int? teamScore;
+  final int? opponentScore;
 
-  PlayerMatchParticipation({required this.match, required this.participated});
+  PlayerMatchParticipation({
+    required this.match,
+    required this.participated,
+    this.teamScore,
+    this.opponentScore,
+  });
 }
 
 /// Page showing all matches with player participation indicator
@@ -71,7 +101,8 @@ class PlayerMatchesListPage extends ConsumerStatefulWidget {
   const PlayerMatchesListPage({super.key});
 
   @override
-  ConsumerState<PlayerMatchesListPage> createState() => _PlayerMatchesListPageState();
+  ConsumerState<PlayerMatchesListPage> createState() =>
+      _PlayerMatchesListPageState();
 }
 
 class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
@@ -211,8 +242,12 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                             Icons.sports_soccer,
                             size: 28,
                             color: participated
-                                ? Theme.of(context).colorScheme.onPrimaryContainer
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                           ),
                         ),
                         if (participated)
@@ -251,16 +286,20 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                         ),
                         if (!participated)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceVariant,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
                               l10n.didNotPlay,
                               style: TextStyle(
                                 fontSize: 11,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -276,14 +315,18 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                             Icon(
                               Icons.calendar_today,
                               size: 14,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               dateFormat.format(match.matchDate),
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -295,7 +338,9 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                               Icon(
                                 Icons.location_on,
                                 size: 14,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Expanded(
@@ -303,7 +348,9 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                                   match.location!,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -314,10 +361,25 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                         ],
                       ],
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (participation.teamScore != null &&
+                            participation.opponentScore != null)
+                          Text(
+                            '${participation.teamScore} - ${participation.opponentScore}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ],
                     ),
                     onTap: () {
                       // Navigate to match detail page

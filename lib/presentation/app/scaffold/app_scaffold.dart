@@ -36,7 +36,8 @@ class AppScaffold extends ConsumerWidget {
           children: [
             // Navigation Rail for wide screens
             NavigationRail(
-              selectedIndex: _getSelectedIndex(currentLocation, navigationItems),
+              selectedIndex:
+                  _getSelectedIndex(currentLocation, navigationItems),
               onDestinationSelected: (index) {
                 if (index < navigationItems.length) {
                   context.go(navigationItems[index].route);
@@ -49,9 +50,11 @@ class AppScaffold extends ConsumerWidget {
                   const SizedBox(height: 16),
                   // Team selector for coaches in wide screen
                   if (authState is AuthStateAuthenticated &&
-                      (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
+                      (authState.profile.role == UserRole.coach ||
+                          authState.profile.role.isSuperAdmin))
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 8),
                       child: _TeamSelectorCompact(),
                     ),
                 ],
@@ -70,7 +73,8 @@ class AppScaffold extends ConsumerWidget {
                           onPressed: () {
                             ref.read(localeProvider.notifier).toggleLocale();
                           },
-                          tooltip: AppLocalizations.of(context)?.language ?? 'Language',
+                          tooltip: AppLocalizations.of(context)?.language ??
+                              'Language',
                         ),
                         const SizedBox(height: 8),
                         // Theme toggle button
@@ -83,7 +87,8 @@ class AppScaffold extends ConsumerWidget {
                           onPressed: () {
                             ref.read(themeNotifierProvider.notifier).toggle();
                           },
-                          tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
+                          tooltip: AppLocalizations.of(context)?.toggleTheme ??
+                              'Toggle theme',
                         ),
                         const SizedBox(height: 8),
                         // Logout button
@@ -92,7 +97,8 @@ class AppScaffold extends ConsumerWidget {
                           onPressed: () {
                             ref.read(authNotifierProvider.notifier).signOut();
                           },
-                          tooltip: AppLocalizations.of(context)?.logout ?? 'Logout',
+                          tooltip:
+                              AppLocalizations.of(context)?.logout ?? 'Logout',
                         ),
                       ],
                     ),
@@ -103,7 +109,8 @@ class AppScaffold extends ConsumerWidget {
                   .map(
                     (item) => NavigationRailDestination(
                       icon: _buildIconWithBadge(item, ref),
-                      selectedIcon: _buildIconWithBadge(item, ref, selected: true),
+                      selectedIcon:
+                          _buildIconWithBadge(item, ref, selected: true),
                       label: Text(item.label),
                     ),
                   )
@@ -127,24 +134,33 @@ class AppScaffold extends ConsumerWidget {
     }
 
     // Mobile layout with bottom navigation
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+        title: Row(
           children: [
-            Text(_getPageTitle(currentLocation, context)),
-            if (authState is AuthStateAuthenticated &&
-                (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
-              _ActiveTeamSubtitle(),
+            const _TmsLogo(),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(_getPageTitle(currentLocation, context)),
+                if (authState is AuthStateAuthenticated &&
+                    (authState.profile.role == UserRole.coach ||
+                        authState.profile.role.isSuperAdmin))
+                  _ActiveTeamSubtitle(),
+              ],
+            ),
           ],
         ),
         actions: [
           // Team selector button for coaches
           if (authState is AuthStateAuthenticated &&
-              (authState.profile.role == UserRole.coach || authState.profile.role.isSuperAdmin))
+              (authState.profile.role == UserRole.coach ||
+                  authState.profile.role.isSuperAdmin))
             _TeamSelectorButton(),
           // Language toggle
           IconButton(
@@ -164,7 +180,8 @@ class AppScaffold extends ConsumerWidget {
             onPressed: () {
               ref.read(themeNotifierProvider.notifier).toggle();
             },
-            tooltip: AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
+            tooltip:
+                AppLocalizations.of(context)?.toggleTheme ?? 'Toggle theme',
           ),
           // Logout
           IconButton(
@@ -204,7 +221,8 @@ class AppScaffold extends ConsumerWidget {
   }
 
   /// Build icon with badge for navigation items
-  Widget _buildIconWithBadge(NavigationItem item, WidgetRef ref, {bool selected = false}) {
+  Widget _buildIconWithBadge(NavigationItem item, WidgetRef ref,
+      {bool selected = false}) {
     final icon = Icon(selected ? item.iconFilled : item.iconOutlined);
     final authState = ref.watch(authNotifierProvider);
 
@@ -240,7 +258,8 @@ class AppScaffold extends ConsumerWidget {
   }
 
   /// Get navigation items based on user role (Material Design 3 - max 5 items)
-  List<NavigationItem> _getNavigationItems(AuthState authState, BuildContext context) {
+  List<NavigationItem> _getNavigationItems(
+      AuthState authState, BuildContext context) {
     if (authState is! AuthStateAuthenticated) {
       return [];
     }
@@ -375,31 +394,36 @@ class AppScaffold extends ConsumerWidget {
 
     // Check for coach routes (all routes starting with /coach)
     if (location.startsWith('/coach')) {
-      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      index = items
+          .indexWhere((item) => item.route == AppConstants.coachPanelRoute);
       if (index >= 0) return index;
     }
 
     // Check for super admin routes (any route starting with /admin)
     if (location.startsWith('/admin')) {
-      index = items.indexWhere((item) => item.route == AppConstants.superAdminPanelRoute);
+      index = items.indexWhere(
+          (item) => item.route == AppConstants.superAdminPanelRoute);
       if (index >= 0) return index;
     }
 
     // Check for teams management route (sub-route of super admin)
     if (location.startsWith('/teams/')) {
-      index = items.indexWhere((item) => item.route == AppConstants.superAdminPanelRoute);
+      index = items.indexWhere(
+          (item) => item.route == AppConstants.superAdminPanelRoute);
       if (index >= 0) return index;
     }
 
     // Check for match routes (these are accessed from Coach Panel)
     if (location.startsWith(AppConstants.matchesRoute)) {
-      index = items.indexWhere((item) => item.route == AppConstants.coachPanelRoute);
+      index = items
+          .indexWhere((item) => item.route == AppConstants.coachPanelRoute);
       if (index >= 0) return index;
     }
 
     // Check for training routes (these are accessed from trainings or coach panel)
     if (location.startsWith(AppConstants.trainingsRoute)) {
-      index = items.indexWhere((item) => item.route == AppConstants.trainingsRoute);
+      index =
+          items.indexWhere((item) => item.route == AppConstants.trainingsRoute);
       if (index >= 0) return index;
     }
 
@@ -443,16 +467,19 @@ class _ActiveTeamSubtitle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
-    
+
     if (activeTeamState.activeTeam != null) {
       return Text(
         activeTeamState.activeTeam!.name,
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-        ),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.7),
+            ),
       );
     }
-    
+
     return const SizedBox.shrink();
   }
 }
@@ -486,16 +513,23 @@ class _TeamSelectorButton extends ConsumerWidget {
                   itemCount: activeTeamState.teams.length,
                   itemBuilder: (context, index) {
                     final team = activeTeamState.teams[index];
-                    final isSelected = activeTeamState.activeTeam?.id == team.id;
+                    final isSelected =
+                        activeTeamState.activeTeam?.id == team.id;
 
                     return ListTile(
                       title: Text(team.name),
                       leading: Icon(
-                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                        color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
                       ),
                       onTap: () {
-                        ref.read(activeTeamNotifierProvider.notifier).selectTeam(team.id);
+                        ref
+                            .read(activeTeamNotifierProvider.notifier)
+                            .selectTeam(team.id);
                         Navigator.of(context).pop();
                       },
                     );
@@ -547,16 +581,23 @@ class _TeamSelectorCompact extends ConsumerWidget {
                   itemCount: activeTeamState.teams.length,
                   itemBuilder: (context, index) {
                     final team = activeTeamState.teams[index];
-                    final isSelected = activeTeamState.activeTeam?.id == team.id;
+                    final isSelected =
+                        activeTeamState.activeTeam?.id == team.id;
 
                     return ListTile(
                       title: Text(team.name),
                       leading: Icon(
-                        isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-                        color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
                       ),
                       onTap: () {
-                        ref.read(activeTeamNotifierProvider.notifier).selectTeam(team.id);
+                        ref
+                            .read(activeTeamNotifierProvider.notifier)
+                            .selectTeam(team.id);
                         Navigator.of(context).pop();
                       },
                     );
@@ -570,6 +611,24 @@ class _TeamSelectorCompact extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TmsLogo extends StatelessWidget {
+  const _TmsLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final assetPath = isDark
+        ? 'assets/images/tms_logo_light.png'
+        : 'assets/images/tms_logo_dark.png';
+
+    return Image.asset(
+      assetPath,
+      height: 32, // Adjust height as necessary
+      fit: BoxFit.contain,
     );
   }
 }

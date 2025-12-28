@@ -469,6 +469,11 @@
   "interventions": "Interventions",
   "attendance": "attendance",
   "averageOf": "Average of",
+  "trainingsDone": "trainings done",
+  "percentageTotalMatches": "of total matches played",
+  "teamAttendanceMatches": "team training\nattendance",
+  "goalsAverage": "goals average",
+  "pointsWin": "points won",
 
   "@_PROFILE": {},
   "accountInformation": "Account Information",

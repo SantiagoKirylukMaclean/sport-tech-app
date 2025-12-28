@@ -881,6 +881,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get averageOf => 'Promedio de';
 
   @override
+  String get trainingsDone => 'entrenamientos realizados';
+
+  @override
+  String get percentageTotalMatches => 'del total de partidos jugados';
+
+  @override
+  String get teamAttendanceMatches => 'asistencia del equipo\na entrenamientos';
+
+  @override
+  String get goalsAverage => 'promedio de goles';
+
+  @override
+  String get pointsWin => 'puntos ganados';
+
+  @override
   String get accountInformation => 'Información de la Cuenta';
 
   @override

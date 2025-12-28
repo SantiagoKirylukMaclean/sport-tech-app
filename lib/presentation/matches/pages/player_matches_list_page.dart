@@ -368,9 +368,16 @@ class _PlayerMatchesListPageState extends ConsumerState<PlayerMatchesListPage> {
                             participation.opponentScore != null)
                           Text(
                             '${participation.teamScore} - ${participation.opponentScore}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
+                              color: participation.teamScore! >
+                                      participation.opponentScore!
+                                  ? Colors.green
+                                  : participation.teamScore! <
+                                          participation.opponentScore!
+                                      ? Colors.red
+                                      : Colors.orange,
                             ),
                           ),
                         const SizedBox(width: 8),

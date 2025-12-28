@@ -9,6 +9,7 @@ import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/app/scaffold/app_scaffold.dart';
 import 'package:sport_tech_app/presentation/auth/pages/login_page.dart';
 import 'package:sport_tech_app/presentation/dashboard/pages/dashboard_page.dart';
+import 'package:sport_tech_app/presentation/app/widgets/update_checker.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_list_page.dart';
@@ -87,12 +88,15 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isAuthenticated = authState is AuthStateAuthenticated;
       final isLoggingIn = state.matchedLocation == AppConstants.loginRoute;
-      final isSettingPassword = state.matchedLocation.startsWith(AppConstants.setPasswordRoute);
+      final isSettingPassword =
+          state.matchedLocation.startsWith(AppConstants.setPasswordRoute);
       final isAuthCallback = state.matchedLocation == '/auth-callback';
 
       // Redirect root to dashboard or login
       if (state.matchedLocation == '/') {
-        return isAuthenticated ? AppConstants.dashboardRoute : AppConstants.loginRoute;
+        return isAuthenticated
+            ? AppConstants.dashboardRoute
+            : AppConstants.loginRoute;
       }
 
       // Allow access to auth callback page without authentication
@@ -119,366 +123,374 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      // Login route (no scaffold)
-      GoRoute(
-        path: AppConstants.loginRoute,
-        name: 'login',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const LoginPage(),
-        ),
-      ),
-
-      // Set password route (no scaffold, no auth required)
-      GoRoute(
-        path: '${AppConstants.setPasswordRoute}/:token',
-        name: 'set-password',
-        pageBuilder: (context, state) {
-          final token = state.pathParameters['token'] ?? '';
-          return MaterialPage(
-            key: state.pageKey,
-            child: SetPasswordPage(inviteToken: token),
-          );
-        },
-      ),
-
-      // Auth callback route for handling deep links (no scaffold, no auth required)
-      GoRoute(
-        path: '/auth-callback',
-        name: 'auth-callback',
-        pageBuilder: (context, state) => MaterialPage(
-          key: state.pageKey,
-          child: const AuthCallbackPage(),
-        ),
-      ),
-
-      // Shell route for authenticated pages (with scaffold)
       ShellRoute(
         builder: (context, state, child) {
-          return AppScaffold(child: child);
+          return UpdateChecker(child: child);
         },
         routes: [
+          // Login route (no scaffold)
           GoRoute(
-            path: AppConstants.dashboardRoute,
-            name: 'dashboard',
-            pageBuilder: (context, state) => NoTransitionPage(
+            path: AppConstants.loginRoute,
+            name: 'login',
+            pageBuilder: (context, state) => MaterialPage(
               key: state.pageKey,
-              child: const DashboardPage(),
+              child: const LoginPage(),
             ),
           ),
+
+          // Set password route (no scaffold, no auth required)
           GoRoute(
-            path: AppConstants.matchesRoute,
-            name: 'matches',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const MatchesPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.trainingsRoute,
-            name: 'trainings',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const TrainingsPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.championshipRoute,
-            name: 'championship',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const ChampionshipPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.statisticsRoute,
-            name: 'statistics',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const StatisticsPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.evaluationsRoute,
-            name: 'evaluations',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const EvaluationsPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/evaluations/player/:playerId',
-            name: 'player-evaluation-detail',
+            path: '${AppConstants.setPasswordRoute}/:token',
+            name: 'set-password',
             pageBuilder: (context, state) {
-              final playerId = state.pathParameters['playerId'] ?? '';
-              final extra = state.extra as Map<String, dynamic>?;
-              final playerName = extra?['playerName'] ?? '';
+              final token = state.pathParameters['token'] ?? '';
               return MaterialPage(
                 key: state.pageKey,
-                child: PlayerEvaluationDetailPage(
-                  playerId: playerId,
-                  playerName: playerName,
+                child: SetPasswordPage(inviteToken: token),
+              );
+            },
+          ),
+
+          // Auth callback route for handling deep links (no scaffold, no auth required)
+          GoRoute(
+            path: '/auth-callback',
+            name: 'auth-callback',
+            pageBuilder: (context, state) => MaterialPage(
+              key: state.pageKey,
+              child: const AuthCallbackPage(),
+            ),
+          ),
+
+          // Shell route for authenticated pages (with scaffold)
+          ShellRoute(
+            builder: (context, state, child) {
+              return AppScaffold(child: child);
+            },
+            routes: [
+              GoRoute(
+                path: AppConstants.dashboardRoute,
+                name: 'dashboard',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const DashboardPage(),
                 ),
-              );
-            },
-          ),
-          GoRoute(
-            path: AppConstants.notesRoute,
-            name: 'notes',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const NotesPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.profileRoute,
-            name: 'profile',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const ProfilePage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.moreRoute,
-            name: 'more',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const MorePage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.settingsRoute,
-            name: 'settings',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const SettingsPage(),
-            ),
-          ),
-          // Coach routes
-          GoRoute(
-            path: AppConstants.coachPanelRoute,
-            name: 'coach-panel',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const CoachPanelPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/coach-players',
-            name: 'coach-players',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const CoachPlayersPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/coach-evaluations',
-            name: 'coach-evaluations',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const CoachEvaluationsPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/coach-evaluations/new',
-            name: 'new-evaluation',
-            pageBuilder: (context, state) {
-              final playerId = state.uri.queryParameters['playerId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: NewEvaluationPage(playerId: playerId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/coach-evaluations/:evaluationId',
-            name: 'evaluation-detail',
-            pageBuilder: (context, state) {
-              final evaluationId = state.pathParameters['evaluationId'] ?? '';
-              final playerId = state.uri.queryParameters['playerId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: EvaluationDetailPage(
-                  evaluationId: evaluationId,
-                  playerId: playerId,
+              ),
+              GoRoute(
+                path: AppConstants.matchesRoute,
+                name: 'matches',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const MatchesPage(),
                 ),
-              );
-            },
-          ),
-          // Admin routes
-          GoRoute(
-            path: AppConstants.superAdminPanelRoute,
-            name: 'super-admin-panel',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const SuperAdminPanelPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.sportsManagementRoute,
-            name: 'sports-management',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const SuperAdminSportsPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.clubsManagementRoute,
-            name: 'clubs-management',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const SuperAdminClubsPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.teamsManagementRoute,
-            name: 'teams-management',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const AdminTeamsPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.inviteCoachAdminRoute,
-            name: 'invite-coach-admin',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const InviteCoachAdminPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.invitePlayerRoute,
-            name: 'invite-player',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const InvitePlayerPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.invitationsManagementRoute,
-            name: 'invitations-management',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const InvitationsManagementPage(),
-            ),
-          ),
-          GoRoute(
-            path: AppConstants.usersManagementRoute,
-            name: 'users-management',
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const UsersManagementPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/teams/:teamId/players',
-            name: 'team-players',
-            pageBuilder: (context, state) {
-              final teamId = state.pathParameters['teamId'] ?? '';
-              final sportId = state.uri.queryParameters['sportId'] ?? '';
-              return NoTransitionPage(
-                key: state.pageKey,
-                child: TeamPlayersPage(teamId: teamId, sportId: sportId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/dashboard/matches',
-            name: 'matches-list',
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: const MatchesListPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/dashboard/player-matches',
-            name: 'player-matches-list',
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: const PlayerMatchesListPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/dashboard/quarters-played-chart',
-            name: 'quarters-played-chart',
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: const QuartersPlayedChartPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/dashboard/matches/:matchId',
-            name: 'match-detail',
-            pageBuilder: (context, state) {
-              final matchId = state.pathParameters['matchId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: MatchDetailPage(matchId: matchId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/dashboard/player-matches/:matchId',
-            name: 'player-match-detail',
-            pageBuilder: (context, state) {
-              final matchId = state.pathParameters['matchId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: PlayerMatchDetailPage(matchId: matchId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/matches/:matchId/lineup',
-            name: 'match-lineup',
-            pageBuilder: (context, state) {
-              final matchId = state.pathParameters['matchId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: MatchLineupPage(matchId: matchId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/dashboard/trainings',
-            name: 'trainings-list',
-            pageBuilder: (context, state) => MaterialPage(
-              key: state.pageKey,
-              child: const TrainingSessionsListPage(),
-            ),
-          ),
-          GoRoute(
-            path: '/dashboard/trainings/:sessionId',
-            name: 'training-detail',
-            pageBuilder: (context, state) {
-              final sessionId = state.pathParameters['sessionId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: TrainingSessionDetailPage(sessionId: sessionId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/trainings/:sessionId/attendance',
-            name: 'training-attendance',
-            pageBuilder: (context, state) {
-              final sessionId = state.pathParameters['sessionId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: TrainingAttendancePage(sessionId: sessionId),
-              );
-            },
-          ),
-          GoRoute(
-            path: '/trainings/:sessionId/detail',
-            name: 'training-session-detail',
-            pageBuilder: (context, state) {
-              final sessionId = state.pathParameters['sessionId'] ?? '';
-              return MaterialPage(
-                key: state.pageKey,
-                child: TrainingSessionDetailPage(sessionId: sessionId),
-              );
-            },
+              ),
+              GoRoute(
+                path: AppConstants.trainingsRoute,
+                name: 'trainings',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const TrainingsPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.championshipRoute,
+                name: 'championship',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const ChampionshipPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.statisticsRoute,
+                name: 'statistics',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const StatisticsPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.evaluationsRoute,
+                name: 'evaluations',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const EvaluationsPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/evaluations/player/:playerId',
+                name: 'player-evaluation-detail',
+                pageBuilder: (context, state) {
+                  final playerId = state.pathParameters['playerId'] ?? '';
+                  final extra = state.extra as Map<String, dynamic>?;
+                  final playerName = extra?['playerName'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: PlayerEvaluationDetailPage(
+                      playerId: playerId,
+                      playerName: playerName,
+                    ),
+                  );
+                },
+              ),
+              GoRoute(
+                path: AppConstants.notesRoute,
+                name: 'notes',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const NotesPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.profileRoute,
+                name: 'profile',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const ProfilePage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.moreRoute,
+                name: 'more',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const MorePage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.settingsRoute,
+                name: 'settings',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const SettingsPage(),
+                ),
+              ),
+              // Coach routes
+              GoRoute(
+                path: AppConstants.coachPanelRoute,
+                name: 'coach-panel',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const CoachPanelPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/coach-players',
+                name: 'coach-players',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const CoachPlayersPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/coach-evaluations',
+                name: 'coach-evaluations',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const CoachEvaluationsPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/coach-evaluations/new',
+                name: 'new-evaluation',
+                pageBuilder: (context, state) {
+                  final playerId = state.uri.queryParameters['playerId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: NewEvaluationPage(playerId: playerId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/coach-evaluations/:evaluationId',
+                name: 'evaluation-detail',
+                pageBuilder: (context, state) {
+                  final evaluationId =
+                      state.pathParameters['evaluationId'] ?? '';
+                  final playerId = state.uri.queryParameters['playerId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: EvaluationDetailPage(
+                      evaluationId: evaluationId,
+                      playerId: playerId,
+                    ),
+                  );
+                },
+              ),
+              // Admin routes
+              GoRoute(
+                path: AppConstants.superAdminPanelRoute,
+                name: 'super-admin-panel',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const SuperAdminPanelPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.sportsManagementRoute,
+                name: 'sports-management',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const SuperAdminSportsPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.clubsManagementRoute,
+                name: 'clubs-management',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const SuperAdminClubsPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.teamsManagementRoute,
+                name: 'teams-management',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const AdminTeamsPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.inviteCoachAdminRoute,
+                name: 'invite-coach-admin',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const InviteCoachAdminPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.invitePlayerRoute,
+                name: 'invite-player',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const InvitePlayerPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.invitationsManagementRoute,
+                name: 'invitations-management',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const InvitationsManagementPage(),
+                ),
+              ),
+              GoRoute(
+                path: AppConstants.usersManagementRoute,
+                name: 'users-management',
+                pageBuilder: (context, state) => NoTransitionPage(
+                  key: state.pageKey,
+                  child: const UsersManagementPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/teams/:teamId/players',
+                name: 'team-players',
+                pageBuilder: (context, state) {
+                  final teamId = state.pathParameters['teamId'] ?? '';
+                  final sportId = state.uri.queryParameters['sportId'] ?? '';
+                  return NoTransitionPage(
+                    key: state.pageKey,
+                    child: TeamPlayersPage(teamId: teamId, sportId: sportId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/dashboard/matches',
+                name: 'matches-list',
+                pageBuilder: (context, state) => MaterialPage(
+                  key: state.pageKey,
+                  child: const MatchesListPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/dashboard/player-matches',
+                name: 'player-matches-list',
+                pageBuilder: (context, state) => MaterialPage(
+                  key: state.pageKey,
+                  child: const PlayerMatchesListPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/dashboard/quarters-played-chart',
+                name: 'quarters-played-chart',
+                pageBuilder: (context, state) => MaterialPage(
+                  key: state.pageKey,
+                  child: const QuartersPlayedChartPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/dashboard/matches/:matchId',
+                name: 'match-detail',
+                pageBuilder: (context, state) {
+                  final matchId = state.pathParameters['matchId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: MatchDetailPage(matchId: matchId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/dashboard/player-matches/:matchId',
+                name: 'player-match-detail',
+                pageBuilder: (context, state) {
+                  final matchId = state.pathParameters['matchId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: PlayerMatchDetailPage(matchId: matchId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/matches/:matchId/lineup',
+                name: 'match-lineup',
+                pageBuilder: (context, state) {
+                  final matchId = state.pathParameters['matchId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: MatchLineupPage(matchId: matchId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/dashboard/trainings',
+                name: 'trainings-list',
+                pageBuilder: (context, state) => MaterialPage(
+                  key: state.pageKey,
+                  child: const TrainingSessionsListPage(),
+                ),
+              ),
+              GoRoute(
+                path: '/dashboard/trainings/:sessionId',
+                name: 'training-detail',
+                pageBuilder: (context, state) {
+                  final sessionId = state.pathParameters['sessionId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: TrainingSessionDetailPage(sessionId: sessionId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/trainings/:sessionId/attendance',
+                name: 'training-attendance',
+                pageBuilder: (context, state) {
+                  final sessionId = state.pathParameters['sessionId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: TrainingAttendancePage(sessionId: sessionId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/trainings/:sessionId/detail',
+                name: 'training-session-detail',
+                pageBuilder: (context, state) {
+                  final sessionId = state.pathParameters['sessionId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: TrainingSessionDetailPage(sessionId: sessionId),
+                  );
+                },
+              ),
+            ],
           ),
         ],
       ),

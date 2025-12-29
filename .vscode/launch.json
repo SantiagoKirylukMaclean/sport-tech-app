@@ -2,39 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      // iPad Simulator
-      "name": "Debug iPad (Stage)",
+      "name": "iPad (Stage)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
-      // Usa el deviceId que te da `flutter devices`
-      // MacBook Pro
-      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
-      // Mini Mac
-      //"deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
-      // Carga las vars desde .env.json
+      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
       "toolArgs": [
         "--dart-define-from-file=.env.ios.json"
       ]
     },
     {
-      // iPad Simulator Release
-      "name": "Release iPad (Stage)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      // MacBook Pro
-      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
-      // Mini Mac
-      //"deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
-      "flutterMode": "release",
-      "toolArgs": [
-        "--dart-define-from-file=.env.ios.json"
-      ]
-    },
-    {
-      // Chrome
-      "name": "Debug Chrome (Stage)",
+      "name": "Chrome (Stage)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
@@ -45,21 +23,7 @@
       ]
     },
     {
-      // Chrome Release
-      "name": "Release Chrome (Stage)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "deviceId": "chrome",
-      "flutterMode": "release",
-      "toolArgs": [
-        "--dart-define-from-file=.env.chrome.json",
-        "--web-port=57200"
-      ]
-    },
-    {
-      // Pixel 9a Android Emulator
-      "name": "Debug Pixel 9a (Stage)",
+      "name": "Pixel 9a (Stage)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
@@ -71,22 +35,7 @@
       ]
     },
     {
-      // Pixel 9a Android Emulator Release
-      "name": "Release Pixel 9a (Stage)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "deviceId": "emulator-5554",
-      "flutterMode": "release",
-      "toolArgs": [
-        "--flavor",
-        "stage",
-        "--dart-define-from-file=.env.android.json"
-      ]
-    },
-    {
-      // Pixel 9a Android Emulator (Prod)
-      "name": "Debug Pixel 9a (Prod)",
+      "name": "Pixel 9a (Prod)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
@@ -98,22 +47,7 @@
       ]
     },
     {
-      // Pixel 9a Android Emulator Release (Prod)
-      "name": "Release Pixel 9a (Prod)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "deviceId": "emulator-5554",
-      "flutterMode": "release",
-      "toolArgs": [
-        "--flavor",
-        "prod",
-        "--dart-define-from-file=.env.prod.android.json"
-      ]
-    },
-    {
-      // Chrome (Prod)
-      "name": "Debug Chrome (Prod)",
+      "name": "Chrome (Prod)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
@@ -126,44 +60,12 @@
       ]
     },
     {
-      // Chrome Release (Prod)
-      "name": "Release Chrome (Prod)",
+      "name": "iPad (Prod)",
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
-      "deviceId": "chrome",
-      "flutterMode": "release",
+      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
       "toolArgs": [
-        "--flavor",
-        "prod",
-        "--dart-define-from-file=.env.prod.chrome.json",
-        "--web-port=57200"
-      ]
-    },
-    {
-      // iPad Simulator (Prod)
-      "name": "Debug iPad (Prod)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
-      "toolArgs": [
-        "--flavor",
-        "prod",
-        "--dart-define-from-file=.env.prod.ios.json"
-      ]
-    },
-    {
-      // iPad Simulator Release (Prod)
-      "name": "Release iPad (Prod)",
-      "type": "dart",
-      "request": "launch",
-      "program": "lib/main.dart",
-      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
-      "flutterMode": "release",
-      "toolArgs": [
-        "--flavor",
-        "prod",
         "--dart-define-from-file=.env.prod.ios.json"
       ]
     }

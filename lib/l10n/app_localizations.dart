@@ -1679,14 +1679,14 @@ abstract class AppLocalizations {
   /// No description provided for @myStatistics.
   ///
   /// In en, this message translates to:
-  /// **'My Statistics'**
-  String get myStatistics;
+  /// **'{playerName} Statistics'**
+  String myStatistics(String playerName);
 
   /// No description provided for @teamStatistics.
   ///
   /// In en, this message translates to:
-  /// **'Team Statistics'**
-  String get teamStatistics;
+  /// **'{teamName} Statistics'**
+  String teamStatistics(String teamName);
 
   /// No description provided for @quartersPlayed.
   ///

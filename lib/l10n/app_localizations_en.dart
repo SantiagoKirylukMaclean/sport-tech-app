@@ -850,10 +850,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get seeDetails => 'See details';
 
   @override
-  String get myStatistics => 'My Statistics';
+  String myStatistics(String playerName) {
+    return '$playerName Statistics';
+  }
 
   @override
-  String get teamStatistics => 'Team Statistics';
+  String teamStatistics(String teamName) {
+    return '$teamName Statistics';
+  }
 
   @override
   String get quartersPlayed => 'Quarters Played';

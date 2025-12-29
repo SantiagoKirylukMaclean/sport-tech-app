@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -32,13 +35,13 @@ android {
              // First check key.properties
             val keyPropertiesFile = rootProject.file("key.properties")
             if (keyPropertiesFile.exists()) {
-                val props = java.util.Properties()
-                props.load(java.io.FileInputStream(keyPropertiesFile))
+                val props = Properties()
+                props.load(FileInputStream(keyPropertiesFile))
 
-                storeFile = file(props["storeFile"] as String)
-                storePassword = props["storePassword"] as String
-                keyAlias = props["keyAlias"] as String
-                keyPassword = props["keyPassword"] as String
+                storeFile = file(props.getProperty("storeFile"))
+                storePassword = props.getProperty("storePassword")
+                keyAlias = props.getProperty("keyAlias")
+                keyPassword = props.getProperty("keyPassword")
             } else {
                  // Fallback to environment variables
                 val keystoreFile = file(System.getenv("ANDROID_KEYSTORE_PATH") ?: "upload-keystore.jks")

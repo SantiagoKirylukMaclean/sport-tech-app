@@ -1,5 +1,3 @@
-// lib/presentation/dashboard/widgets/player_dashboard_content.dart
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
@@ -15,12 +13,16 @@ class PlayerDashboardContent extends StatelessWidget {
   final List<MatchSummary> teamMatches;
   final int evaluationsCount;
   final double teamTrainingAttendance;
+  final String playerName;
+  final String teamName;
 
   const PlayerDashboardContent({
     required this.playerStats,
     required this.teamMatches,
     required this.evaluationsCount,
     required this.teamTrainingAttendance,
+    required this.playerName,
+    required this.teamName,
     super.key,
   });
 
@@ -35,7 +37,7 @@ class PlayerDashboardContent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              l10n.myStatistics,
+              l10n.myStatistics(playerName),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -49,7 +51,7 @@ class PlayerDashboardContent extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Text(
-              l10n.teamStatistics,
+              l10n.teamStatistics(teamName),
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -85,7 +87,8 @@ class PlayerDashboardContent extends StatelessWidget {
                         ),
                         child: Icon(
                           Icons.assessment,
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                           size: 24,
                         ),
                       ),
@@ -96,14 +99,21 @@ class PlayerDashboardContent extends StatelessWidget {
                           children: [
                             Text(
                               l10n.evaluations,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium
+                                  ?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              l10n.evaluationsCount(evaluationsCount.toString()),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              l10n.evaluationsCount(
+                                  evaluationsCount.toString()),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSurface
@@ -115,8 +125,10 @@ class PlayerDashboardContent extends StatelessWidget {
                       ),
                       Icon(
                         Icons.chevron_right,
-                        color:
-                            Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.3),
                       ),
                     ],
                   ),

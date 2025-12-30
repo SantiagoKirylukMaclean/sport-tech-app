@@ -463,8 +463,22 @@
     }
   },
   "seeDetails": "See details",
-  "myStatistics": "My Statistics",
-  "teamStatistics": "Team Statistics",
+  "myStatistics": "{playerName} Statistics",
+  "@myStatistics": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "teamStatistics": "{teamName} Statistics",
+  "@teamStatistics": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
   "quartersPlayed": "Quarters Played",
   "interventions": "Interventions",
   "attendance": "attendance",

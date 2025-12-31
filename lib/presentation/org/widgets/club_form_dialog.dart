@@ -188,12 +188,9 @@ class _ThemePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Generate preview color scheme
-    final colorScheme = ColorSchemeGenerator.generateLightScheme(
-      primarySeed: primaryColor ?? ColorSchemeGenerator.defaultPrimary,
-      secondarySeed: secondaryColor ?? ColorSchemeGenerator.defaultSecondary,
-      tertiarySeed: tertiaryColor ?? ColorSchemeGenerator.defaultTertiary,
-    );
+    // Generate preview color scheme using defaults if needed
+    // We used to generate a full scheme here, but now we show direct seed colors
+    // to match user expectations.
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -214,24 +211,36 @@ class _ThemePreview extends StatelessWidget {
               Expanded(
                 child: _ColorSwatch(
                   'Primario',
-                  colorScheme.primary,
-                  colorScheme.onPrimary,
+                  primaryColor ?? ColorSchemeGenerator.defaultPrimary,
+                  ThemeData.estimateBrightnessForColor(primaryColor ??
+                              ColorSchemeGenerator.defaultPrimary) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _ColorSwatch(
                   'Secundario',
-                  colorScheme.secondary,
-                  colorScheme.onSecondary,
+                  secondaryColor ?? ColorSchemeGenerator.defaultSecondary,
+                  ThemeData.estimateBrightnessForColor(secondaryColor ??
+                              ColorSchemeGenerator.defaultSecondary) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _ColorSwatch(
                   'Terciario',
-                  colorScheme.tertiary,
-                  colorScheme.onTertiary,
+                  tertiaryColor ?? ColorSchemeGenerator.defaultTertiary,
+                  ThemeData.estimateBrightnessForColor(tertiaryColor ??
+                              ColorSchemeGenerator.defaultTertiary) ==
+                          Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
             ],

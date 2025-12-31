@@ -42,8 +42,9 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
               child: StatCard(
                 title: l10n.matchesPlayed, // "played matches"
                 value: '${widget.stats.matchesAttended}',
-                subtitle:
-                    '${widget.stats.matchAttendancePercentage.toStringAsFixed(0)}% ${l10n.attendance}',
+                subtitle: l10n.matchesPlayedSubtitle(
+                    widget.stats.matchAttendancePercentage.toStringAsFixed(0),
+                    '${widget.stats.totalMatches}'),
                 icon: Icons
                     .sports_soccer, // Icon is ignored in new StatCard build but required by constructor
                 valueColor: const Color(0xFF4CAF50), // Green
@@ -62,8 +63,10 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
               child: StatCard(
                 title: l10n.trainingsDone, // "trainings done"
                 value: '${widget.stats.trainingsAttended}',
-                subtitle:
-                    '${widget.stats.trainingAttendancePercentage.toStringAsFixed(1)}% ${l10n.attendance}',
+                subtitle: l10n.trainingsDoneSubtitle(
+                    widget.stats.trainingAttendancePercentage
+                        .toStringAsFixed(1),
+                    '${widget.stats.totalTrainingSessions}'),
                 icon: Icons.fitness_center,
                 valueColor: const Color(0xFF4CAF50), // Green
               ),
@@ -81,8 +84,8 @@ class _PlayerStatsOverviewState extends State<PlayerStatsOverview> {
               child: StatCard(
                 title: l10n.quartersPlayed, // "quarters played"
                 value: widget.stats.averagePeriods.toStringAsFixed(1),
-                subtitle:
-                    '${(widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)}% ${l10n.attendance}', // Using attendance/total key logic
+                subtitle: l10n.quartersPlayedSubtitle(
+                    (widget.stats.averagePeriods / 4 * 100).toStringAsFixed(1)),
                 icon: Icons.timer,
               ),
             ),

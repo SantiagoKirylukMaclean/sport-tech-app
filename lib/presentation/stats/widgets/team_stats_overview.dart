@@ -25,12 +25,21 @@ class TeamStatsOverview extends ConsumerStatefulWidget {
 class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
   int _getMatchesPlayed() => widget.matches.length;
 
-  double _getWinPercentage() {
+  double _getPointsPercentage() {
     final matchesPlayed = _getMatchesPlayed();
     if (matchesPlayed == 0) return 0.0;
-    final wins =
-        widget.matches.where((m) => m.result == MatchResult.win).length;
-    return (wins / matchesPlayed) * 100;
+
+    int points = 0;
+    for (final match in widget.matches) {
+      if (match.result == MatchResult.win) {
+        points += 3;
+      } else if (match.result == MatchResult.draw) {
+        points += 1;
+      }
+    }
+
+    final possiblePoints = matchesPlayed * 3;
+    return (points / possiblePoints) * 100;
   }
 
   int _getGoalDifference() {
@@ -42,14 +51,6 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
 
   int _getCleanSheets() {
     return widget.matches.where((m) => m.opponentGoals == 0).length;
-  }
-
-  double _getAverageGoals() {
-    final matchesPlayed = _getMatchesPlayed();
-    if (matchesPlayed == 0) return 0.0;
-    final totalGoals =
-        widget.matches.fold(0, (sum, match) => sum + match.teamGoals);
-    return totalGoals / matchesPlayed;
   }
 
   String _getMatchesPlayedSubtitle(BuildContext context) {
@@ -67,7 +68,7 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
     // 1 draw         77.8%
     // 2 lost         points win
     // Simplified to lines for now
-    return '${wins} win\n${draws} draw       ${_getWinPercentage().toStringAsFixed(1)}%\n${losses} lost       ${l10n.pointsWin}';
+    return '${wins} win\n${draws} draw       ${_getPointsPercentage().toStringAsFixed(1)}%\n${losses} lost       ${l10n.pointsWin}';
   }
 
   @override
@@ -118,8 +119,13 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
               title: l10n.goalDifference, // "goal difference"
               value:
                   goalDifference >= 0 ? '+$goalDifference' : '$goalDifference',
-              subtitle:
-                  '${_getAverageGoals().toStringAsFixed(1)} ${l10n.goalsAverage}', // "4.7 goals average"
+              subtitle: l10n.goalsForAgainst(
+                  widget.matches
+                      .fold(0, (sum, match) => sum + match.teamGoals)
+                      .toString(),
+                  widget.matches
+                      .fold(0, (sum, match) => sum + match.opponentGoals)
+                      .toString()),
               icon: Icons.sports_score,
               valueColor: const Color(0xFF4CAF50),
             ),
@@ -147,9 +153,7 @@ class _TeamStatsOverviewState extends ConsumerState<TeamStatsOverview> {
                 title: l10n
                     .teamAttendanceMatches, // "asistencia del equipo a entrenamientos"
                 value: '${widget.teamTrainingAttendance!.toStringAsFixed(1)}%',
-                subtitle: matchesPlayed > 0
-                    ? '40% ${l10n.percentageTotalMatches}' // Hardcoded 40% per image or logic? Image says "40% del total de partidos jugados". I will use the string.
-                    : '',
+                subtitle: '',
                 icon: Icons.fitness_center,
                 valueColor: const Color(0xFF4CAF50),
               ),

@@ -18,7 +18,7 @@
   "logout": "Logout",
 
   "@_NAVIGATION": {},
-  "dashboard": "Dashboard",
+  "dashboard": "Home",
   "home": "Home",
   "matches": "Matches",
   "trainings": "Trainings",
@@ -30,7 +30,7 @@
   "mister": "Coach",
   "team": "Team",
   "admin": "Admin",
-  "stats": "Evaluations",
+  "stats": "Season Evaluations",
   "more": "More",
   "settings": "Settings",
   "superAdmin": "Super Admin",
@@ -488,6 +488,44 @@
   "teamAttendanceMatches": "team training\nattendance",
   "goalsAverage": "goals average",
   "pointsWin": "points won",
+  "matchesPlayedSubtitle": "{percentage}% of {total}",
+  "@matchesPlayedSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingsDoneSubtitle": "{percentage}% of {total}",
+  "@trainingsDoneSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "quartersPlayedSubtitle": "{percentage}% attendance of full match",
+  "@quartersPlayedSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+  "pointsWonPercentage": "{percentage}% of possible points",
+  "@pointsWonPercentage": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
 
   "@_PROFILE": {},
   "accountInformation": "Account Information",

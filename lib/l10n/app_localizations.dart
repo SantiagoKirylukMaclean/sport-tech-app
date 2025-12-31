@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboard.
   ///
   /// In en, this message translates to:
-  /// **'Dashboard'**
+  /// **'Home'**
   String get dashboard;
 
   /// No description provided for @home.
@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @stats.
   ///
   /// In en, this message translates to:
-  /// **'Evaluations'**
+  /// **'Season Evaluations'**
   String get stats;
 
   /// No description provided for @more.
@@ -1741,6 +1741,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'points won'**
   String get pointsWin;
+
+  /// No description provided for @matchesPlayedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% of {total}'**
+  String matchesPlayedSubtitle(String percentage, String total);
+
+  /// No description provided for @trainingsDoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% of {total}'**
+  String trainingsDoneSubtitle(String percentage, String total);
+
+  /// No description provided for @quartersPlayedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% attendance of full match'**
+  String quartersPlayedSubtitle(String percentage);
+
+  /// No description provided for @pointsWonPercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'{percentage}% of possible points'**
+  String pointsWonPercentage(String percentage);
 
   /// No description provided for @accountInformation.
   ///

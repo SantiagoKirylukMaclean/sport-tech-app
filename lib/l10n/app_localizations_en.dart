@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Logout';
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Home';
 
   @override
   String get home => 'Home';
@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get admin => 'Admin';
 
   @override
-  String get stats => 'Evaluations';
+  String get stats => 'Season Evaluations';
 
   @override
   String get more => 'More';
@@ -885,6 +885,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointsWin => 'points won';
+
+  @override
+  String matchesPlayedSubtitle(String percentage, String total) {
+    return '$percentage% of $total';
+  }
+
+  @override
+  String trainingsDoneSubtitle(String percentage, String total) {
+    return '$percentage% of $total';
+  }
+
+  @override
+  String quartersPlayedSubtitle(String percentage) {
+    return '$percentage% attendance of full match';
+  }
+
+  @override
+  String pointsWonPercentage(String percentage) {
+    return '$percentage% of possible points';
+  }
 
   @override
   String get accountInformation => 'Account Information';

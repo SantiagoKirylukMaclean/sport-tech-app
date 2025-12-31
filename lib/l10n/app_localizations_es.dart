@@ -53,10 +53,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logout => 'Cerrar sesión';
 
   @override
-  String get dashboard => 'Dashboard';
+  String get dashboard => 'Inicio';
 
   @override
-  String get home => 'Dashboard';
+  String get home => 'Inicio';
 
   @override
   String get matches => 'Partidos';
@@ -89,7 +89,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get admin => 'Admin';
 
   @override
-  String get stats => 'Evaluaciones';
+  String get stats => 'Evaluaciones de Temporada';
 
   @override
   String get more => 'Más';
@@ -898,6 +898,26 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pointsWin => 'puntos ganados';
+
+  @override
+  String matchesPlayedSubtitle(String percentage, String total) {
+    return '$percentage% de $total';
+  }
+
+  @override
+  String trainingsDoneSubtitle(String percentage, String total) {
+    return '$percentage% de $total';
+  }
+
+  @override
+  String quartersPlayedSubtitle(String percentage) {
+    return '$percentage% asistencia partido completo';
+  }
+
+  @override
+  String pointsWonPercentage(String percentage) {
+    return '$percentage% de puntos posibles';
+  }
 
   @override
   String get accountInformation => 'Información de la Cuenta';

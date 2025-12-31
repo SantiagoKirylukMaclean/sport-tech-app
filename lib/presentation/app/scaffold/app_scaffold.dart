@@ -620,10 +620,7 @@ class _TmsLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final assetPath = isDark
-        ? 'assets/images/tms_logo_light.png'
-        : 'assets/images/tms_logo_dark.png';
+    final assetPath = 'assets/images/tms_logo_light.png';
 
     return Image.asset(
       assetPath,

@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
+import 'package:sport_tech_app/application/auth/auth_notifier.dart';
+import 'package:sport_tech_app/application/auth/auth_state.dart';
+import 'package:sport_tech_app/presentation/org/widgets/hierarchical_team_selector_dialog.dart';
 
 class CoachPanelPage extends ConsumerWidget {
   const CoachPanelPage({super.key});
@@ -12,6 +15,9 @@ class CoachPanelPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
+    final authState = ref.watch(authNotifierProvider);
+    final isSuperAdmin = authState is AuthStateAuthenticated &&
+        authState.profile.role.isSuperAdmin;
 
     return Scaffold(
       appBar: AppBar(
@@ -45,20 +51,38 @@ class CoachPanelPage extends ConsumerWidget {
                         children: [
                           Text(
                             l10n.activeTeamLabel,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                          .withValues(alpha: 0.8),
+                                    ),
                           ),
                           Text(
                             activeTeamState.activeTeam!.name,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ],
                       ),
                     ),
+                    if (isSuperAdmin)
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                        onPressed: () => _showTeamSelector(context, ref),
+                      ),
                   ],
                 ),
               ),
@@ -68,21 +92,44 @@ class CoachPanelPage extends ConsumerWidget {
               color: Theme.of(context).colorScheme.errorContainer,
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Row(
+                child: Column(
                   children: [
-                    Icon(
-                      Icons.warning,
-                      color: Theme.of(context).colorScheme.onErrorContainer,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        l10n.noTeamSelectedSelectFromDashboard,
-                        style: TextStyle(
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.warning,
                           color: Theme.of(context).colorScheme.onErrorContainer,
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            l10n.noTeamSelectedSelectFromDashboard,
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onErrorContainer,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    if (isSuperAdmin) ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.onErrorContainer,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.errorContainer,
+                          ),
+                          icon: const Icon(Icons.search),
+                          label: Text(l10n.selectTeam),
+                          onPressed: () => _showTeamSelector(context, ref),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -124,6 +171,17 @@ class CoachPanelPage extends ConsumerWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  void _showTeamSelector(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => HierarchicalTeamSelectorDialog(
+        onTeamSelected: (team) {
+          ref.read(activeTeamNotifierProvider.notifier).setActiveTeam(team);
+        },
       ),
     );
   }
@@ -197,7 +255,10 @@ class _CoachOptionTile extends StatelessWidget {
               ),
               Icon(
                 Icons.chevron_right,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.3),
               ),
             ],
           ),

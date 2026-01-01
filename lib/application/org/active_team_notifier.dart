@@ -26,12 +26,12 @@ class ActiveTeamNotifier extends StateNotifier<ActiveTeamState> {
       success: (teams) {
         // If we already have an active team, check if it's still in the list
         Team? activeTeam = state.activeTeam;
-        
+
         if (teams.isNotEmpty) {
-           if (activeTeam == null || !teams.any((t) => t.id == activeTeam!.id)) {
-             // Default to first team if no active team or active team no longer valid
-             activeTeam = teams.first;
-           }
+          if (activeTeam == null || !teams.any((t) => t.id == activeTeam!.id)) {
+            // Default to first team if no active team or active team no longer valid
+            activeTeam = teams.first;
+          }
         } else {
           activeTeam = null;
         }
@@ -56,5 +56,11 @@ class ActiveTeamNotifier extends StateNotifier<ActiveTeamState> {
     if (team != null) {
       state = state.copyWith(activeTeam: team);
     }
+  }
+
+  void setActiveTeam(Team team) {
+    // If the team is not in the list, we add it or just set it as active
+    // For Super Admin, we just want to set it as active
+    state = state.copyWith(activeTeam: team);
   }
 }

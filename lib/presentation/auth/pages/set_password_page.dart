@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sport_tech_app/domain/auth/repositories/auth_repository.dart';
 import 'package:sport_tech_app/domain/org/entities/pending_invite.dart';
 import 'package:sport_tech_app/infrastructure/auth/providers/auth_repository_provider.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class SetPasswordPage extends ConsumerStatefulWidget {
   final String inviteToken;
@@ -66,19 +67,20 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Set Password'),
+        title: Text(l10n.setPassword),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _error != null || _invite == null
-              ? _buildErrorView()
-              : _buildForm(),
+              ? _buildErrorView(l10n)
+              : _buildForm(l10n),
     );
   }
 
-  Widget _buildErrorView() {
+  Widget _buildErrorView(AppLocalizations l10n) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -92,14 +94,14 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              _error ?? 'An error occurred',
+              _error ?? l10n.anErrorOccurred,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => context.go('/login'),
-              child: const Text('Go to Login'),
+              child: Text(l10n.goToLogin),
             ),
           ],
         ),
@@ -107,7 +109,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(AppLocalizations l10n) {
     return Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -126,13 +128,13 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Welcome!',
+                  l10n.welcomeExclamation,
                   style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'You have been invited as a ${_invite!.role}',
+                  l10n.invitedAsRole(_invite!.role.toString()),
                   style: Theme.of(context).textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -148,7 +150,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: l10n.password,
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
@@ -165,10 +167,10 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                   obscureText: _obscurePassword,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a password';
+                      return l10n.pleaseEnterPassword;
                     }
                     if (value.length < 8) {
-                      return 'Password must be at least 8 characters';
+                      return l10n.passwordMinEightChars;
                     }
                     return null;
                   },
@@ -177,7 +179,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                 TextFormField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Confirm Password',
+                    labelText: l10n.confirmPassword,
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
@@ -197,17 +199,17 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                   obscureText: _obscureConfirmPassword,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please confirm your password';
+                      return l10n.pleaseConfirmPassword;
                     }
                     if (value != _passwordController.text) {
-                      return 'Passwords do not match';
+                      return l10n.passwordsDoNotMatch;
                     }
                     return null;
                   },
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: _isSubmitting ? null : _submit,
+                  onPressed: _isSubmitting ? null : () => _submit(l10n),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -217,7 +219,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Set Password & Join'),
+                      : Text(l10n.setPasswordAndJoin),
                 ),
               ],
             ),
@@ -227,7 +229,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
     );
   }
 
-  Future<void> _submit() async {
+  Future<void> _submit(AppLocalizations l10n) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSubmitting = true);
@@ -247,8 +249,8 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
           if (mounted) {
             // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Account created successfully! Please log in.'),
+              SnackBar(
+                content: Text(l10n.accountCreatedSuccessfully),
                 backgroundColor: Colors.green,
               ),
             );
@@ -261,7 +263,7 @@ class _SetPasswordPageState extends ConsumerState<SetPasswordPage> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Failed to create account: ${failure.message}'),
+                content: Text(l10n.failedToCreateAccount(failure.message)),
                 backgroundColor: Colors.red,
               ),
             );

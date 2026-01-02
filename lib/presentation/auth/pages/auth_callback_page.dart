@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 /// Page that handles authentication callbacks from Supabase
 /// This is shown when the user clicks on invitation/password recovery links
@@ -17,7 +18,8 @@ class AuthCallbackPage extends ConsumerStatefulWidget {
 
 class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
   bool _isProcessing = true;
-  String? _errorMessage;
+  String? _errorKey;
+  String? _rawError;
 
   @override
   void initState() {
@@ -48,9 +50,10 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
           context.go(AppConstants.dashboardRoute);
 
           if (mounted) {
+            final l10n = AppLocalizations.of(context)!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Bienvenido, ${session.user.email}!'),
+                content: Text(l10n.welcomeEmail(session.user.email ?? '')),
                 backgroundColor: Colors.green,
                 duration: const Duration(seconds: 3),
               ),
@@ -58,13 +61,13 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
           }
         } else {
           // No session found after multiple attempts
-          setState(() {
-            _errorMessage = 'No se pudo completar la autenticación.\n\n'
-                'Por favor, verifica que:\n'
-                '1. El enlace no haya expirado\n'
-                '2. Ya hayas usado este enlace antes';
-            _isProcessing = false;
-          });
+          if (mounted) {
+             setState(() {
+              _errorKey = 'authFailedDetail';
+              _isProcessing = false;
+            });
+          }
+
 
           Future.delayed(const Duration(seconds: 5), () {
             if (mounted) {
@@ -76,7 +79,7 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = 'Error al procesar la autenticación:\n$e';
+          _rawError = e.toString();
           _isProcessing = false;
         });
 
@@ -91,6 +94,15 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    String errorMessage = '';
+    if (_errorKey == 'authFailedDetail') {
+      errorMessage = l10n.authFailedDetail;
+    } else if (_rawError != null) {
+      errorMessage = l10n.errorMessage(_rawError!);
+    }
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -101,12 +113,12 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
               if (_isProcessing) ...[
                 const CircularProgressIndicator(),
                 const SizedBox(height: 24),
-                const Text(
-                  'Procesando autenticación...',
-                  style: TextStyle(fontSize: 18),
+                Text(
+                  l10n.processingAuthentication,
+                  style: const TextStyle(fontSize: 18),
                   textAlign: TextAlign.center,
                 ),
-              ] else if (_errorMessage != null) ...[
+              ] else if (_errorKey != null || _rawError != null) ...[
                 const Icon(
                   Icons.error_outline,
                   size: 64,
@@ -114,14 +126,14 @@ class _AuthCallbackPageState extends ConsumerState<AuthCallbackPage> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  _errorMessage!,
+                  errorMessage,
                   style: const TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                const Text(
-                  'Redirigiendo al login...',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                Text(
+                  l10n.redirectingToLogin,
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_notifier.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class QuarterResultsSection extends ConsumerStatefulWidget {
   final String matchId;
@@ -34,6 +35,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.watch(matchLineupNotifierProvider(widget.matchId));
     final notifier = ref.read(matchLineupNotifierProvider(widget.matchId).notifier);
 
@@ -63,7 +65,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Quarter ${state.currentQuarter} Result',
+                  '${l10n.quarter} ${state.currentQuarter}',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -112,14 +114,14 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                   notifier.saveQuarterResult(teamGoals, opponentGoals);
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Quarter result saved'),
-                      duration: Duration(seconds: 2),
+                    SnackBar(
+                      content: Text(l10n.quarterResultSaved),
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Save Result'),
+                label: Text(l10n.saveResult),
               ),
             ),
 
@@ -131,7 +133,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                 const Icon(Icons.sports_soccer, size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'Goals (${state.currentQuarterGoals.length})',
+                  '${l10n.goals} (${state.currentQuarterGoals.length})',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
@@ -140,7 +142,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                       ? null
                       : () => _showAddGoalDialog(context),
                   icon: const Icon(Icons.add),
-                  label: const Text('Add Goal'),
+                  label: Text(l10n.addGoal),
                 ),
               ],
             ),
@@ -148,9 +150,9 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
             const SizedBox(height: 12),
 
             if (state.currentQuarterGoals.isEmpty)
-              const Text(
-                'No goals recorded for this quarter',
-                style: TextStyle(fontStyle: FontStyle.italic),
+              Text(
+                l10n.noGoalsRecorded,
+                style: const TextStyle(fontStyle: FontStyle.italic),
               )
             else
               Column(
@@ -171,16 +173,16 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                     ),
                     title: Text(
                       goal.isOwnGoal
-                          ? 'Autogol del Rival'
-                          : scorer?.fullName ?? 'Unknown Player',
+                          ? l10n.ownGoals
+                          : scorer?.fullName ?? l10n.unknownPlayer,
                       style: TextStyle(
                         fontWeight: goal.isOwnGoal ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                     subtitle: !goal.isOwnGoal && assister != null
-                        ? Text('Asistencia: ${assister.fullName}')
+                        ? Text(l10n.assist(assister.fullName))
                         : goal.isOwnGoal
-                            ? const Text('Gol a favor del equipo')
+                            ? Text(l10n.ownGoals) // Concept "Gol a favor del equipo"
                             : null,
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
@@ -198,6 +200,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
   }
 
   void _showAddGoalDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final state = ref.read(matchLineupNotifierProvider(widget.matchId));
     String? selectedScorerId;
     String? selectedAssisterId;
@@ -207,14 +210,14 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Add Goal'),
+          title: Text(l10n.addGoal),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 CheckboxListTile(
-                  title: const Text('Gol en Propia (Own Goal)'),
-                  subtitle: const Text('Marca si el gol fue del equipo contrario'),
+                  title: Text(l10n.ownGoals),
+                  subtitle: Text(l10n.ownGoalDescription),
                   value: isOwnGoal,
                   onChanged: (value) {
                     setState(() {
@@ -230,9 +233,9 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                 if (!isOwnGoal) ...[
                   // Normal goal - select from our players
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Goleador',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: l10n.scorer,
+                      border: const OutlineInputBorder(),
                     ),
                     initialValue: selectedScorerId,
                     items: state.fieldPlayers.map((player) {
@@ -249,15 +252,15 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Asistencia (Opcional)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: '${l10n.assists} (${l10n.optional})',
+                      border: const OutlineInputBorder(),
                     ),
                     initialValue: selectedAssisterId,
                     items: [
-                      const DropdownMenuItem(
+                      DropdownMenuItem(
                         value: null,
-                        child: Text('Ninguno'),
+                        child: Text(l10n.none),
                       ),
                       ...state.fieldPlayers
                           .where((p) => p.id != selectedScorerId)
@@ -281,7 +284,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        'Este gol será registrado como autogol del equipo contrario a favor de nuestro equipo.',
+                        l10n.ownGoalDescription,
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.orange.shade700,
@@ -297,7 +300,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: (!isOwnGoal && selectedScorerId == null) ||
@@ -318,7 +321,7 @@ class _QuarterResultsSectionState extends ConsumerState<QuarterResultsSection> {
                           );
                       Navigator.pop(context);
                     },
-              child: const Text('Add'),
+              child: Text(l10n.add),
             ),
           ],
         ),

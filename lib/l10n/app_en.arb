@@ -133,6 +133,7 @@
   "ownGoals": "Own Goals",
   "goals": "Goals",
   "quarters": "Quarters",
+  "quarter": "Quarter",
   "training": "Training",
   "welcomeUser": "Welcome, {userName}!",
   "@welcomeUser": {
@@ -482,6 +483,10 @@
   "quartersPlayed": "Quarters Played",
   "interventions": "Interventions",
   "attendance": "attendance",
+  "average": "Average",
+  "maximum": "Maximum",
+  "minimum": "Minimum",
+  "summary": "Summary",
   "averageOf": "Average of",
   "trainingsDone": "trainings done",
   "percentageTotalMatches": "of total matches played",
@@ -576,6 +581,12 @@
   "playerUpdatedSuccessfully": "Player updated successfully",
 
   "@_CHAMPIONSHIP": {},
+  "standings": "Standings",
+  "standingsDescription": "View championship standings table",
+  "results": "Results",
+  "resultsDescription": "View match results",
+  "calendar": "Calendar",
+  "calendarDescription": "View match calendar",
   "noUrlAvailable": "No {label} URL available",
   "@noUrlAvailable": {
     "placeholders": {
@@ -592,6 +603,8 @@
       }
     }
   },
+  "contactAdminForUrls": "Please contact your administrator to configure the championship URLs",
+  "webViewNotSupported": "Web view is not available in browser version",
   "copyUrl": "Copy URL",
   "open": "Open",
 
@@ -638,6 +651,8 @@
       }
     }
   },
+  "processingAuthentication": "Processing authentication...",
+  "redirectingToLogin": "Redirecting to login...",
   "confirmPassword": "Confirm Password",
   "pleaseEnterPassword": "Please enter a password",
   "passwordMinEightChars": "Password must be at least 8 characters",
@@ -873,6 +888,9 @@
       }
     }
   },
+  "authFailedDetail": "Authentication failed.\n\nPlease verify that:\n1. The link has not expired\n2. You have not used this link before",
+  "optional": "Optional",
+  "unknownPlayer": "Unknown Player",
   "evaluationFor": "Evaluation - {playerName}",
   "@evaluationFor": {
     "placeholders": {
@@ -926,6 +944,17 @@
   "videoAnalysisDescription": "Link to video analysis of your performance",
   "matchGoals": "Match Goals",
   "noGoalsRecorded": "No goals recorded",
+  "quarterResultSaved": "Quarter result saved",
+  "saveResult": "Save Result",
+  "addGoal": "Add Goal",
+  "ownGoalDescription": "This goal will be recorded as an own goal by the opposing team in favor of our team.",
   "scorer": "Scorer",
-  "assist": "Assist"
+  "assist": "Assist: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  }
 }

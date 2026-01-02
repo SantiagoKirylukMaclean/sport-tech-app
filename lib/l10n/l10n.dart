@@ -7,5 +7,6 @@ class L10n {
   static const all = [
     Locale('en'), // English
     Locale('es'), // Spanish
+    Locale('ca'), // Catalan
   ];
 }

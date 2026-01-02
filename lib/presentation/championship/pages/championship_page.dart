@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/org/active_team_notifier.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,6 +32,7 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final activeTeamState = ref.watch(activeTeamNotifierProvider);
     final activeTeam = activeTeamState.activeTeam;
 
@@ -46,14 +48,14 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
                 color: Theme.of(context).colorScheme.error,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'No team selected',
-                style: TextStyle(fontSize: 18),
+              Text(
+                l10n.noTeamSelected,
+                style: const TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Please select a team first',
-                style: TextStyle(fontSize: 14),
+              Text(
+                l10n.pleaseSelectTeamFirst,
+                style: const TextStyle(fontSize: 14),
               ),
             ],
           ),
@@ -68,18 +70,18 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
             color: Theme.of(context).colorScheme.surface,
             child: TabBar(
               controller: _tabController,
-              tabs: const [
+              tabs: [
                 Tab(
-                  icon: Icon(Icons.leaderboard),
-                  text: 'Clasificación',
+                  icon: const Icon(Icons.leaderboard),
+                  text: l10n.standings,
                 ),
                 Tab(
-                  icon: Icon(Icons.sports_score),
-                  text: 'Resultados',
+                  icon: const Icon(Icons.sports_score),
+                  text: l10n.results,
                 ),
                 Tab(
-                  icon: Icon(Icons.calendar_month),
-                  text: 'Calendario',
+                  icon: const Icon(Icons.calendar_month),
+                  text: l10n.calendar,
                 ),
               ],
             ),
@@ -91,23 +93,23 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
                 _buildUrlTab(
                   context,
                   url: activeTeam.standingsUrl,
-                  label: 'Clasificación',
+                  label: l10n.standings,
                   icon: Icons.leaderboard,
-                  description: 'Ver la tabla de clasificación del campeonato',
+                  description: l10n.standingsDescription,
                 ),
                 _buildUrlTab(
                   context,
                   url: activeTeam.resultsUrl,
-                  label: 'Resultados',
+                  label: l10n.results,
                   icon: Icons.sports_score,
-                  description: 'Ver los resultados de los partidos',
+                  description: l10n.resultsDescription,
                 ),
                 _buildUrlTab(
                   context,
                   url: activeTeam.calendarUrl,
-                  label: 'Calendario',
+                  label: l10n.calendar,
                   icon: Icons.calendar_month,
-                  description: 'Ver el calendario de partidos',
+                  description: l10n.calendarDescription,
                 ),
               ],
             ),
@@ -124,6 +126,7 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
     required IconData icon,
     required String description,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     if (url == null || url.isEmpty) {
       return Center(
         child: Padding(
@@ -138,13 +141,13 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'No $label URL configured',
+                l10n.noUrlAvailable(label),
                 style: Theme.of(context).textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                'Please contact your administrator to configure the championship URLs',
+                l10n.contactAdminForUrls,
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -175,7 +178,7 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
               ),
               const SizedBox(height: 8),
               Text(
-                'Web view is not available in browser version',
+                l10n.webViewNotSupported,
                 style: Theme.of(context).textTheme.bodySmall,
                 textAlign: TextAlign.center,
               ),
@@ -191,7 +194,7 @@ class _ChampionshipPageState extends ConsumerState<ChampionshipPage>
                   }
                 },
                 icon: const Icon(Icons.open_in_new),
-                label: const Text('Open in new tab'),
+                label: Text(l10n.openInNewTab),
               ),
               const SizedBox(height: 8),
               Text(

@@ -87,8 +87,8 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
     final playersState = ref.watch(playersNotifierProvider);
 
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: Text('No user authenticated')),
+      return Scaffold(
+        body: Center(child: Text(l10n.noUserAuthenticated)),
       );
     }
 
@@ -152,7 +152,7 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error: ${playersState.error}'),
+              Text(l10n.errorMessage(playersState.error!)),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: _loadData,

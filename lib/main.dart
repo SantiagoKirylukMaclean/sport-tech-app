@@ -87,10 +87,7 @@ class SportTechApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en', ''), // English
-        Locale('es', ''), // Spanish
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

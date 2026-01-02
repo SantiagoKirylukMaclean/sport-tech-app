@@ -93,6 +93,7 @@
   "language": "Language",
   "english": "English",
   "spanish": "Spanish",
+  "catalan": "Catalan",
 
   "@_SETTINGS": {},
   "appSettings": "App Settings",

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ca.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 
@@ -94,6 +95,7 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('ca'),
     Locale('en'),
     Locale('es')
   ];
@@ -572,6 +574,12 @@ abstract class AppLocalizations {
   /// **'Spanish'**
   String get spanish;
 
+  /// No description provided for @catalan.
+  ///
+  /// In en, this message translates to:
+  /// **'Catalan'**
+  String get catalan;
+
   /// No description provided for @appSettings.
   ///
   /// In en, this message translates to:
@@ -763,6 +771,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quarters'**
   String get quarters;
+
+  /// No description provided for @quarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Quarter'**
+  String get quarter;
 
   /// No description provided for @training.
   ///
@@ -1367,7 +1381,7 @@ abstract class AppLocalizations {
   /// No description provided for @assist.
   ///
   /// In en, this message translates to:
-  /// **'Assist'**
+  /// **'Assist: {assisterName}'**
   String assist(String assisterName);
 
   /// No description provided for @none.
@@ -1706,6 +1720,30 @@ abstract class AppLocalizations {
   /// **'Attendance'**
   String get attendance;
 
+  /// No description provided for @average.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get average;
+
+  /// No description provided for @maximum.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum'**
+  String get maximum;
+
+  /// No description provided for @minimum.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum'**
+  String get minimum;
+
+  /// No description provided for @summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary'**
+  String get summary;
+
   /// No description provided for @averageOf.
   ///
   /// In en, this message translates to:
@@ -1982,6 +2020,42 @@ abstract class AppLocalizations {
   /// **'Player updated successfully'**
   String get playerUpdatedSuccessfully;
 
+  /// No description provided for @standings.
+  ///
+  /// In en, this message translates to:
+  /// **'Standings'**
+  String get standings;
+
+  /// No description provided for @standingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View championship standings table'**
+  String get standingsDescription;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
+  /// No description provided for @resultsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View match results'**
+  String get resultsDescription;
+
+  /// No description provided for @calendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get calendar;
+
+  /// No description provided for @calendarDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'View match calendar'**
+  String get calendarDescription;
+
   /// No description provided for @noUrlAvailable.
   ///
   /// In en, this message translates to:
@@ -1993,6 +2067,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{label} URL copied to clipboard'**
   String urlCopiedToClipboard(String label);
+
+  /// No description provided for @contactAdminForUrls.
+  ///
+  /// In en, this message translates to:
+  /// **'Please contact your administrator to configure the championship URLs'**
+  String get contactAdminForUrls;
+
+  /// No description provided for @webViewNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Web view is not available in browser version'**
+  String get webViewNotSupported;
 
   /// No description provided for @copyUrl.
   ///
@@ -2107,6 +2193,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have been invited as a {role}'**
   String invitedAsRole(String role);
+
+  /// No description provided for @processingAuthentication.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing authentication...'**
+  String get processingAuthentication;
+
+  /// No description provided for @redirectingToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Redirecting to login...'**
+  String get redirectingToLogin;
 
   /// No description provided for @confirmPassword.
   ///
@@ -2630,6 +2728,24 @@ abstract class AppLocalizations {
   /// **'Welcome, {email}!'**
   String welcomeEmail(String email);
 
+  /// No description provided for @authFailedDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed.\n\nPlease verify that:\n1. The link has not expired\n2. You have not used this link before'**
+  String get authFailedDetail;
+
+  /// No description provided for @optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optional;
+
+  /// No description provided for @unknownPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Player'**
+  String get unknownPlayer;
+
   /// No description provided for @evaluationFor.
   ///
   /// In en, this message translates to:
@@ -2731,12 +2847,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Did not play in this match'**
   String get didNotPlayInThisMatch;
-
-  /// No description provided for @quarter.
-  ///
-  /// In en, this message translates to:
-  /// **'Quarter'**
-  String get quarter;
 
   /// No description provided for @position.
   ///
@@ -2840,6 +2950,12 @@ abstract class AppLocalizations {
   /// **'Match Goals'**
   String get matchGoals;
 
+  /// No description provided for @ownGoalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This goal will be recorded as an own goal by the opposing team in favor of our team.'**
+  String get ownGoalDescription;
+
   /// No description provided for @scorer.
   ///
   /// In en, this message translates to:
@@ -2858,7 +2974,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en', 'es'].contains(locale.languageCode);
+      <String>['ca', 'en', 'es'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2867,6 +2983,8 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ca':
+      return AppLocalizationsCa();
     case 'en':
       return AppLocalizationsEn();
     case 'es':

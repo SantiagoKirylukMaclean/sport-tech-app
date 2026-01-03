@@ -54,10 +54,12 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
           }
           break;
         case 2: // Training %
-          comparison = a.trainingAttendancePercentage.compareTo(b.trainingAttendancePercentage);
+          comparison = a.trainingAttendancePercentage
+              .compareTo(b.trainingAttendancePercentage);
           break;
         case 3: // Match %
-          comparison = a.matchAttendancePercentage.compareTo(b.matchAttendancePercentage);
+          comparison = a.matchAttendancePercentage
+              .compareTo(b.matchAttendancePercentage);
           break;
         case 4: // Avg Periods
           comparison = a.averagePeriods.compareTo(b.averagePeriods);
@@ -96,6 +98,8 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              columnSpacing: 12,
+              horizontalMargin: 10,
               headingRowColor: WidgetStateProperty.all(
                 Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
@@ -104,36 +108,43 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
               columns: [
                 DataColumn(
                   label: const Text('Player'),
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Jersey'),
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Training %'),
                   numeric: true,
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Match %'),
                   numeric: true,
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Avg Periods'),
                   numeric: true,
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Goals'),
                   numeric: true,
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
                 DataColumn(
                   label: const Text('Assists'),
                   numeric: true,
-                  onSort: (columnIndex, ascending) => _sort(columnIndex, ascending),
+                  onSort: (columnIndex, ascending) =>
+                      _sort(columnIndex, ascending),
                 ),
               ],
               rows: players.map((player) {
@@ -215,7 +226,9 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
-            Row(
+            Wrap(
+              spacing: 16,
+              runSpacing: 8,
               children: [
                 _legendItem(
                   context,
@@ -223,14 +236,12 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
                   '≥90%',
                   'Excellent',
                 ),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Colors.grey,
                   '≥75%',
                   'Good',
                 ),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Theme.of(context).colorScheme.error,

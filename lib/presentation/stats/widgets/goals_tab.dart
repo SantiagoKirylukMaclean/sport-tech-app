@@ -72,6 +72,8 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              columnSpacing: 12,
+              horizontalMargin: 10,
               sortColumnIndex: _sortColumnIndex,
               sortAscending: _sortAscending,
               headingRowColor: WidgetStateProperty.all(

@@ -41,6 +41,8 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              columnSpacing: 12,
+              horizontalMargin: 10,
               sortColumnIndex: _sortColumnIndex,
               sortAscending: _sortAscending,
               headingRowColor: WidgetStateProperty.all(
@@ -138,7 +140,9 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                         child: Text(
                           'Q${quarter.quarterNumber}',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -250,39 +254,53 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
   void _sortQuarters(List quarters) {
     switch (_sortColumnIndex) {
       case 0: // Quarter
-        quarters.sort((a, b) => _sortAscending
-            ? a.quarterNumber.compareTo(b.quarterNumber)
-            : b.quarterNumber.compareTo(a.quarterNumber),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.quarterNumber.compareTo(b.quarterNumber)
+              : b.quarterNumber.compareTo(a.quarterNumber),
+        );
         break;
       case 1: // Goals For
-        quarters.sort((a, b) => _sortAscending
-            ? a.goalsFor.compareTo(b.goalsFor)
-            : b.goalsFor.compareTo(a.goalsFor),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.goalsFor.compareTo(b.goalsFor)
+              : b.goalsFor.compareTo(a.goalsFor),
+        );
         break;
       case 2: // Goals Against
-        quarters.sort((a, b) => _sortAscending
-            ? a.goalsAgainst.compareTo(b.goalsAgainst)
-            : b.goalsAgainst.compareTo(a.goalsAgainst),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.goalsAgainst.compareTo(b.goalsAgainst)
+              : b.goalsAgainst.compareTo(a.goalsAgainst),
+        );
         break;
       case 3: // Wins
-        quarters.sort((a, b) => _sortAscending
-            ? a.wins.compareTo(b.wins)
-            : b.wins.compareTo(a.wins),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.wins.compareTo(b.wins)
+              : b.wins.compareTo(a.wins),
+        );
         break;
       case 4: // Draws
-        quarters.sort((a, b) => _sortAscending
-            ? a.draws.compareTo(b.draws)
-            : b.draws.compareTo(a.draws),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.draws.compareTo(b.draws)
+              : b.draws.compareTo(a.draws),
+        );
         break;
       case 5: // Losses
-        quarters.sort((a, b) => _sortAscending
-            ? a.losses.compareTo(b.losses)
-            : b.losses.compareTo(a.losses),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.losses.compareTo(b.losses)
+              : b.losses.compareTo(a.losses),
+        );
         break;
       case 6: // Effectiveness
-        quarters.sort((a, b) => _sortAscending
-            ? a.effectiveness.compareTo(b.effectiveness)
-            : b.effectiveness.compareTo(a.effectiveness),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.effectiveness.compareTo(b.effectiveness)
+              : b.effectiveness.compareTo(a.effectiveness),
+        );
         break;
     }
   }
@@ -314,12 +332,12 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
-            Row(
+            Wrap(
+              spacing: 16,
+              runSpacing: 8,
               children: [
                 _legendItem(context, Colors.green, '≥75%', 'Excellent'),
-                const SizedBox(width: 16),
                 _legendItem(context, Colors.orange, '≥50%', 'Good'),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Theme.of(context).colorScheme.error,

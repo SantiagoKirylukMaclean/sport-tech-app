@@ -30,8 +30,8 @@ class TrainingTab extends ConsumerWidget {
 
     // Sort players by training attendance percentage (descending)
     final sortedPlayers = List.from(players)
-      ..sort((a, b) =>
-          b.trainingAttendancePercentage.compareTo(a.trainingAttendancePercentage));
+      ..sort((a, b) => b.trainingAttendancePercentage
+          .compareTo(a.trainingAttendancePercentage));
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -121,17 +121,15 @@ class TrainingTab extends ConsumerWidget {
     if (players.isEmpty) return const SizedBox.shrink();
 
     final totalPlayers = players.length;
-    final excellentCount = players
-        .where((p) => p.trainingAttendancePercentage >= 90)
-        .length;
+    final excellentCount =
+        players.where((p) => p.trainingAttendancePercentage >= 90).length;
     final goodCount = players
         .where((p) =>
             p.trainingAttendancePercentage >= 75 &&
             p.trainingAttendancePercentage < 90)
         .length;
-    final needsImprovementCount = players
-        .where((p) => p.trainingAttendancePercentage < 75)
-        .length;
+    final needsImprovementCount =
+        players.where((p) => p.trainingAttendancePercentage < 75).length;
 
     final averageAttendance = players.fold<double>(
           0,
@@ -220,7 +218,9 @@ class TrainingTab extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
-            Row(
+            Wrap(
+              spacing: 16,
+              runSpacing: 8,
               children: [
                 _legendItem(
                   context,
@@ -228,14 +228,12 @@ class TrainingTab extends ConsumerWidget {
                   '≥90%',
                   'Excellent',
                 ),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Colors.grey,
                   '≥75%',
                   'Good',
                 ),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Theme.of(context).colorScheme.error,

@@ -802,7 +802,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trainingSessionDetails => 'Detalles de la Sesión de Entrenamiento';
 
   @override
-  String get statistics => 'Evaluaciones';
+  String get statistics => 'Estadísticas';
 
   @override
   String get general => 'General';

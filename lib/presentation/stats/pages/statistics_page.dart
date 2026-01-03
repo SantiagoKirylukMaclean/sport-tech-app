@@ -6,7 +6,6 @@ import 'package:sport_tech_app/application/stats/stats_providers.dart';
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/players_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/goals_tab.dart';
-import 'package:sport_tech_app/presentation/stats/widgets/matches_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/quarters_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 
@@ -25,7 +24,7 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -127,7 +126,6 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
           tabs: const [
             Tab(text: 'Players'),
             Tab(text: 'Goals'),
-            Tab(text: 'Matches'),
             Tab(text: 'Quarters'),
             Tab(text: 'Training'),
           ],
@@ -172,7 +170,6 @@ class _StatisticsPageState extends ConsumerState<StatisticsPage>
                     children: const [
                       PlayersTab(),
                       GoalsTab(),
-                      MatchesTab(),
                       QuartersTab(),
                       TrainingTab(),
                     ],

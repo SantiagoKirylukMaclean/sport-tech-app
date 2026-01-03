@@ -9,7 +9,6 @@ import 'package:sport_tech_app/application/dashboard/player_dashboard_providers.
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/players_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/goals_tab.dart';
-import 'package:sport_tech_app/presentation/stats/widgets/matches_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/quarters_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
@@ -29,7 +28,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     // Load teams when dashboard initializes if user is authenticated
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = ref.read(authNotifierProvider);
@@ -256,7 +255,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                             tabs: [
                               Tab(text: l10n.general),
                               Tab(text: l10n.goals),
-                              Tab(text: l10n.matches),
                               Tab(text: l10n.quarters),
                               Tab(text: l10n.training),
                             ],
@@ -273,7 +271,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                           children: const [
                             PlayersTab(),
                             GoalsTab(),
-                            MatchesTab(),
                             QuartersTab(),
                             TrainingTab(),
                           ],

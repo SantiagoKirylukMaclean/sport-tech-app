@@ -132,6 +132,10 @@ class SettingsPage extends ConsumerWidget {
                   value: 'es',
                   label: Text(l10n.spanish),
                 ),
+                ButtonSegment(
+                  value: 'ca',
+                  label: Text(l10n.catalan),
+                ),
               ],
               selected: {currentLocale?.languageCode ?? 'en'},
               onSelectionChanged: (Set<String> newSelection) {

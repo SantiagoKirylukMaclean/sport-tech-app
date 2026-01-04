@@ -246,6 +246,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spanish => 'Spanish';
 
   @override
+  String get catalan => 'Catalan';
+
+  @override
   String get appSettings => 'App Settings';
 
   @override
@@ -340,6 +343,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quarters => 'Quarters';
+
+  @override
+  String get quarter => 'Quarter';
 
   @override
   String get training => 'Training';
@@ -679,7 +685,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String assist(String assisterName) {
-    return 'Assist';
+    return 'Assist: $assisterName';
   }
 
   @override
@@ -784,7 +790,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trainingSessionDetails => 'Training Session Details';
 
   @override
-  String get statistics => 'Evaluations';
+  String get statistics => 'Statistics';
 
   @override
   String get general => 'General';
@@ -867,6 +873,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get attendance => 'Attendance';
+
+  @override
+  String get average => 'Average';
+
+  @override
+  String get maximum => 'Maximum';
+
+  @override
+  String get minimum => 'Minimum';
+
+  @override
+  String get summary => 'Summary';
 
   @override
   String get averageOf => 'Average of';
@@ -1016,6 +1034,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playerUpdatedSuccessfully => 'Player updated successfully';
 
   @override
+  String get standings => 'Standings';
+
+  @override
+  String get standingsDescription => 'View championship standings table';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String get resultsDescription => 'View match results';
+
+  @override
+  String get calendar => 'Calendar';
+
+  @override
+  String get calendarDescription => 'View match calendar';
+
+  @override
   String noUrlAvailable(String label) {
     return 'No $label URL available';
   }
@@ -1024,6 +1060,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String urlCopiedToClipboard(String label) {
     return '$label URL copied to clipboard';
   }
+
+  @override
+  String get contactAdminForUrls =>
+      'Please contact your administrator to configure the championship URLs';
+
+  @override
+  String get webViewNotSupported =>
+      'Web view is not available in browser version';
 
   @override
   String get copyUrl => 'Copy URL';
@@ -1089,6 +1133,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String invitedAsRole(String role) {
     return 'You have been invited as a $role';
   }
+
+  @override
+  String get processingAuthentication => 'Processing authentication...';
+
+  @override
+  String get redirectingToLogin => 'Redirecting to login...';
 
   @override
   String get confirmPassword => 'Confirm Password';
@@ -1301,6 +1351,61 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get generalStats => 'General Statistics';
+
+  @override
+  String get performanceByQuarter => 'Performance by Quarter';
+
+  @override
+  String get goalsAndAssists => 'Goals & Assists';
+
+  @override
+  String get trainingAttendanceRanking => 'Training Attendance Ranking';
+
+  @override
+  String get jerseyTitle => 'Jersey';
+
+  @override
+  String get trainingPercent => 'Training %';
+
+  @override
+  String get matchPercent => 'Match %';
+
+  @override
+  String get avgPeriods => 'Avg Periods';
+
+  @override
+  String get goalsFor => 'Goals For';
+
+  @override
+  String get goalsAgainst => 'Goals Against';
+
+  @override
+  String get wins => 'Wins';
+
+  @override
+  String get draws => 'Draws';
+
+  @override
+  String get losses => 'Losses';
+
+  @override
+  String get effectiveness => 'Effectiveness';
+
+  @override
+  String get effectivenessCalculation => 'Effectiveness Calculation';
+
+  @override
+  String get effectivenessFormula =>
+      'Effectiveness = (Wins × 3 + Draws × 1) / (Total Games × 3) × 100';
+
+  @override
+  String get teamSummary => 'Team Summary';
+
+  @override
+  String get needsWork => 'Needs Work';
+
+  @override
   String get copyPendingImplementation =>
       'Copy functionality pending implementation';
 
@@ -1394,6 +1499,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get authFailedDetail =>
+      'Authentication failed.\n\nPlease verify that:\n1. The link has not expired\n2. You have not used this link before';
+
+  @override
+  String get optional => 'Optional';
+
+  @override
+  String get unknownPlayer => 'Unknown Player';
+
+  @override
   String evaluationFor(String playerName) {
     return 'Evaluation - $playerName';
   }
@@ -1447,9 +1562,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get didNotPlayInThisMatch => 'Did not play in this match';
 
   @override
-  String get quarter => 'Quarter';
-
-  @override
   String get position => 'Position';
 
   @override
@@ -1501,6 +1613,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchGoals => 'Match Goals';
+
+  @override
+  String get ownGoalDescription =>
+      'This goal will be recorded as an own goal by the opposing team in favor of our team.';
 
   @override
   String get scorer => 'Scorer';

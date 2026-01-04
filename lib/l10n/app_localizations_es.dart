@@ -249,6 +249,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get spanish => 'Español';
 
   @override
+  String get catalan => 'Catalán';
+
+  @override
   String get appSettings => 'Configuración de la App';
 
   @override
@@ -345,6 +348,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get quarters => 'Cuartos';
+
+  @override
+  String get quarter => 'Cuarto';
 
   @override
   String get training => 'Entrenamiento';
@@ -796,7 +802,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trainingSessionDetails => 'Detalles de la Sesión de Entrenamiento';
 
   @override
-  String get statistics => 'Evaluaciones';
+  String get statistics => 'Estadísticas';
 
   @override
   String get general => 'General';
@@ -880,6 +886,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get attendance => 'Asistencia';
+
+  @override
+  String get average => 'Promedio';
+
+  @override
+  String get maximum => 'Máximo';
+
+  @override
+  String get minimum => 'Mínimo';
+
+  @override
+  String get summary => 'Resumen';
 
   @override
   String get averageOf => 'Promedio de';
@@ -1034,6 +1052,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get playerUpdatedSuccessfully => 'Jugador actualizado exitosamente';
 
   @override
+  String get standings => 'Clasificación';
+
+  @override
+  String get standingsDescription =>
+      'Ver la tabla de clasificación del campeonato';
+
+  @override
+  String get results => 'Resultados';
+
+  @override
+  String get resultsDescription => 'Ver los resultados de los partidos';
+
+  @override
+  String get calendar => 'Calendario';
+
+  @override
+  String get calendarDescription => 'Ver el calendario de partidos';
+
+  @override
   String noUrlAvailable(String label) {
     return 'No hay URL de $label disponible';
   }
@@ -1042,6 +1079,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String urlCopiedToClipboard(String label) {
     return 'URL de $label copiada al portapapeles';
   }
+
+  @override
+  String get contactAdminForUrls =>
+      'Por favor contacta a tu administrador para configurar las URLs del campeonato';
+
+  @override
+  String get webViewNotSupported =>
+      'La vista web no está disponible en la versión del navegador';
 
   @override
   String get copyUrl => 'Copiar URL';
@@ -1108,6 +1153,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String invitedAsRole(String role) {
     return 'Has sido invitado como $role';
   }
+
+  @override
+  String get processingAuthentication => 'Procesando autenticación...';
+
+  @override
+  String get redirectingToLogin => 'Redirigiendo al login...';
 
   @override
   String get confirmPassword => 'Confirmar Contraseña';
@@ -1325,6 +1376,61 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get generalStats => 'Estadísticas Generales';
+
+  @override
+  String get performanceByQuarter => 'Rendimiento por Cuarto';
+
+  @override
+  String get goalsAndAssists => 'Goles y Asistencias';
+
+  @override
+  String get trainingAttendanceRanking => 'Ranking de Asistencia';
+
+  @override
+  String get jerseyTitle => 'Dorsal';
+
+  @override
+  String get trainingPercent => '% Entr.';
+
+  @override
+  String get matchPercent => '% Part.';
+
+  @override
+  String get avgPeriods => 'Periodos Prom.';
+
+  @override
+  String get goalsFor => 'Goles Favor';
+
+  @override
+  String get goalsAgainst => 'Goles Contra';
+
+  @override
+  String get wins => 'Victorias';
+
+  @override
+  String get draws => 'Empates';
+
+  @override
+  String get losses => 'Derrotas';
+
+  @override
+  String get effectiveness => 'Efectividad';
+
+  @override
+  String get effectivenessCalculation => 'Cálculo de Efectividad';
+
+  @override
+  String get effectivenessFormula =>
+      'Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100';
+
+  @override
+  String get teamSummary => 'Resumen de Equipo';
+
+  @override
+  String get needsWork => 'Requiere Trabajo';
+
+  @override
   String get copyPendingImplementation =>
       'Funcionalidad de copiar pendiente de implementar';
 
@@ -1420,6 +1526,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get authFailedDetail =>
+      'Autenticación fallida.\n\nPor favor verifica que:\n1. El enlace no haya expirado\n2. No hayas usado este enlace antes';
+
+  @override
+  String get optional => 'Opcional';
+
+  @override
+  String get unknownPlayer => 'Jugador Desconocido';
+
+  @override
   String evaluationFor(String playerName) {
     return 'Evaluación - $playerName';
   }
@@ -1472,9 +1588,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get didNotPlayInThisMatch => 'No jugaste en este partido';
-
-  @override
-  String get quarter => 'Cuarto';
 
   @override
   String get position => 'Posición';
@@ -1530,6 +1643,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get matchGoals => 'Goles del Partido';
+
+  @override
+  String get ownGoalDescription =>
+      'Este gol será registrado como autogol del equipo contrario a favor de nuestro equipo.';
 
   @override
   String get scorer => 'Goleador';

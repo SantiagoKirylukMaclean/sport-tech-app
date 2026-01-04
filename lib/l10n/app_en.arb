@@ -93,6 +93,7 @@
   "language": "Language",
   "english": "English",
   "spanish": "Spanish",
+  "catalan": "Catalan",
 
   "@_SETTINGS": {},
   "appSettings": "App Settings",
@@ -133,6 +134,7 @@
   "ownGoals": "Own Goals",
   "goals": "Goals",
   "quarters": "Quarters",
+  "quarter": "Quarter",
   "training": "Training",
   "welcomeUser": "Welcome, {userName}!",
   "@welcomeUser": {
@@ -403,7 +405,7 @@
   "trainingSessionDetails": "Training Session Details",
 
   "@_STATISTICS": {},
-  "statistics": "Evaluations",
+  "statistics": "Statistics",
   "general": "General",
   "noTrainingAttendanceData": "No training attendance data available",
   "noGoalsOrAssistsData": "No goals or assists data available",
@@ -482,6 +484,10 @@
   "quartersPlayed": "Quarters Played",
   "interventions": "Interventions",
   "attendance": "attendance",
+  "average": "Average",
+  "maximum": "Maximum",
+  "minimum": "Minimum",
+  "summary": "Summary",
   "averageOf": "Average of",
   "trainingsDone": "trainings done",
   "percentageTotalMatches": "of total matches played",
@@ -576,6 +582,12 @@
   "playerUpdatedSuccessfully": "Player updated successfully",
 
   "@_CHAMPIONSHIP": {},
+  "standings": "Standings",
+  "standingsDescription": "View championship standings table",
+  "results": "Results",
+  "resultsDescription": "View match results",
+  "calendar": "Calendar",
+  "calendarDescription": "View match calendar",
   "noUrlAvailable": "No {label} URL available",
   "@noUrlAvailable": {
     "placeholders": {
@@ -592,6 +604,8 @@
       }
     }
   },
+  "contactAdminForUrls": "Please contact your administrator to configure the championship URLs",
+  "webViewNotSupported": "Web view is not available in browser version",
   "copyUrl": "Copy URL",
   "open": "Open",
 
@@ -638,6 +652,8 @@
       }
     }
   },
+  "processingAuthentication": "Processing authentication...",
+  "redirectingToLogin": "Redirecting to login...",
   "confirmPassword": "Confirm Password",
   "pleaseEnterPassword": "Please enter a password",
   "passwordMinEightChars": "Password must be at least 8 characters",
@@ -784,6 +800,24 @@
       }
     }
   },
+  "generalStats": "General Statistics",
+  "performanceByQuarter": "Performance by Quarter",
+  "goalsAndAssists": "Goals & Assists",
+  "trainingAttendanceRanking": "Training Attendance Ranking",
+  "jerseyTitle": "Jersey",
+  "trainingPercent": "Training %",
+  "matchPercent": "Match %",
+  "avgPeriods": "Avg Periods",
+  "goalsFor": "Goals For",
+  "goalsAgainst": "Goals Against",
+  "wins": "Wins",
+  "draws": "Draws",
+  "losses": "Losses",
+  "effectiveness": "Effectiveness",
+  "effectivenessCalculation": "Effectiveness Calculation",
+  "effectivenessFormula": "Effectiveness = (Wins × 3 + Draws × 1) / (Total Games × 3) × 100",
+  "teamSummary": "Team Summary",
+  "needsWork": "Needs Work",
   "copyPendingImplementation": "Copy functionality pending implementation",
   "copy": "Copy",
   "deleteInvitation": "Delete Invitation",
@@ -873,6 +907,9 @@
       }
     }
   },
+  "authFailedDetail": "Authentication failed.\n\nPlease verify that:\n1. The link has not expired\n2. You have not used this link before",
+  "optional": "Optional",
+  "unknownPlayer": "Unknown Player",
   "evaluationFor": "Evaluation - {playerName}",
   "@evaluationFor": {
     "placeholders": {
@@ -926,6 +963,17 @@
   "videoAnalysisDescription": "Link to video analysis of your performance",
   "matchGoals": "Match Goals",
   "noGoalsRecorded": "No goals recorded",
+  "quarterResultSaved": "Quarter result saved",
+  "saveResult": "Save Result",
+  "addGoal": "Add Goal",
+  "ownGoalDescription": "This goal will be recorded as an own goal by the opposing team in favor of our team.",
   "scorer": "Scorer",
-  "assist": "Assist"
+  "assist": "Assist: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  }
 }

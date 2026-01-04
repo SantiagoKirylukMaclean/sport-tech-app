@@ -2,6 +2,7 @@ import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 import 'package:sport_tech_app/domain/stats/entities/scorer_stats.dart';
 import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 import 'package:sport_tech_app/domain/stats/entities/quarter_performance.dart';
+import 'package:sport_tech_app/domain/stats/entities/player_quarter_stats.dart';
 
 /// Repository for accessing statistical data
 abstract class StatsRepository {
@@ -16,7 +17,8 @@ abstract class StatsRepository {
   Future<List<ScorerStats>> getScorersRanking(String teamId, {int limit = 10});
 
   /// Get top assisters ranking for a team
-  Future<List<ScorerStats>> getAssistersRanking(String teamId, {int limit = 10});
+  Future<List<ScorerStats>> getAssistersRanking(String teamId,
+      {int limit = 10});
 
   /// Get summary of all matches for a team
   Future<List<MatchSummary>> getMatchesSummary(String teamId);
@@ -26,4 +28,7 @@ abstract class StatsRepository {
 
   /// Get team training attendance percentage
   Future<double> getTeamTrainingAttendance(String teamId);
+
+  /// Get player quarter statistics (won/lost/drawn)
+  Future<List<PlayerQuarterStats>> getPlayerQuarterStats(String teamId);
 }

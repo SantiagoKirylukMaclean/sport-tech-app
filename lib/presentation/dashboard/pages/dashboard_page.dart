@@ -9,11 +9,11 @@ import 'package:sport_tech_app/application/dashboard/player_dashboard_providers.
 import 'package:sport_tech_app/core/constants/app_constants.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/players_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/goals_tab.dart';
-import 'package:sport_tech_app/presentation/stats/widgets/matches_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/quarters_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
 import 'package:sport_tech_app/presentation/dashboard/widgets/player_dashboard_content.dart';
+import 'package:sport_tech_app/presentation/stats/widgets/lineups_tab.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -256,9 +256,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                             tabs: [
                               Tab(text: l10n.general),
                               Tab(text: l10n.goals),
-                              Tab(text: l10n.matches),
                               Tab(text: l10n.quarters),
                               Tab(text: l10n.training),
+                              Tab(text: l10n.lineup),
                             ],
                           ),
                         ],
@@ -273,9 +273,9 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                           children: const [
                             PlayersTab(),
                             GoalsTab(),
-                            MatchesTab(),
                             QuartersTab(),
                             TrainingTab(),
+                            LineupsTab(),
                           ],
                         ),
                       ),

@@ -23,7 +23,7 @@ class AppConstants {
   static const String matchesRoute = '/matches';
   static const String trainingsRoute = '/trainings';
   static const String championshipRoute = '/championship';
-  static const String statisticsRoute = '/statistics';
+
   static const String evaluationsRoute = '/evaluations';
   static const String notesRoute = '/notes';
   static const String profileRoute = '/profile';
@@ -47,9 +47,12 @@ class AppConstants {
   static const String setPasswordRoute = '/set-password';
 
   // Error messages
-  static const String genericErrorMessage = 'An error occurred. Please try again.';
-  static const String networkErrorMessage = 'No internet connection. Please check your network.';
-  static const String authErrorMessage = 'Authentication failed. Please login again.';
+  static const String genericErrorMessage =
+      'An error occurred. Please try again.';
+  static const String networkErrorMessage =
+      'No internet connection. Please check your network.';
+  static const String authErrorMessage =
+      'Authentication failed. Please login again.';
 }
 
 /// User roles in the system

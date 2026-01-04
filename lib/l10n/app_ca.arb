@@ -1,0 +1,962 @@
+{
+  "@@locale": "ca",
+  "appName": "Sport Tech",
+  "teamSportManagement": "Gestió d'Equips Esportius",
+
+  "@_AUTH": {},
+  "login": "Inicia sessió",
+  "email": "Correu electrònic",
+  "password": "Contrasenya",
+  "enterEmail": "Introdueix el teu correu",
+  "enterPassword": "Introdueix la teva contrasenya",
+  "forgotPassword": "Has oblidat la contrasenya?",
+  "forgotPasswordComingSoon": "Funció de recuperació de contrasenya properament",
+  "emailRequired": "El correu és obligatori",
+  "passwordRequired": "La contrasenya és obligatòria",
+  "invalidEmail": "Si us plau, introdueix un correu vàlid",
+  "passwordTooShort": "La contrasenya ha de tenir almenys 6 caràcters",
+  "logout": "Tanca sessió",
+
+  "@_NAVIGATION": {},
+  "dashboard": "Inici",
+  "home": "Inici",
+  "matches": "Partits",
+  "trainings": "Entrenaments",
+  "championship": "Campionat",
+  "evaluations": "Les meves avaluacions",
+  "notes": "Notes",
+  "profile": "Perfil",
+  "coach": "Entrenador",
+  "mister": "Mister",
+  "team": "Equip",
+  "admin": "Admin",
+  "stats": "Avaluacions de temporada",
+  "more": "Més",
+  "settings": "Configuració",
+  "superAdmin": "Super Admin",
+  "coachPanel": "Panell d'Entrenador",
+  "superAdminPanel": "Panell d'Administració",
+
+  "@_MANAGEMENT": {},
+  "teamsManagement": "Gestió d'Equips",
+  "clubsManagement": "Gestió de Clubs",
+  "sportsManagement": "Gestió d'Esports",
+  "playersManagement": "Gestió de Jugadors",
+
+  "@_COMMON": {},
+  "welcome": "Benvingut",
+  "role": "Rol",
+  "toggleTheme": "Canvia el tema",
+  "save": "Desa",
+  "cancel": "Cancel·la",
+  "delete": "Elimina",
+  "edit": "Edita",
+  "add": "Afegeix",
+  "create": "Crea",
+  "update": "Actualitza",
+  "search": "Cerca",
+  "filter": "Filtra",
+  "close": "Tanca",
+  "confirm": "Confirma",
+  "yes": "Sí",
+  "no": "No",
+  "loading": "Carregant...",
+  "error": "Error",
+  "success": "Èxit",
+  "noData": "No hi ha dades disponibles",
+  "name": "Nom",
+  "description": "Descripció",
+  "date": "Data",
+  "time": "Hora",
+  "location": "Ubicació",
+  "status": "Estat",
+  "actions": "Accions",
+
+  "@_FORMS": {},
+  "nameRequired": "El nom és obligatori",
+  "descriptionRequired": "La descripció és obligatòria",
+  "fieldRequired": "Aquest camp és obligatori",
+  "invalidFormat": "Format no vàlid",
+
+  "@_MESSAGES": {},
+  "saveSuccess": "Desat correctament",
+  "deleteSuccess": "Eliminat correctament",
+  "updateSuccess": "Actualitzat correctament",
+  "createSuccess": "Creat correctament",
+  "saveError": "Error en desar",
+  "deleteError": "Error en eliminar",
+  "updateError": "Error en actualitzar",
+  "createError": "Error en crear",
+  "confirmDelete": "Estàs segur que vols eliminar aquest element?",
+
+  "@_LANGUAGE": {},
+  "language": "Idioma",
+  "english": "Anglès",
+  "spanish": "Castellà",
+  "catalan": "Català",
+
+  "@_SETTINGS": {},
+  "appSettings": "Configuració de l'App",
+  "appearance": "Aparença",
+  "darkMode": "Mode fosc",
+  "lightMode": "Mode clar",
+  "systemMode": "Sistema",
+  "preferences": "Preferències",
+  "checkForUpdates": "Cerca actualitzacions",
+  "checkingForUpdates": "Cercant actualitzacions...",
+  "noUpdatesAvailable": "No hi ha actualitzacions disponibles",
+  "errorCheckingUpdates": "Error cercant actualitzacions",
+
+  "@_MORE": {},
+  "moreOptions": "Més opcions",
+  "quickAccess": "Accés ràpid",
+
+  "@_NOTES": {},
+  "myNotes": "Les meves notes",
+  "addNote": "Afegeix nota",
+  "editNote": "Edita nota",
+  "deleteNote": "Elimina nota",
+  "noteContent": "Contingut de la nota",
+  "enterNoteContent": "Escriu la teva nota...",
+  "noteContentRequired": "El contingut de la nota és obligatori",
+  "noteCreated": "Nota creada correctament",
+  "noteUpdated": "Nota actualitzada correctament",
+  "noteDeleted": "Nota eliminada correctament",
+  "confirmDeleteNote": "Estàs segur que vols eliminar aquesta nota?",
+  "noNotes": "Encara no tens notes. Crea la primera!",
+
+  "@_DASHBOARD": {},
+  "errorLoadingStatistics": "Error carregant estadístiques",
+  "retry": "Reintenta",
+  "noPlayerData": "Sense dades del jugador",
+  "noPlayerRecordFound": "No s'ha trobat registre de jugador per al teu compte",
+  "players": "Jugadors",
+  "ownGoals": "Gols en pròpia",
+  "goals": "Gols",
+  "quarters": "Parts",
+  "quarter": "Part",
+  "training": "Entrenament",
+  "welcomeUser": "Benvingut/da, {userName}!",
+  "@welcomeUser": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "roleUser": "Rol: {role}",
+  "@roleUser": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "errorLoadingTeams": "Error carregant equips: {error}",
+  "@errorLoadingTeams": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "selectTeam": "Selecciona equip",
+  "activeTeam": "Equip actiu: {teamName}",
+  "@activeTeam": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
+  "noTeamsAssigned": "No hi ha equips assignats.",
+  "noTeamsAvailable": "No hi ha equips disponibles",
+
+  "@_ADMIN_PANEL": {},
+  "administrationPanel": "Panell d'Administració",
+  "sports": "Esports",
+  "manageSports": "Gestiona els esports del sistema",
+  "clubs": "Clubs",
+  "manageClubs": "Gestiona clubs i organitzacions",
+  "teams": "Equips",
+  "manageTeams": "Gestiona equips del sistema",
+  "inviteCoachAdmin": "Convida Entrenador/Admin",
+  "sendInvitationsCoachAdmin": "Envia invitacions a nous entrenadors o administradors",
+  "invitePlayer": "Convida Jugador",
+  "sendInvitationsPlayers": "Envia invitacions a nous jugadors",
+  "invitations": "Invitacions",
+  "viewManageInvitations": "Veure i gestionar invitacions pendents",
+  "users": "Usuaris",
+  "manageUsers": "Gestiona usuaris del sistema",
+
+  "@_TEAMS_MANAGEMENT": {},
+  "filters": "Filtres",
+  "refresh": "Actualitza",
+  "sport": "Esport",
+  "allSports": "Tots els esports",
+  "club": "Club",
+  "allClubs": "Tots els clubs",
+  "selectSportAndClub": "Selecciona un esport i un club per veure els equips",
+  "errorMessage": "Error: {message}",
+  "@errorMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "teamsCount": "Equips ({count})",
+  "@teamsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "noTeamsFound": "No s'han trobat equips. Crea'n un per començar!",
+  "newTeam": "Nou equip",
+  "teamCreatedSuccessfully": "Equip creat correctament",
+  "assign": "Assigna",
+  "deleteTeam": "Elimina Equip",
+  "confirmDeleteTeam": "Estàs segur que vols eliminar \"{teamName}\"?",
+  "@confirmDeleteTeam": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
+  "teamUpdatedSuccessfully": "Equip actualitzat correctament",
+  "teamDeletedSuccessfully": "Equip eliminat correctament",
+  "createdOn": "Creat: {date}",
+  "@createdOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_INVITE_PLAYER": {},
+  "createPlayerInvitation": "Crea invitació de jugador",
+  "emailAddress": "Correu electrònic *",
+  "emailAddressDescription": "El correu electrònic del jugador que vols convidar",
+  "emailIsRequired": "El correu és obligatori",
+  "enterValidEmail": "Si us plau, introdueix un correu vàlid",
+  "playerName": "Nom del jugador *",
+  "fullNamePlayer": "Nom complet del jugador",
+  "playerNameIsRequired": "El nom del jugador és obligatori",
+  "playerNameMinLength": "El nom del jugador ha de tenir almenys 2 caràcters",
+  "jerseyNumber": "Dorsal",
+  "optionalJerseyNumber": "Número de samarreta opcional",
+  "jerseyNumberRange": "El dorsal ha d'estar entre 0 i 999",
+  "noTeamsAvailableCreateFirst": "No hi ha equips disponibles. Si us plau, crea un equip primer.",
+  "team": "Equip *",
+  "selectTeamForPlayer": "Selecciona l'equip per a aquest jugador",
+  "pleaseSelectTeam": "Si us plau, selecciona un equip",
+  "howItWorks": "Com funciona:",
+  "invitationStep1": "S'enviarà una invitació al correu del jugador",
+  "invitationStep2": "El jugador pot acceptar i configurar el seu compte",
+  "invitationStep3": "Un cop acceptada, tindrà accés a l'app",
+  "resetForm": "Reinicia formulari",
+  "creating": "Creant...",
+  "createInvitation": "Crea invitació",
+  "failedToCreatePlayer": "Error en crear jugador: {error}",
+  "@failedToCreatePlayer": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "playerCreatedAndInviteSent": "Jugador {playerName} creat i invitació enviada correctament",
+  "@playerCreatedAndInviteSent": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "playerCreatedButInviteFailed": "Jugador creat però error en enviar invitació: {error}",
+  "@playerCreatedButInviteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sportCreatedSuccessfully": "Esport creat correctament",
+  "sportUpdatedSuccessfully": "Esport actualitzat correctament",
+  "sportDeletedSuccessfully": "Esport eliminat correctament",
+  "clubCreatedSuccessfully": "Club creat correctament",
+  "clubUpdatedSuccessfully": "Club actualitzat correctament",
+  "clubDeletedSuccessfully": "Club eliminat correctament",
+
+  "@_EVALUATIONS": {},
+  "evaluations": "Avaluacions",
+  "noTeamSelectedSelectFirst": "Cap equip seleccionat. Selecciona'n un primer.",
+  "playerEvaluations": "Avaluacions de Jugador",
+  "selectAPlayer": "Selecciona un Jugador",
+  "selectPlayer": "Selecciona un jugador",
+  "choosePlayerFromList": "Tria un jugador de la llista per veure les seves avaluacions",
+  "newEvaluation": "Nova Avaluació",
+  "createFirstEvaluation": "Crea la primera avaluació",
+  "deleteEvaluation": "Elimina avaluació",
+  "evaluationForPlayer": "Avaluació - {playerName}",
+  "@evaluationForPlayer": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "evaluationNotFound": "Avaluació no trobada",
+  "errorNoAuthenticatedUser": "Error: Cap usuari autenticat",
+  "loadingData": "Carregant dades...",
+  "noEvaluationsYet": "Encara no hi ha avaluacions",
+  "latestEvaluation": "Última Avaluació",
+  "coachNotes": "Notes de l'entrenador",
+  "evaluationHistory": "Historial d'avaluacions",
+  "evaluationsCount": "{count} avaluació(ns)",
+  "@evaluationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_MATCHES": {},
+  "noTeamSelected": "Cap equip seleccionat",
+  "selectTeamToViewMatches": "Si us plau, selecciona un equip des de l'Inici per veure i gestionar partits.",
+  "noMatchesYet": "Encara no hi ha partits",
+  "createFirstMatch": "Crea el teu primer partit amb el botó +",
+  "manageCallUp": "Gestiona Convocatòria",
+  "noPlayersFoundForTeam": "No s'han trobat jugadors per a aquest equip.",
+  "jersey": "Dorsal: {number}",
+  "@jersey": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "done": "Fet",
+  "quarterResultSaved": "Resultat de la part desat",
+  "saveResult": "Desa Resultat",
+  "addGoal": "Afegeix Gol",
+  "assist": "Assistència: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  },
+  "none": "Cap",
+  "opponentNameRequired": "El nom del rival és obligatori",
+
+  "@_TRAININGS": {},
+  "trainingSessionCreated": "Sessió d'entrenament creada",
+  "trainingSessionUpdated": "Sessió d'entrenament actualitzada",
+  "deleteSession": "Elimina Sessió",
+  "confirmDeleteTrainingSession": "Estàs segur que vols eliminar aquesta sessió d'entrenament?",
+  "trainingSessionDeleted": "Sessió d'entrenament eliminada",
+  "pleaseSelectTeamFirst": "Si us plau, selecciona un equip primer",
+  "newSession": "Nova Sessió",
+  "manageAttendance": "Gestiona Assistència",
+  "viewDetails": "Veure Detalls",
+  "sessionNotFound": "Sessió no trobada",
+  "trainingSessions": "Sessions d'Entrenament",
+  "noTrainingSessions": "No hi ha sessions d'entrenament",
+  "noTrainingSessionsMessage": "Les sessions d'entrenament apareixeran aquí",
+  "sessionInformation": "Informació de la Sessió",
+  "attendanceList": "Llista d'Assistència",
+  "attendanceStatistics": "Estadístiques d'Assistència",
+  "totalPlayers": "Total Jugadors",
+  "attendanceRate": "Taxa d'Assistència",
+  "notMarked": "No Marcat",
+  "noPlayersInTeam": "No hi ha jugadors a l'equip",
+  "notes": "Notes",
+  "errorLoadingPlayers": "Error carregant jugadors: {message}",
+  "@errorLoadingPlayers": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "errorUpdatingAttendance": "Error actualitzant assistència: {error}",
+  "@errorUpdatingAttendance": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingAttendance": "Assistència a l'Entrenament",
+  "noPlayersFoundForTeam": "No s'han trobat jugadors per a aquest equip",
+  "onTime": "A temps",
+  "late": "Tard",
+  "absent": "Absent",
+  "attended": "Assistit",
+  "myAttendance": "La meva Assistència",
+  "teamAttendance": "Assistència de l'Equip",
+  "trainingSessionDetails": "Detalls de la Sessió d'Entrenament",
+
+  "@_STATISTICS": {},
+  "statistics": "Avaluacions",
+  "general": "General",
+  "noTrainingAttendanceData": "Sense dades d'assistència a entrenaments",
+  "noGoalsOrAssistsData": "Sense dades de gols o assistències",
+  "player": "Jugador",
+  "assists": "Assistències",
+  "total": "Total",
+  "noMatchesPlayedYet": "Encara no s'han jugat partits",
+  "matchesPlayed": "Partits Jugats",
+  "winPercentage": "% Victòries",
+  "goalDifference": "Diferència de Gols",
+  "cleanSheets": "Porteries a Zero",
+  "averageGoals": "Mitjana de Gols",
+  "trainingAttendance": "Assistència a Entrenaments",
+  "matchAttendance": "Assistència a Partits",
+  "winsDrawsLosses": "{wins}V - {draws}E - {losses}D",
+  "@winsDrawsLosses": {
+    "placeholders": {
+      "wins": {
+        "type": "String"
+      },
+      "draws": {
+        "type": "String"
+      },
+      "losses": {
+        "type": "String"
+      }
+    }
+  },
+  "goalsForAgainst": "{goalsFor} a favor - {goalsAgainst} en contra",
+  "@goalsForAgainst": {
+    "placeholders": {
+      "goalsFor": {
+        "type": "String"
+      },
+      "goalsAgainst": {
+        "type": "String"
+      }
+    }
+  },
+  "percentageOfMatches": "{percentage}% dels partits",
+  "@percentageOfMatches": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+  "forAgainstAverage": "Fav: {forAvg} | Con: {againstAvg}",
+  "@forAgainstAverage": {
+    "placeholders": {
+      "forAvg": {
+        "type": "String"
+      },
+      "againstAvg": {
+        "type": "String"
+      }
+    }
+  },
+  "seeDetails": "Veure detalls",
+  "myStatistics": "Estadístiques de {playerName}",
+  "@myStatistics": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "teamStatistics": "Estadístiques de {teamName}",
+  "@teamStatistics": {
+    "placeholders": {
+      "teamName": {
+        "type": "String"
+      }
+    }
+  },
+  "quartersPlayed": "Parts Jugades",
+  "interventions": "Intervencions",
+  "attendance": "assistència",
+  "average": "Mitjana",
+  "maximum": "Màxim",
+  "minimum": "Mínim",
+  "summary": "Resum",
+  "averageOf": "Mitjana de",
+  "trainingsDone": "entrenaments fets",
+  "percentageTotalMatches": "del total de partits",
+  "teamAttendanceMatches": "assistència equip\nentrenaments",
+  "goalsAverage": "mitjana de gols",
+  "pointsWin": "punts guanyats",
+  "matchesPlayedSubtitle": "{percentage}% de {total}",
+  "@matchesPlayedSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "trainingsDoneSubtitle": "{percentage}% de {total}",
+  "@trainingsDoneSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "quartersPlayedSubtitle": "{percentage}% assistència de partit complet",
+  "@quartersPlayedSubtitle": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+  "pointsWonPercentage": "{percentage}% dels punts possibles",
+  "@pointsWonPercentage": {
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_PROFILE": {},
+  "accountInformation": "Informació del Compte",
+  "changePassword": "Canvia Contrasenya",
+  "passwordUpdatedSuccessfully": "Contrasenya actualitzada correctament",
+  "currentPassword": "Contrasenya actual",
+  "pleaseEnterCurrentPassword": "Si us plau, introdueix la teva contrasenya actual",
+  "newPassword": "Nova Contrasenya",
+  "pleaseEnterNewPassword": "Si us plau, introdueix una nova contrasenya",
+  "confirmNewPassword": "Confirma Nova Contrasenya",
+  "pleaseConfirmNewPassword": "Si us plau, confirma la teva nova contrasenya",
+  "passwordsDoNotMatch": "Les contrasenyes no coincideixen",
+  "updatePassword": "Actualitza Contrasenya",
+
+  "@_DIALOGS_FORMS": {},
+  "invitePlayerDialog": "Convida Jugador",
+  "chooseInvitationMethod": "Tria com enviar la invitació: via correu o obtenint un enllaç per compartir.",
+  "sendEmail": "Envia Correu",
+  "getLink": "Obtén Enllaç",
+  "mustBeLoggedIn": "Has d'iniciar sessió per enviar invitacions",
+  "pleaseEnterClubName": "Si us plau, introdueix un nom de club",
+  "pleaseEnterSportName": "Si us plau, introdueix un nom d'esport",
+  "pleaseEnterName": "Si us plau, introdueix un nom",
+  "urlMustStartWithHttp": "L'URL ha de començar per http:// o https://",
+  "enterPassword": "Introdueix una contrasenya",
+  "pleaseEnterEmail": "Si us plau, introdueix un correu",
+  "invalidEmailFormat": "Format de correu no vàlid",
+  "pleaseEnterPlayerName": "Si us plau, introdueix el nom del jugador",
+  "invitationSentSuccessfully": "Invitació enviada correctament",
+
+  "@_BREADCRUMBS": {},
+  "teamPlayers": "Jugadors de l'Equip",
+  "newEvaluationBreadcrumb": "Nova Avaluació",
+  "detail": "Detall",
+  "lineup": "Alineació",
+  "attendance": "Assistència",
+
+  "@_INVITATIONS": {},
+  "playerRole": "Jugador",
+  "coachRole": "Entrenador",
+  "adminRole": "Administrador",
+  "accepted": "Acceptada",
+  "cancelled": "Cancel·lada",
+  "pending": "Pendent",
+
+  "@_PLAYERS": {},
+  "playerAddedSuccessfully": "Jugador afegit correctament",
+  "playerUpdatedSuccessfully": "Jugador actualitzat correctament",
+
+  "@_CHAMPIONSHIP": {},
+  "standings": "Classificació",
+  "standingsDescription": "Veure la taula de classificació del campionat",
+  "results": "Resultats",
+  "resultsDescription": "Veure els resultats dels partits",
+  "calendar": "Calendari",
+  "calendarDescription": "Veure el calendari de partits",
+  "noUrlAvailable": "No hi ha URL de {label} disponible",
+  "@noUrlAvailable": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "urlCopiedToClipboard": "URL de {label} copiada al porta-retalls",
+  "@urlCopiedToClipboard": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "contactAdminForUrls": "Si us plau, contacta amb el teu administrador per configurar els URL del campionat",
+  "webViewNotSupported": "La vista web no està disponible en la versió del navegador",
+  "copyUrl": "Copia URL",
+  "open": "Obre",
+
+  "@_TRAINING_FORM": {},
+  "editTrainingSession": "Edita Sessió d'Entrenament",
+  "newTrainingSession": "Nova Sessió d'Entrenament",
+  "addTrainingNotes": "Afegeix notes d'entrenament (opcional)",
+
+  "@_CREDENTIALS": {},
+  "assignCredentials": "Assigna Credencials",
+  "playerLabel": "Jugador: {playerName}",
+  "@playerLabel": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "createAccountForPlayer": "Crea un compte perquè el jugador pugui accedir a l'app.",
+  "enterAnEmail": "Introdueix un correu",
+  "enterAPassword": "Introdueix una contrasenya",
+  "passwordMinLength": "La contrasenya ha de tenir almenys 6 caràcters",
+  "playerCanUseCredentials": "El jugador pot utilitzar aquestes credencials per iniciar sessió.",
+  "createAccount": "Crea Compte",
+  "creatingAccount": "Creant compte...",
+  "accountCreatedFor": "Compte creat per a {playerName}",
+  "@accountCreatedFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_SET_PASSWORD": {},
+  "setPassword": "Estableix Contrasenya",
+  "goToLogin": "Ves al Login",
+  "welcomeExclamation": "Benvingut!",
+  "invitedAsRole": "Has estat convidat com a {role}",
+  "@invitedAsRole": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "processingAuthentication": "Processant autenticació...",
+  "redirectingToLogin": "Redirigint al login...",
+  "confirmPassword": "Confirma Contrasenya",
+  "pleaseEnterPassword": "Si us plau, introdueix una contrasenya",
+  "passwordMinEightChars": "La contrasenya ha de tenir almenys 8 caràcters",
+  "pleaseConfirmPassword": "Si us plau, confirma la teva contrasenya",
+  "setPasswordAndJoin": "Desa Contrasenya i Uneix-te",
+  "accountCreatedSuccessfully": "Compte creat correctament! Si us plau, inicia sessió.",
+  "failedToCreateAccount": "Error en crear compte: {message}",
+  "@failedToCreateAccount": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "anErrorOccurred": "Ha ocorregut un error",
+
+  "@_COACH_PANEL": {},
+  "panelCoach": "Panell d'Entrenador",
+  "activeTeamLabel": "Equip Actiu",
+  "noTeamSelectedSelectFromDashboard": "Cap equip seleccionat. Selecciona un equip des de l'Inici.",
+  "manageTeamPlayers": "Gestiona jugadors de l'equip",
+  "manageTrainingsAndAttendance": "Gestiona entrenaments i assistència",
+  "manageMatchesLineupsResults": "Gestiona partits, alineacions i resultats",
+  "evaluatePlayerPerformance": "Avalua el rendiment dels jugadors",
+
+  "@_INVITE_STAFF": {},
+  "inviteStaffMember": "Convida membre de l'Staff",
+  "invitationEmailWillBeSent": "S'enviarà un correu d'invitació amb un enllaç per establir la contrasenya i unir-se a l'equip.",
+  "sendInvite": "Envia Invitació",
+  "failedToSendInvite": "Error en enviar invitació: {error}",
+  "@failedToSendInvite": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_MATCH_FORM": {},
+  "editMatch": "Edita Partit",
+  "newMatch": "Nou Partit",
+  "opponent": "Rival",
+  "enterOpponentName": "Introdueix nom del rival",
+  "matchDate": "Data del Partit",
+  "locationOptional": "Ubicació (Opcional)",
+  "enterMatchLocation": "Introdueix ubicació del partit",
+  "notesOptional": "Notes (Opcional)",
+  "enterAnyNotes": "Introdueix qualsevol nota",
+
+  "@_TEAM_PLAYERS": {},
+  "teamPlayersTitle": "Jugadors de l'Equip",
+  "noPlayersAddOne": "No s'han trobat jugadors. Afegeix-ne un per començar!",
+  "addPlayer": "Afegeix Jugador",
+  "deletePlayer": "Elimina Jugador",
+  "confirmDeletePlayer": "Estàs segur que vols eliminar \"{playerName}\"?",
+  "@confirmDeletePlayer": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "playerDeletedSuccessfully": "Jugador eliminat correctament",
+
+  "@_MATCH_DETAIL": {},
+  "matchDetail": "Detall del Partit",
+  "matchNotFound": "Partit no trobat",
+  "noQuarterResults": "No hi ha resultats de parts registrats",
+  "noGoalsRecorded": "No hi ha gols registrats",
+  "assistanceLabel": "Assistència: {playerName}",
+  "@assistanceLabel": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "noPlayerPeriodsInfo": "No hi ha informació de períodes del jugador",
+  "noPlayersInQuarter": "No hi ha jugadors en aquesta part",
+  "zoneLabel": "Zona: {zone}",
+  "@zoneLabel": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_USERS_MANAGEMENT": {},
+  "usersManagement": "Gestió d'Usuaris",
+  "allRoles": "Tots els rols",
+  "noUsersFound": "No s'han trobat usuaris",
+  "registrationDate": "Data de Registre",
+  "editUser": "Edita Usuari: {userName}",
+  "@editUser": {
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "roleUpdatedSuccessfully": "Rol actualitzat correctament",
+  "resetPassword": "Restableix Contrasenya",
+  "passwordResetEmailSent": "Correu de restabliment de contrasenya enviat",
+  "failedToSendReset": "Error en enviar restabliment",
+  "sendResetEmail": "Envia Correu de Restabliment",
+
+  "@_INVITATIONS_MANAGEMENT": {},
+  "invitationsManagement": "Gestió d'Invitacions",
+  "allStatuses": "Tots els estats",
+  "expired": "Caducada",
+  "noInvitationsFound": "No s'han trobat invitacions",
+  "newInvitation": "Nova Invitació",
+  "roleLabel": "Rol: {role}",
+  "@roleLabel": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "nameLabel": "Nom: {name}",
+  "@nameLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "playerIdLabel": "ID Jugador: {playerId}",
+  "@playerIdLabel": {
+    "placeholders": {
+      "playerId": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationEmailSentTo": "S'ha enviat un correu d'invitació a:",
+  "shareThisLink": "Comparteix aquest enllaç amb {email}:",
+  "@shareThisLink": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "generalStats": "Estadístiques Generals",
+  "performanceByQuarter": "Rendiment per Part",
+  "goalsAndAssists": "Gols i Assistències",
+  "trainingAttendanceRanking": "Rànquing d'Assistència",
+  "jerseyTitle": "Dorsal",
+  "trainingPercent": "% Entr.",
+  "matchPercent": "% Part.",
+  "avgPeriods": "Períodes Mitj.",
+  "goalsFor": "Gols Favor",
+  "goalsAgainst": "Gols Contra",
+  "wins": "Victòries",
+  "draws": "Empats",
+  "losses": "Derrotes",
+  "effectiveness": "Efectivitat",
+  "effectivenessCalculation": "Càlcul d'Efectivitat",
+  "effectivenessFormula": "Efectivitat = (Victòries × 3 + Empats × 1) / (Total Partits × 3) × 100",
+  "teamSummary": "Resum d'Equip",
+  "needsWork": "Millorable",
+  "copyPendingImplementation": "Funcionalitat de copiar pendent d'implementació",
+  "copy": "Copia",
+  "deleteInvitation": "Elimina Invitació",
+  "confirmDeleteInvitation": "Estàs segur que vols eliminar la invitació per a \"{email}\"?",
+  "@confirmDeleteInvitation": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "invitationDeletedSuccessfully": "Invitació eliminada correctament",
+  "useAdminPanelForInvitations": "Utilitza el panell d'administració per crear noves invitacions",
+
+  "@_CLUBS_MANAGEMENT": {},
+  "filterBySport": "Filtra per esport:",
+  "allSportsFilter": "Tots els esports",
+  "selectSportToViewClubs": "Selecciona un esport per veure els clubs",
+  "newClub": "Nou club",
+  "deleteClub": "Elimina Club",
+  "confirmDeleteClub": "Estàs segur que vols eliminar \"{clubName}\"?",
+  "@confirmDeleteClub": {
+    "placeholders": {
+      "clubName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_NEW_EVALUATION": {},
+  "pleaseRateAllCriteria": "Si us plau, puntua tots els criteris",
+  "evaluationSavedSuccessfully": "Avaluació desada correctament",
+  "errorSaving": "Error en desar: {error}",
+  "@errorSaving": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "newEvaluationFor": "Nova Avaluació - {playerName}",
+  "@newEvaluationFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "evaluationDate": "Data d'Avaluació",
+  "noteFor": "Nota - {criterionName}",
+  "@noteFor": {
+    "placeholders": {
+      "criterionName": {
+        "type": "String"
+      }
+    }
+  },
+
+  "@_ROUTER": {},
+  "couldNotFindRoute": "No s'ha pogut trobar la ruta: {route}",
+  "@couldNotFindRoute": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "goToHome": "Ves a l'Inici",
+
+  "@_MISCELLANEOUS": {},
+  "noUserAuthenticated": "Cap usuari autenticat",
+  "emailCopied": "Correu copiat",
+  "openInNewTab": "Obre en una nova pestanya",
+  "minPlayersRequired": "{count} / 7 min",
+  "@minPlayersRequired": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeEmail": "Benvingut, {email}!",
+  "@welcomeEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "authFailedDetail": "Autenticació fallida.\n\nSi us plau, verifica que:\n1. L'enllaç no hagi caducat\n2. No hagis utilitzat aquest enllaç abans",
+  "optional": "Opcional",
+  "unknownPlayer": "Desconegut",
+  "evaluationFor": "Avaluació - {playerName}",
+  "@evaluationFor": {
+    "placeholders": {
+      "playerName": {
+        "type": "String"
+      }
+    }
+  },
+  "selectColor": "Selecciona Color",
+  "changeColor": "Canvia Color",
+  "clearColor": "Neteja color",
+  "notSelected": "No seleccionat",
+
+  "@_SPORT_FORM": {},
+  "editSport": "Edita Esport",
+  "createSport": "Crea Esport",
+  "sportName": "Nom de l'Esport",
+  "pleaseEnterSportName": "Si us plau, introdueix un nom d'esport",
+
+  "@_PLAYER_MATCHES": {},
+  "myMatches": "Els meus partits",
+  "selectTeamToViewMatches": "Si us plau, selecciona un equip per veure els partits",
+  "didNotPlay": "No ha jugat",
+  "errorLoadingMatches": "Error carregant partits",
+  "noMatchesPlayed": "No s'han jugat partits",
+  "matchesWillAppearHere": "Els partits apareixeran aquí",
+  "errorLoadingMatchDetail": "Error carregant detall del partit",
+  "myPerformance": "El meu rendiment",
+  "hands": "Mans",
+  "didNotPlayInThisMatch": "No ha jugat en aquest partit",
+  "position": "Posició",
+  "fullQuarter": "Part completa",
+  "halfQuarter": "Mitja part",
+  "matchResults": "Resultats del Partit",
+  "finalResult": "Resultat Final",
+  "victory": "Victòria",
+  "tie": "Empat",
+  "defeat": "Derrota",
+  "noData": "Sense dades",
+  "comingSoon": "Properament",
+  "matchRating": "Valoració del Partit",
+  "matchRatingDescription": "La teva valoració de rendiment per a aquest partit",
+  "matchNotes": "Notes del Partit",
+  "matchNotesDescription": "Notes personals i observacions sobre el teu rendiment",
+  "videoAnalysis": "Anàlisi de Vídeo",
+  "videoAnalysisDescription": "Enllaç a l'anàlisi de vídeo del teu rendiment",
+  "matchGoals": "Gols del Partit",
+  "ownGoalDescription": "Aquest gol es registrarà com un autogol de l'equip contrari a favor del nostre equip.",
+  "scorer": "Golejador"
+}

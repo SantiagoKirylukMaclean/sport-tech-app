@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class QuartersTab extends ConsumerStatefulWidget {
   const QuartersTab({super.key});
@@ -13,10 +14,29 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
 
+  Widget _buildColumnLabel(String text, int index) {
+    if (_sortColumnIndex == index) {
+      return Text(text, style: const TextStyle(fontWeight: FontWeight.bold));
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 4),
+        Icon(
+          Icons.unfold_more,
+          size: 16,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final statsState = ref.watch(statsNotifierProvider);
     final quarters = List.from(statsState.quarters);
+    final l10n = AppLocalizations.of(context)!;
 
     if (quarters.isEmpty) {
       return const Center(
@@ -31,7 +51,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Performance by Quarter',
+          l10n.performanceByQuarter,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -41,6 +61,8 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
+              columnSpacing: 12,
+              horizontalMargin: 10,
               sortColumnIndex: _sortColumnIndex,
               sortAscending: _sortAscending,
               headingRowColor: WidgetStateProperty.all(
@@ -48,7 +70,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
               ),
               columns: [
                 DataColumn(
-                  label: const Text('Quarter'),
+                  label: _buildColumnLabel(l10n.quarter, 0),
                   onSort: (columnIndex, ascending) {
                     setState(() {
                       _sortColumnIndex = columnIndex;
@@ -57,7 +79,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Goals For'),
+                  label: _buildColumnLabel(l10n.goalsFor, 1),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -67,7 +89,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Goals Against'),
+                  label: _buildColumnLabel(l10n.goalsAgainst, 2),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -77,7 +99,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Wins'),
+                  label: _buildColumnLabel(l10n.wins, 3),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -87,7 +109,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Draws'),
+                  label: _buildColumnLabel(l10n.draws, 4),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -97,7 +119,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Losses'),
+                  label: _buildColumnLabel(l10n.losses, 5),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -107,7 +129,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                   },
                 ),
                 DataColumn(
-                  label: const Text('Effectiveness'),
+                  label: _buildColumnLabel(l10n.effectiveness, 6),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
                     setState(() {
@@ -138,7 +160,9 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                         child: Text(
                           'Q${quarter.quarterNumber}',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -250,39 +274,53 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
   void _sortQuarters(List quarters) {
     switch (_sortColumnIndex) {
       case 0: // Quarter
-        quarters.sort((a, b) => _sortAscending
-            ? a.quarterNumber.compareTo(b.quarterNumber)
-            : b.quarterNumber.compareTo(a.quarterNumber),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.quarterNumber.compareTo(b.quarterNumber)
+              : b.quarterNumber.compareTo(a.quarterNumber),
+        );
         break;
       case 1: // Goals For
-        quarters.sort((a, b) => _sortAscending
-            ? a.goalsFor.compareTo(b.goalsFor)
-            : b.goalsFor.compareTo(a.goalsFor),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.goalsFor.compareTo(b.goalsFor)
+              : b.goalsFor.compareTo(a.goalsFor),
+        );
         break;
       case 2: // Goals Against
-        quarters.sort((a, b) => _sortAscending
-            ? a.goalsAgainst.compareTo(b.goalsAgainst)
-            : b.goalsAgainst.compareTo(a.goalsAgainst),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.goalsAgainst.compareTo(b.goalsAgainst)
+              : b.goalsAgainst.compareTo(a.goalsAgainst),
+        );
         break;
       case 3: // Wins
-        quarters.sort((a, b) => _sortAscending
-            ? a.wins.compareTo(b.wins)
-            : b.wins.compareTo(a.wins),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.wins.compareTo(b.wins)
+              : b.wins.compareTo(a.wins),
+        );
         break;
       case 4: // Draws
-        quarters.sort((a, b) => _sortAscending
-            ? a.draws.compareTo(b.draws)
-            : b.draws.compareTo(a.draws),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.draws.compareTo(b.draws)
+              : b.draws.compareTo(a.draws),
+        );
         break;
       case 5: // Losses
-        quarters.sort((a, b) => _sortAscending
-            ? a.losses.compareTo(b.losses)
-            : b.losses.compareTo(a.losses),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.losses.compareTo(b.losses)
+              : b.losses.compareTo(a.losses),
+        );
         break;
       case 6: // Effectiveness
-        quarters.sort((a, b) => _sortAscending
-            ? a.effectiveness.compareTo(b.effectiveness)
-            : b.effectiveness.compareTo(a.effectiveness),);
+        quarters.sort(
+          (a, b) => _sortAscending
+              ? a.effectiveness.compareTo(b.effectiveness)
+              : b.effectiveness.compareTo(a.effectiveness),
+        );
         break;
     }
   }
@@ -298,6 +336,7 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
   }
 
   Widget _buildEffectivenessLegend(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -305,26 +344,26 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Effectiveness Calculation',
+              l10n.effectivenessCalculation,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              'Effectiveness = (Wins × 3 + Draws × 1) / (Total Games × 3) × 100',
+              l10n.effectivenessFormula,
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
-            Row(
+            Wrap(
+              spacing: 16,
+              runSpacing: 8,
               children: [
                 _legendItem(context, Colors.green, '≥75%', 'Excellent'),
-                const SizedBox(width: 16),
                 _legendItem(context, Colors.orange, '≥50%', 'Good'),
-                const SizedBox(width: 16),
                 _legendItem(
                   context,
                   Theme.of(context).colorScheme.error,
                   '<50%',
-                  'Needs work',
+                  l10n.needsWork,
                 ),
               ],
             ),

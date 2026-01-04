@@ -56,10 +56,12 @@ class LocaleNotifier extends StateNotifier<Locale?> {
     }
   }
 
-  /// Toggle between English and Spanish
+  /// Toggle between English, Spanish and Catalan
   Future<void> toggleLocale() async {
     if (state == null || state!.languageCode == 'en') {
       await setLocale(const Locale('es'));
+    } else if (state!.languageCode == 'es') {
+      await setLocale(const Locale('ca'));
     } else {
       await setLocale(const Locale('en'));
     }

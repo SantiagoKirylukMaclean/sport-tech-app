@@ -93,6 +93,7 @@
   "language": "Idioma",
   "english": "Inglés",
   "spanish": "Español",
+  "catalan": "Catalán",
 
   "@_SETTINGS": {},
   "appSettings": "Configuración de la App",
@@ -139,6 +140,7 @@
   "ownGoals": "Goles en Propia",
   "goals": "Goles",
   "quarters": "Cuartos",
+  "quarter": "Cuarto",
   "training": "Entrenamiento",
   "welcomeUser": "¡Bienvenido, {userName}!",
   "roleUser": "Rol: {role}",
@@ -304,7 +306,7 @@
   "notes": "Notas",
 
   "@_STATISTICS": {},
-  "statistics": "Evaluaciones",
+  "statistics": "Estadísticas",
   "general": "General",
   "noTrainingAttendanceData": "No hay datos de asistencia de entrenamiento disponibles",
   "noGoalsOrAssistsData": "No hay datos de goles o asistencias disponibles",
@@ -329,6 +331,10 @@
   "quartersPlayed": "Cuartos Jugados",
   "interventions": "Intervenciones",
   "attendance": "asistencia",
+  "average": "Promedio",
+  "maximum": "Máximo",
+  "minimum": "Mínimo",
+  "summary": "Resumen",
   "averageOf": "Promedio de",
   "trainingsDone": "entrenamientos realizados",
   "percentageTotalMatches": "del total de partidos jugados",
@@ -389,8 +395,16 @@
   "playerUpdatedSuccessfully": "Jugador actualizado exitosamente",
 
   "@_CHAMPIONSHIP": {},
+  "standings": "Clasificación",
+  "standingsDescription": "Ver la tabla de clasificación del campeonato",
+  "results": "Resultados",
+  "resultsDescription": "Ver los resultados de los partidos",
+  "calendar": "Calendario",
+  "calendarDescription": "Ver el calendario de partidos",
   "noUrlAvailable": "No hay URL de {label} disponible",
   "urlCopiedToClipboard": "URL de {label} copiada al portapapeles",
+  "contactAdminForUrls": "Por favor contacta a tu administrador para configurar las URLs del campeonato",
+  "webViewNotSupported": "La vista web no está disponible en la versión del navegador",
   "copyUrl": "Copiar URL",
   "open": "Abrir",
 
@@ -416,6 +430,8 @@
   "goToLogin": "Ir a Iniciar Sesión",
   "welcomeExclamation": "¡Bienvenido!",
   "invitedAsRole": "Has sido invitado como {role}",
+  "processingAuthentication": "Procesando autenticación...",
+  "redirectingToLogin": "Redirigiendo al login...",
   "confirmPassword": "Confirmar Contraseña",
   "pleaseEnterPassword": "Por favor ingresa una contraseña",
   "passwordMinEightChars": "La contraseña debe tener al menos 8 caracteres",
@@ -525,6 +541,9 @@
   "openInNewTab": "Abrir en nueva pestaña",
   "minPlayersRequired": "{count} / 7 mín",
   "welcomeEmail": "¡Bienvenido, {email}!",
+  "authFailedDetail": "Autenticación fallida.\n\nPor favor verifica que:\n1. El enlace no haya expirado\n2. No hayas usado este enlace antes",
+  "optional": "Opcional",
+  "unknownPlayer": "Jugador Desconocido",
   "evaluationFor": "Evaluación - {playerName}",
   "selectColor": "Seleccionar Color",
   "changeColor": "Cambiar Color",
@@ -571,5 +590,35 @@
   "videoAnalysisDescription": "Enlace al análisis de video de tu desempeño",
   "matchGoals": "Goles del Partido",
   "noGoalsRecorded": "No hay goles registrados",
-  "scorer": "Goleador"
+  "quarterResultSaved": "Resultado del cuarto guardado",
+  "saveResult": "Guardar Resultado",
+  "addGoal": "Agregar Gol",
+  "ownGoalDescription": "Este gol será registrado como autogol del equipo contrario a favor de nuestro equipo.",
+  "scorer": "Goleador",
+  "assist": "Asistencia: {assisterName}",
+  "@assist": {
+    "placeholders": {
+      "assisterName": {
+        "type": "String"
+      }
+    }
+  },
+  "generalStats": "Estadísticas Generales",
+  "performanceByQuarter": "Rendimiento por Cuarto",
+  "goalsAndAssists": "Goles y Asistencias",
+  "trainingAttendanceRanking": "Ranking de Asistencia",
+  "jerseyTitle": "Dorsal",
+  "trainingPercent": "% Entr.",
+  "matchPercent": "% Part.",
+  "avgPeriods": "Periodos Prom.",
+  "goalsFor": "Goles Favor",
+  "goalsAgainst": "Goles Contra",
+  "wins": "Victorias",
+  "draws": "Empates",
+  "losses": "Derrotas",
+  "effectiveness": "Efectividad",
+  "effectivenessCalculation": "Cálculo de Efectividad",
+  "effectivenessFormula": "Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100",
+  "teamSummary": "Resumen de Equipo",
+  "needsWork": "Requiere Trabajo"
 }

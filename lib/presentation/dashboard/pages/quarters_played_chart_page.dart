@@ -110,7 +110,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
               Text(
-                'Error loading data',
+                l10n.errorLoadingStatistics,
                 style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
@@ -138,13 +138,13 @@ class QuartersPlayedChartPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'No hay datos disponibles',
+                    l10n.noData,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
                   ),
                   const SizedBox(height: 8),
-                  Text('Los datos aparecerán cuando juegues partidos'),
+                  Text(l10n.noMatchesPlayed),
                 ],
               ),
             );
@@ -163,7 +163,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
                 const SizedBox(height: 32),
                 // Legend/Summary
                 Text(
-                  'Resumen',
+                  l10n.summary,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -173,7 +173,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
                 const SizedBox(height: 24),
                 // Data table
                 Text(
-                  'Detalle por partido',
+                  l10n.matchDetail,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -190,6 +190,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
 
   Widget _buildSummaryCards(
       BuildContext context, List<QuartersPlayedDataPoint> dataPoints) {
+    final l10n = AppLocalizations.of(context)!;
     final totalQuarters =
         dataPoints.fold<double>(0, (sum, point) => sum + point.quarters);
     final avgQuarters = totalQuarters / dataPoints.length;
@@ -202,7 +203,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
       children: [
         Expanded(
           child: _SummaryCard(
-            title: 'Promedio',
+            title: l10n.average,
             value: avgQuarters.toStringAsFixed(1),
             icon: Icons.trending_up,
             color: Colors.blue,
@@ -211,7 +212,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _SummaryCard(
-            title: 'Máximo',
+            title: l10n.maximum,
             value: maxQuarters.toStringAsFixed(1),
             icon: Icons.arrow_upward,
             color: Colors.green,
@@ -220,7 +221,7 @@ class QuartersPlayedChartPage extends ConsumerWidget {
         const SizedBox(width: 12),
         Expanded(
           child: _SummaryCard(
-            title: 'Mínimo',
+            title: l10n.minimum,
             value: minQuarters.toStringAsFixed(1),
             icon: Icons.arrow_downward,
             color: Colors.orange,

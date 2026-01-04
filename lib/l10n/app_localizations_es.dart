@@ -1376,6 +1376,61 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get generalStats => 'Estadísticas Generales';
+
+  @override
+  String get performanceByQuarter => 'Rendimiento por Cuarto';
+
+  @override
+  String get goalsAndAssists => 'Goles y Asistencias';
+
+  @override
+  String get trainingAttendanceRanking => 'Ranking de Asistencia';
+
+  @override
+  String get jerseyTitle => 'Dorsal';
+
+  @override
+  String get trainingPercent => '% Entr.';
+
+  @override
+  String get matchPercent => '% Part.';
+
+  @override
+  String get avgPeriods => 'Periodos Prom.';
+
+  @override
+  String get goalsFor => 'Goles Favor';
+
+  @override
+  String get goalsAgainst => 'Goles Contra';
+
+  @override
+  String get wins => 'Victorias';
+
+  @override
+  String get draws => 'Empates';
+
+  @override
+  String get losses => 'Derrotas';
+
+  @override
+  String get effectiveness => 'Efectividad';
+
+  @override
+  String get effectivenessCalculation => 'Cálculo de Efectividad';
+
+  @override
+  String get effectivenessFormula =>
+      'Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100';
+
+  @override
+  String get teamSummary => 'Resumen de Equipo';
+
+  @override
+  String get needsWork => 'Requiere Trabajo';
+
+  @override
   String get copyPendingImplementation =>
       'Funcionalidad de copiar pendiente de implementar';
 

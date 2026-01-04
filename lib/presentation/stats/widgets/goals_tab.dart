@@ -1,26 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
-
-/// Combined player statistics for goals and assists
-class _PlayerGoalsAssists {
-  final String playerId;
-  final String playerName;
-  final String? jerseyNumber;
-  final int goals;
-  final int assists;
-
-  _PlayerGoalsAssists({
-    required this.playerId,
-    required this.playerName,
-    required this.goals,
-    required this.assists,
-    this.jerseyNumber,
-  });
-
-  int get total => goals + assists;
-}
+import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class GoalsTab extends ConsumerStatefulWidget {
   const GoalsTab({super.key});
@@ -30,39 +12,44 @@ class GoalsTab extends ConsumerStatefulWidget {
 }
 
 class _GoalsTabState extends ConsumerState<GoalsTab> {
-  int _sortColumnIndex = 3; // Default sort by total
-  bool _sortAscending = false; // Descending by default
+  int _sortColumnIndex = 0;
+  bool _sortAscending = true;
+
+  Widget _buildColumnLabel(String text, int index) {
+    if (_sortColumnIndex == index) {
+      return Text(text, style: const TextStyle(fontWeight: FontWeight.bold));
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 4),
+        Icon(
+          Icons.unfold_more,
+          size: 16,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final statsState = ref.watch(statsNotifierProvider);
-    final scorers = statsState.scorers;
-    final assisters = statsState.assisters;
+    final playersStat = _getSortedPlayerStats(statsState.playerStatistics);
+    final l10n = AppLocalizations.of(context)!;
 
-    // Combine scorers and assisters into a single list
-    final combinedStats = _combinePlayerStats(
-      scorers,
-      assisters,
-      statsState.matches,
-      statsState.playerStatistics,
-      l10n,
-    );
-
-    if (combinedStats.isEmpty) {
+    if (playersStat.isEmpty) {
       return Center(
         child: Text(l10n.noGoalsOrAssistsData),
       );
     }
 
-    // Sort the combined stats
-    _sortPlayerStats(combinedStats);
-
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Goals & Assists',
+          l10n.goalsAndAssists,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -74,182 +61,57 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
             child: DataTable(
               columnSpacing: 12,
               horizontalMargin: 10,
-              sortColumnIndex: _sortColumnIndex,
-              sortAscending: _sortAscending,
               headingRowColor: WidgetStateProperty.all(
                 Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
+              sortColumnIndex: _sortColumnIndex,
+              sortAscending: _sortAscending,
               columns: [
                 DataColumn(
-                  label: Text(l10n.player),
+                  label: _buildColumnLabel(l10n.player, 0),
                   onSort: (columnIndex, ascending) {
-                    setState(() {
-                      _sortColumnIndex = columnIndex;
-                      _sortAscending = ascending;
-                    });
+                    _sort(columnIndex, ascending);
                   },
                 ),
                 DataColumn(
-                  label: Text(l10n.goals),
+                  label: _buildColumnLabel(l10n.goals, 1),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
-                    setState(() {
-                      _sortColumnIndex = columnIndex;
-                      _sortAscending = ascending;
-                    });
+                    _sort(columnIndex, ascending);
                   },
                 ),
                 DataColumn(
-                  label: Text(l10n.assists),
+                  label: _buildColumnLabel(l10n.assists, 2),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
-                    setState(() {
-                      _sortColumnIndex = columnIndex;
-                      _sortAscending = ascending;
-                    });
+                    _sort(columnIndex, ascending);
                   },
                 ),
                 DataColumn(
-                  label: Text(l10n.total),
+                  label: _buildColumnLabel(l10n.total, 3),
                   numeric: true,
                   onSort: (columnIndex, ascending) {
-                    setState(() {
-                      _sortColumnIndex = columnIndex;
-                      _sortAscending = ascending;
-                    });
+                    _sort(columnIndex, ascending);
                   },
                 ),
               ],
-              rows: combinedStats.asMap().entries.map((entry) {
-                final index = entry.key;
-                final player = entry.value;
-                final position = index + 1;
-
+              rows: playersStat.map((player) {
                 return DataRow(
                   cells: [
+                    DataCell(Text(player.playerName)),
                     DataCell(
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 16,
-                            backgroundColor: _getRankColor(position, context),
-                            child: Text(
-                              position.toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                player.playerName,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              if (player.jerseyNumber != null)
-                                Text(
-                                  'Jersey #${player.jerseyNumber}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.6),
-                                      ),
-                                ),
-                            ],
-                          ),
-                        ],
+                      Text(
+                        player.totalGoals.toString(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
+                    DataCell(Text(player.totalAssists.toString())),
                     DataCell(
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: player.goals > 0
-                              ? Theme.of(context).colorScheme.primaryContainer
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          player.goals.toString(),
-                          style: TextStyle(
-                            color: player.goals > 0
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onPrimaryContainer
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.6),
-                            fontWeight: player.goals > 0
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: player.assists > 0
-                              ? Theme.of(context).colorScheme.secondaryContainer
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          player.assists.toString(),
-                          style: TextStyle(
-                            color: player.assists > 0
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onSecondaryContainer
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.6),
-                            fontWeight: player.assists > 0
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).colorScheme.tertiaryContainer,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          player.total.toString(),
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Text(
+                        (player.totalGoals + player.totalAssists).toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -263,120 +125,44 @@ class _GoalsTabState extends ConsumerState<GoalsTab> {
     );
   }
 
-  List<_PlayerGoalsAssists> _combinePlayerStats(
-    List scorers,
-    List assisters,
-    List matches,
-    List playerStatistics,
-    AppLocalizations l10n,
-  ) {
-    final Map<String, _PlayerGoalsAssists> playersMap = {};
+  void _sort(int columnIndex, bool ascending) {
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _sortAscending = ascending;
+    });
+  }
 
-    // Add goals
-    for (final scorer in scorers) {
-      playersMap[scorer.playerId] = _PlayerGoalsAssists(
-        playerId: scorer.playerId,
-        playerName: scorer.playerName,
-        jerseyNumber: scorer.jerseyNumber,
-        goals: scorer.count,
-        assists: 0,
-      );
-    }
+  List<PlayerStatistics> _getSortedPlayerStats(List<PlayerStatistics> players) {
+    if (players.isEmpty) return [];
 
-    // Add assists
-    for (final assister in assisters) {
-      if (playersMap.containsKey(assister.playerId)) {
-        final existing = playersMap[assister.playerId]!;
-        playersMap[assister.playerId] = _PlayerGoalsAssists(
-          playerId: existing.playerId,
-          playerName: existing.playerName,
-          jerseyNumber: existing.jerseyNumber,
-          goals: existing.goals,
-          assists: assister.count,
-        );
-      } else {
-        playersMap[assister.playerId] = _PlayerGoalsAssists(
-          playerId: assister.playerId,
-          playerName: assister.playerName,
-          jerseyNumber: assister.jerseyNumber,
-          goals: 0,
-          assists: assister.count,
-        );
+    final sortedList = List<PlayerStatistics>.from(players);
+    // Filter out players with no goals and no assists
+    final activePlayers = sortedList
+        .where((p) => p.totalGoals > 0 || p.totalAssists > 0)
+        .toList();
+
+    activePlayers.sort((a, b) {
+      int comparison;
+      switch (_sortColumnIndex) {
+        case 0: // Player
+          comparison = a.playerName.compareTo(b.playerName);
+          break;
+        case 1: // Goals
+          comparison = a.totalGoals.compareTo(b.totalGoals);
+          break;
+        case 2: // Assists
+          comparison = a.totalAssists.compareTo(b.totalAssists);
+          break;
+        case 3: // Total
+          comparison = (a.totalGoals + a.totalAssists)
+              .compareTo(b.totalGoals + b.totalAssists);
+          break;
+        default:
+          comparison = 0;
       }
-    }
+      return _sortAscending ? comparison : -comparison;
+    });
 
-    // Calculate own goals
-    int totalTeamGoals = 0;
-    for (final match in matches) {
-      totalTeamGoals += (match.teamGoals as int);
-    }
-
-    int totalPlayerGoals = 0;
-    for (final scorer in scorers) {
-      totalPlayerGoals += (scorer.count as int);
-    }
-
-    final ownGoals = totalTeamGoals - totalPlayerGoals;
-
-    if (ownGoals > 0) {
-      // Use a special ID for own goals to avoid collisions
-      const ownGoalsId = 'own_goals';
-      playersMap[ownGoalsId] = _PlayerGoalsAssists(
-        playerId: ownGoalsId,
-        playerName: l10n.ownGoals,
-        goals: ownGoals,
-        assists: 0,
-        // No jersey number for own goals
-        jerseyNumber: null,
-      );
-    }
-
-    return playersMap.values.toList();
-  }
-
-  void _sortPlayerStats(List<_PlayerGoalsAssists> stats) {
-    switch (_sortColumnIndex) {
-      case 0: // Player name
-        stats.sort(
-          (a, b) => _sortAscending
-              ? a.playerName.compareTo(b.playerName)
-              : b.playerName.compareTo(a.playerName),
-        );
-        break;
-      case 1: // Goals
-        stats.sort(
-          (a, b) => _sortAscending
-              ? a.goals.compareTo(b.goals)
-              : b.goals.compareTo(a.goals),
-        );
-        break;
-      case 2: // Assists
-        stats.sort(
-          (a, b) => _sortAscending
-              ? a.assists.compareTo(b.assists)
-              : b.assists.compareTo(a.assists),
-        );
-        break;
-      case 3: // Total
-        stats.sort(
-          (a, b) => _sortAscending
-              ? a.total.compareTo(b.total)
-              : b.total.compareTo(a.total),
-        );
-        break;
-    }
-  }
-
-  Color _getRankColor(int position, BuildContext context) {
-    switch (position) {
-      case 1:
-        return Colors.amber; // Gold
-      case 2:
-        return Colors.grey; // Silver
-      case 3:
-        return Colors.brown; // Bronze
-      default:
-        return Theme.of(context).colorScheme.primary;
-    }
+    return activePlayers;
   }
 }

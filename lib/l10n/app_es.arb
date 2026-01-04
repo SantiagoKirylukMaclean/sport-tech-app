@@ -602,5 +602,23 @@
         "type": "String"
       }
     }
-  }
+  },
+  "generalStats": "Estadísticas Generales",
+  "performanceByQuarter": "Rendimiento por Cuarto",
+  "goalsAndAssists": "Goles y Asistencias",
+  "trainingAttendanceRanking": "Ranking de Asistencia",
+  "jerseyTitle": "Dorsal",
+  "trainingPercent": "% Entr.",
+  "matchPercent": "% Part.",
+  "avgPeriods": "Periodos Prom.",
+  "goalsFor": "Goles Favor",
+  "goalsAgainst": "Goles Contra",
+  "wins": "Victorias",
+  "draws": "Empates",
+  "losses": "Derrotas",
+  "effectiveness": "Efectividad",
+  "effectivenessCalculation": "Cálculo de Efectividad",
+  "effectivenessFormula": "Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100",
+  "teamSummary": "Resumen de Equipo",
+  "needsWork": "Requiere Trabajo"
 }

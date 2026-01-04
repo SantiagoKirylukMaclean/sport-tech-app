@@ -2578,6 +2578,114 @@ abstract class AppLocalizations {
   /// **'Share this link with {email}:'**
   String shareThisLink(String email);
 
+  /// No description provided for @generalStats.
+  ///
+  /// In en, this message translates to:
+  /// **'General Statistics'**
+  String get generalStats;
+
+  /// No description provided for @performanceByQuarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Performance by Quarter'**
+  String get performanceByQuarter;
+
+  /// No description provided for @goalsAndAssists.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals & Assists'**
+  String get goalsAndAssists;
+
+  /// No description provided for @trainingAttendanceRanking.
+  ///
+  /// In en, this message translates to:
+  /// **'Training Attendance Ranking'**
+  String get trainingAttendanceRanking;
+
+  /// No description provided for @jerseyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Jersey'**
+  String get jerseyTitle;
+
+  /// No description provided for @trainingPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Training %'**
+  String get trainingPercent;
+
+  /// No description provided for @matchPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Match %'**
+  String get matchPercent;
+
+  /// No description provided for @avgPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Periods'**
+  String get avgPeriods;
+
+  /// No description provided for @goalsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals For'**
+  String get goalsFor;
+
+  /// No description provided for @goalsAgainst.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals Against'**
+  String get goalsAgainst;
+
+  /// No description provided for @wins.
+  ///
+  /// In en, this message translates to:
+  /// **'Wins'**
+  String get wins;
+
+  /// No description provided for @draws.
+  ///
+  /// In en, this message translates to:
+  /// **'Draws'**
+  String get draws;
+
+  /// No description provided for @losses.
+  ///
+  /// In en, this message translates to:
+  /// **'Losses'**
+  String get losses;
+
+  /// No description provided for @effectiveness.
+  ///
+  /// In en, this message translates to:
+  /// **'Effectiveness'**
+  String get effectiveness;
+
+  /// No description provided for @effectivenessCalculation.
+  ///
+  /// In en, this message translates to:
+  /// **'Effectiveness Calculation'**
+  String get effectivenessCalculation;
+
+  /// No description provided for @effectivenessFormula.
+  ///
+  /// In en, this message translates to:
+  /// **'Effectiveness = (Wins × 3 + Draws × 1) / (Total Games × 3) × 100'**
+  String get effectivenessFormula;
+
+  /// No description provided for @teamSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Team Summary'**
+  String get teamSummary;
+
+  /// No description provided for @needsWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs Work'**
+  String get needsWork;
+
   /// No description provided for @copyPendingImplementation.
   ///
   /// In en, this message translates to:

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
 import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 
+import 'package:sport_tech_app/l10n/app_localizations.dart';
+
 class PlayersTab extends ConsumerStatefulWidget {
   const PlayersTab({super.key});
 
@@ -80,20 +82,48 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
     return sortedPlayers;
   }
 
+  Widget _buildColumnLabel(String text, int index) {
+    // If this column is the sorted one, the DataTable will show the arrow.
+    // We only want to show the "sortable" indicator (unfold_more) if it's NOT sorted.
+    if (_sortColumnIndex == index) {
+      return Text(text, style: const TextStyle(fontWeight: FontWeight.bold));
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 4),
+        Icon(
+          Icons.unfold_more,
+          size: 16,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final statsState = ref.watch(statsNotifierProvider);
     final players = _getSortedPlayers(statsState.playerStatistics);
+    final l10n = AppLocalizations.of(context)!;
 
     if (players.isEmpty) {
-      return const Center(
-        child: Text('No player statistics available'),
+      return Center(
+        child: Text(l10n.noPlayerData),
       );
     }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        Text(
+          l10n.generalStats,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 16),
         Card(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -107,41 +137,41 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
               sortAscending: _sortAscending,
               columns: [
                 DataColumn(
-                  label: const Text('Player'),
+                  label: _buildColumnLabel(l10n.player, 0),
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Jersey'),
+                  label: _buildColumnLabel(l10n.jerseyTitle, 1),
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Training %'),
+                  label: _buildColumnLabel(l10n.trainingPercent, 2),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Match %'),
+                  label: _buildColumnLabel(l10n.matchPercent, 3),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Avg Periods'),
+                  label: _buildColumnLabel(l10n.avgPeriods, 4),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Goals'),
+                  label: _buildColumnLabel(l10n.goals, 5),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: const Text('Assists'),
+                  label: _buildColumnLabel(l10n.assists, 6),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(columnIndex, ascending),
@@ -215,6 +245,7 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
   }
 
   Widget _buildLegend(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -222,7 +253,7 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Attendance Color Legend',
+              'Attendance Color Legend', // This one might need localization too if not already
               style: Theme.of(context).textTheme.titleSmall,
             ),
             const SizedBox(height: 8),
@@ -234,7 +265,7 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
                   context,
                   Colors.green,
                   '≥90%',
-                  'Excellent',
+                  'Excellent', // These too
                 ),
                 _legendItem(
                   context,
@@ -246,7 +277,7 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
                   context,
                   Theme.of(context).colorScheme.error,
                   '<75%',
-                  'Needs improvement',
+                  l10n.needsWork,
                 ),
               ],
             ),

@@ -1351,6 +1351,61 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get generalStats => 'General Statistics';
+
+  @override
+  String get performanceByQuarter => 'Performance by Quarter';
+
+  @override
+  String get goalsAndAssists => 'Goals & Assists';
+
+  @override
+  String get trainingAttendanceRanking => 'Training Attendance Ranking';
+
+  @override
+  String get jerseyTitle => 'Jersey';
+
+  @override
+  String get trainingPercent => 'Training %';
+
+  @override
+  String get matchPercent => 'Match %';
+
+  @override
+  String get avgPeriods => 'Avg Periods';
+
+  @override
+  String get goalsFor => 'Goals For';
+
+  @override
+  String get goalsAgainst => 'Goals Against';
+
+  @override
+  String get wins => 'Wins';
+
+  @override
+  String get draws => 'Draws';
+
+  @override
+  String get losses => 'Losses';
+
+  @override
+  String get effectiveness => 'Effectiveness';
+
+  @override
+  String get effectivenessCalculation => 'Effectiveness Calculation';
+
+  @override
+  String get effectivenessFormula =>
+      'Effectiveness = (Wins × 3 + Draws × 1) / (Total Games × 3) × 100';
+
+  @override
+  String get teamSummary => 'Team Summary';
+
+  @override
+  String get needsWork => 'Needs Work';
+
+  @override
   String get copyPendingImplementation =>
       'Copy functionality pending implementation';
 

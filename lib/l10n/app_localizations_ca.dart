@@ -1373,6 +1373,61 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
+  String get generalStats => 'Estadístiques Generals';
+
+  @override
+  String get performanceByQuarter => 'Rendiment per Part';
+
+  @override
+  String get goalsAndAssists => 'Gols i Assistències';
+
+  @override
+  String get trainingAttendanceRanking => 'Rànquing d\'Assistència';
+
+  @override
+  String get jerseyTitle => 'Dorsal';
+
+  @override
+  String get trainingPercent => '% Entr.';
+
+  @override
+  String get matchPercent => '% Part.';
+
+  @override
+  String get avgPeriods => 'Períodes Mitj.';
+
+  @override
+  String get goalsFor => 'Gols Favor';
+
+  @override
+  String get goalsAgainst => 'Gols Contra';
+
+  @override
+  String get wins => 'Victòries';
+
+  @override
+  String get draws => 'Empats';
+
+  @override
+  String get losses => 'Derrotes';
+
+  @override
+  String get effectiveness => 'Efectivitat';
+
+  @override
+  String get effectivenessCalculation => 'Càlcul d\'Efectivitat';
+
+  @override
+  String get effectivenessFormula =>
+      'Efectivitat = (Victòries × 3 + Empats × 1) / (Total Partits × 3) × 100';
+
+  @override
+  String get teamSummary => 'Resum d\'Equip';
+
+  @override
+  String get needsWork => 'Millorable';
+
+  @override
   String get copyPendingImplementation =>
       'Funcionalitat de copiar pendent d\'implementació';
 

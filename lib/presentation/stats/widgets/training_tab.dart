@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sport_tech_app/l10n/app_localizations.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class TrainingTab extends ConsumerWidget {
   const TrainingTab({super.key});
@@ -20,193 +20,123 @@ class TrainingTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final statsState = ref.watch(statsNotifierProvider);
-    final players = statsState.playerStatistics;
-
-    if (players.isEmpty) {
-      return Center(
-        child: Text(l10n.noTrainingAttendanceData),
-      );
-    }
+    final players = List.from(statsState.playerStatistics);
 
     // Sort players by training attendance percentage (descending)
-    final sortedPlayers = List.from(players)
-      ..sort((a, b) => b.trainingAttendancePercentage
-          .compareTo(a.trainingAttendancePercentage));
+    players.sort(
+      (a, b) => b.trainingAttendancePercentage
+          .compareTo(a.trainingAttendancePercentage),
+    );
+
+    if (players.isEmpty) {
+      return const Center(child: Text('No training data available'));
+    }
+
+    final averageAttendance = players.fold<double>(
+          0,
+          (sum, item) => sum + item.trainingAttendancePercentage,
+        ) /
+        players.length;
+
+    final poorAttendanceCount =
+        players.where((p) => p.trainingAttendancePercentage < 75).length;
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Training Attendance Ranking',
+          l10n.trainingAttendanceRanking,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
         const SizedBox(height: 16),
-        Card(
-          child: ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: sortedPlayers.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final player = sortedPlayers[index];
-              final position = index + 1;
-              final attendanceColor = _getAttendanceColor(
-                player.trainingAttendancePercentage,
-                context,
-              );
+        _buildSummaryCards(
+            context, averageAttendance, poorAttendanceCount, l10n),
+        const SizedBox(height: 16),
+        ...players.asMap().entries.map((entry) {
+          final index = entry.key;
+          final player = entry.value;
+          final color =
+              _getAttendanceColor(player.trainingAttendancePercentage, context);
 
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: _getRankColor(position, context),
-                  child: Text(
-                    position.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+          return Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: color.withValues(alpha: 0.2),
+                child: Text(
+                  '${index + 1}',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                title: Text(
-                  player.playerName,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              title: Text(
+                player.playerName,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(player.jerseyNumber ?? '-'),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
                 ),
-                subtitle: Text(
-                  '${player.trainingsAttended} / ${player.totalTrainingSessions} trainings',
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: color.withValues(alpha: 0.5)),
                 ),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: attendanceColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '${player.trainingAttendancePercentage.toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      color: attendanceColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+                child: Text(
+                  '${player.trainingAttendancePercentage.toStringAsFixed(1)}%',
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 24),
-        _buildSummaryCard(context, sortedPlayers),
+              ),
+            ),
+          );
+        }),
         const SizedBox(height: 16),
         _buildLegend(context),
       ],
     );
   }
 
-  Color _getRankColor(int position, BuildContext context) {
-    switch (position) {
-      case 1:
-        return Colors.amber; // Gold
-      case 2:
-        return Colors.grey; // Silver
-      case 3:
-        return Colors.brown; // Bronze
-      default:
-        return Theme.of(context).colorScheme.primary;
-    }
-  }
-
-  Widget _buildSummaryCard(BuildContext context, List players) {
-    if (players.isEmpty) return const SizedBox.shrink();
-
-    final totalPlayers = players.length;
-    final excellentCount =
-        players.where((p) => p.trainingAttendancePercentage >= 90).length;
-    final goodCount = players
-        .where((p) =>
-            p.trainingAttendancePercentage >= 75 &&
-            p.trainingAttendancePercentage < 90)
-        .length;
-    final needsImprovementCount =
-        players.where((p) => p.trainingAttendancePercentage < 75).length;
-
-    final averageAttendance = players.fold<double>(
-          0,
-          (sum, p) => sum + p.trainingAttendancePercentage,
-        ) /
-        totalPlayers;
-
-    return Card(
-      color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Team Summary',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildSummaryItem(
-                  context,
-                  'Average',
-                  '${averageAttendance.toStringAsFixed(1)}%',
-                ),
-                _buildSummaryItem(
-                  context,
-                  'Excellent',
-                  excellentCount.toString(),
-                ),
-                _buildSummaryItem(
-                  context,
-                  'Good',
-                  goodCount.toString(),
-                ),
-                _buildSummaryItem(
-                  context,
-                  'Needs Work',
-                  needsImprovementCount.toString(),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryItem(BuildContext context, String label, String value) {
-    return Column(
+  Widget _buildSummaryCards(
+    BuildContext context,
+    double average,
+    int needsWorkCount,
+    AppLocalizations l10n,
+  ) {
+    return Row(
       children: [
-        Text(
-          value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
+        Expanded(
+          child: _SummaryCard(
+            title: l10n.teamSummary,
+            value: '${average.toStringAsFixed(1)}%',
+            color: Colors.blue,
+            icon: Icons.group,
+          ),
         ),
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context)
-                    .colorScheme
-                    .onPrimaryContainer
-                    .withValues(alpha: 0.8),
-              ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _SummaryCard(
+            title: l10n.needsWork,
+            value: needsWorkCount.toString(),
+            color: Theme.of(context).colorScheme.error,
+            icon: Icons.warning_amber_rounded,
+          ),
         ),
       ],
     );
   }
 
   Widget _buildLegend(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -238,7 +168,7 @@ class TrainingTab extends ConsumerWidget {
                   context,
                   Theme.of(context).colorScheme.error,
                   '<75%',
-                  'Needs improvement',
+                  l10n.needsWork,
                 ),
               ],
             ),
@@ -272,6 +202,67 @@ class TrainingTab extends ConsumerWidget {
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
+    );
+  }
+}
+
+class _SummaryCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final Color color;
+  final IconData icon;
+
+  const _SummaryCard({
+    required this.title,
+    required this.value,
+    required this.color,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: color.withValues(alpha: 0.1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 20, color: color),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

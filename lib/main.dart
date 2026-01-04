@@ -1,10 +1,12 @@
 // lib/main.dart
 
 import 'package:flutter/material.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/locale/locale_provider.dart';
 import 'package:sport_tech_app/config/supabase_config.dart';
+import 'package:sport_tech_app/config/theme/app_theme.dart';
 import 'package:sport_tech_app/config/theme/theme_provider.dart';
 import 'package:sport_tech_app/presentation/app/router/app_router.dart';
 
@@ -46,48 +48,43 @@ class SportTechApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     final locale = ref.watch(localeProvider);
 
-    // Watch club colors and update theme when active team changes
-    final clubColors = ref.watch(activeClubColorsProvider);
-
-    // Update theme based on club colors
-    clubColors.whenData((colors) {
-      if (colors != null) {
-        final (primaryColor, secondaryColor, tertiaryColor) = colors;
-        ref.read(themeNotifierProvider.notifier).updateClubTheme(
-              primaryColor: primaryColor,
-              secondaryColor: secondaryColor,
-              tertiaryColor: tertiaryColor,
-            );
-      } else {
-        // Reset to default theme when no club colors available
-        ref.read(themeNotifierProvider.notifier).resetToDefaultTheme();
-      }
-    });
-
-    // Get current theme state (includes dynamic themes based on club colors)
+    // Get current theme state
     final themeState = ref.watch(themeNotifierProvider);
 
-    return MaterialApp.router(
-      title: 'Sport Tech',
-      debugShowCheckedModeBanner: false,
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        // Use dynamic colors if available, otherwise use custom brand colors
+        final lightTheme = lightDynamic != null
+            ? AppTheme.buildTheme(lightDynamic)
+            : themeState.lightTheme;
 
-      // Dynamic theme configuration (updates based on club colors)
-      theme: themeState.lightTheme,
-      darkTheme: themeState.darkTheme,
-      themeMode: themeState.themeMode,
+        final darkTheme = darkDynamic != null
+            ? AppTheme.buildTheme(darkDynamic)
+            : themeState.darkTheme;
 
-      // Router configuration
-      routerConfig: router,
+        return MaterialApp.router(
+          title: 'Sport Tech',
+          debugShowCheckedModeBanner: false,
 
-      // Localization
-      locale: locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+          // Theme configuration
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: themeState.themeMode,
+
+          // Router configuration
+          routerConfig: router,
+
+          // Localization
+          locale: locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+        );
+      },
     );
   }
 }

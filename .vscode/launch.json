@@ -6,7 +6,8 @@
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
-      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
+      //"deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
+      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
       "toolArgs": [
         "--dart-define-from-file=.env.ios.json"
       ]
@@ -64,7 +65,8 @@
       "type": "dart",
       "request": "launch",
       "program": "lib/main.dart",
-      "deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
+      //"deviceId": "541433E4-BBDB-4AB2-81C7-0C9759B8EBDB",
+      "deviceId": "C0B0331C-647B-4D74-A928-5FDCD74AA997",
       "toolArgs": [
         "--dart-define-from-file=.env.prod.ios.json"
       ]

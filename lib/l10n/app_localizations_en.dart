@@ -790,7 +790,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trainingSessionDetails => 'Training Session Details';
 
   @override
-  String get statistics => 'Evaluations';
+  String get statistics => 'Statistics';
 
   @override
   String get general => 'General';

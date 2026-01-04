@@ -1579,7 +1579,7 @@ abstract class AppLocalizations {
   /// No description provided for @statistics.
   ///
   /// In en, this message translates to:
-  /// **'Evaluations'**
+  /// **'Statistics'**
   String get statistics;
 
   /// No description provided for @general.

@@ -3,6 +3,7 @@ import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 import 'package:sport_tech_app/domain/stats/entities/scorer_stats.dart';
 import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 import 'package:sport_tech_app/domain/stats/entities/quarter_performance.dart';
+import 'package:sport_tech_app/domain/stats/entities/player_quarter_stats.dart';
 
 /// State for statistics data
 class StatsState extends Equatable {
@@ -11,6 +12,7 @@ class StatsState extends Equatable {
   final List<ScorerStats> assisters;
   final List<MatchSummary> matches;
   final List<QuarterPerformance> quarters;
+  final List<PlayerQuarterStats> playerQuarterStats;
   final double teamTrainingAttendance;
   final bool isLoading;
   final String? error;
@@ -21,6 +23,7 @@ class StatsState extends Equatable {
     this.assisters = const [],
     this.matches = const [],
     this.quarters = const [],
+    this.playerQuarterStats = const [],
     this.teamTrainingAttendance = 0.0,
     this.isLoading = false,
     this.error,
@@ -32,6 +35,7 @@ class StatsState extends Equatable {
     List<ScorerStats>? assisters,
     List<MatchSummary>? matches,
     List<QuarterPerformance>? quarters,
+    List<PlayerQuarterStats>? playerQuarterStats,
     double? teamTrainingAttendance,
     bool? isLoading,
     String? error,
@@ -42,7 +46,9 @@ class StatsState extends Equatable {
       assisters: assisters ?? this.assisters,
       matches: matches ?? this.matches,
       quarters: quarters ?? this.quarters,
-      teamTrainingAttendance: teamTrainingAttendance ?? this.teamTrainingAttendance,
+      playerQuarterStats: playerQuarterStats ?? this.playerQuarterStats,
+      teamTrainingAttendance:
+          teamTrainingAttendance ?? this.teamTrainingAttendance,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -55,6 +61,7 @@ class StatsState extends Equatable {
         assisters,
         matches,
         quarters,
+        playerQuarterStats,
         teamTrainingAttendance,
         isLoading,
         error,

@@ -13,6 +13,7 @@ import 'package:sport_tech_app/presentation/stats/widgets/quarters_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
 import 'package:sport_tech_app/presentation/dashboard/widgets/player_dashboard_content.dart';
+import 'package:sport_tech_app/presentation/stats/widgets/lineups_tab.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -28,7 +29,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     // Load teams when dashboard initializes if user is authenticated
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authState = ref.read(authNotifierProvider);
@@ -257,6 +258,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                               Tab(text: l10n.goals),
                               Tab(text: l10n.quarters),
                               Tab(text: l10n.training),
+                              Tab(text: l10n.lineup),
                             ],
                           ),
                         ],
@@ -273,6 +275,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                             GoalsTab(),
                             QuartersTab(),
                             TrainingTab(),
+                            LineupsTab(),
                           ],
                         ),
                       ),

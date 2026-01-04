@@ -7,6 +7,8 @@ import 'package:sport_tech_app/infrastructure/stats/mappers/player_statistics_ma
 import 'package:sport_tech_app/infrastructure/stats/mappers/scorer_stats_mapper.dart';
 import 'package:sport_tech_app/infrastructure/stats/mappers/match_summary_mapper.dart';
 import 'package:sport_tech_app/infrastructure/stats/mappers/quarter_performance_mapper.dart';
+
+import 'package:sport_tech_app/domain/stats/entities/player_quarter_stats.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseStatsRepository implements StatsRepository {
@@ -31,14 +33,11 @@ class SupabaseStatsRepository implements StatsRepository {
       final assistsMap = <String, int>{};
 
       // First get all matches for the team
-      final matchesResponse = await _client
-          .from('matches')
-          .select('id')
-          .eq('team_id', teamIdInt);
+      final matchesResponse =
+          await _client.from('matches').select('id').eq('team_id', teamIdInt);
 
-      final matchIds = (matchesResponse as List)
-          .map((m) => m['id'] as int)
-          .toList();
+      final matchIds =
+          (matchesResponse as List).map((m) => m['id'] as int).toList();
 
       if (matchIds.isNotEmpty) {
         // Get all goals for these matches (excluding own goals)
@@ -74,7 +73,8 @@ class SupabaseStatsRepository implements StatsRepository {
   }
 
   @override
-  Future<PlayerStatistics?> getPlayerStatistics(String playerId, String teamId) async {
+  Future<PlayerStatistics?> getPlayerStatistics(
+      String playerId, String teamId) async {
     try {
       // Get all player statistics for the team
       final allStats = await getTeamPlayerStatistics(teamId);
@@ -94,19 +94,17 @@ class SupabaseStatsRepository implements StatsRepository {
   }
 
   @override
-  Future<List<ScorerStats>> getScorersRanking(String teamId, {int limit = 10}) async {
+  Future<List<ScorerStats>> getScorersRanking(String teamId,
+      {int limit = 10}) async {
     try {
       final teamIdInt = int.parse(teamId);
 
       // Get all matches for the team
-      final matchesResponse = await _client
-          .from('matches')
-          .select('id')
-          .eq('team_id', teamIdInt);
+      final matchesResponse =
+          await _client.from('matches').select('id').eq('team_id', teamIdInt);
 
-      final matchIds = (matchesResponse as List)
-          .map((m) => m['id'] as int)
-          .toList();
+      final matchIds =
+          (matchesResponse as List).map((m) => m['id'] as int).toList();
 
       if (matchIds.isEmpty) {
         return [];
@@ -115,7 +113,8 @@ class SupabaseStatsRepository implements StatsRepository {
       // Get goals grouped by scorer (excluding own goals)
       final goalsResponse = await _client
           .from('match_goals')
-          .select('scorer_id, players!match_goals_scorer_id_fkey(id, full_name, jersey_number)')
+          .select(
+              'scorer_id, players!match_goals_scorer_id_fkey(id, full_name, jersey_number)')
           .inFilter('match_id', matchIds)
           .eq('is_own_goal', false);
 
@@ -127,7 +126,8 @@ class SupabaseStatsRepository implements StatsRepository {
         if (player != null) {
           final playerId = player['id'].toString();
           if (scorersMap.containsKey(playerId)) {
-            scorersMap[playerId]!['count'] = (scorersMap[playerId]!['count'] as int) + 1;
+            scorersMap[playerId]!['count'] =
+                (scorersMap[playerId]!['count'] as int) + 1;
           } else {
             scorersMap[playerId] = {
               'player_id': player['id'],
@@ -151,19 +151,17 @@ class SupabaseStatsRepository implements StatsRepository {
   }
 
   @override
-  Future<List<ScorerStats>> getAssistersRanking(String teamId, {int limit = 10}) async {
+  Future<List<ScorerStats>> getAssistersRanking(String teamId,
+      {int limit = 10}) async {
     try {
       final teamIdInt = int.parse(teamId);
 
       // Get all matches for the team
-      final matchesResponse = await _client
-          .from('matches')
-          .select('id')
-          .eq('team_id', teamIdInt);
+      final matchesResponse =
+          await _client.from('matches').select('id').eq('team_id', teamIdInt);
 
-      final matchIds = (matchesResponse as List)
-          .map((m) => m['id'] as int)
-          .toList();
+      final matchIds =
+          (matchesResponse as List).map((m) => m['id'] as int).toList();
 
       if (matchIds.isEmpty) {
         return [];
@@ -172,7 +170,8 @@ class SupabaseStatsRepository implements StatsRepository {
       // Get goals with assisters grouped by assister (excluding own goals)
       final assistsResponse = await _client
           .from('match_goals')
-          .select('assister_id, players!match_goals_assister_id_fkey(id, full_name, jersey_number)')
+          .select(
+              'assister_id, players!match_goals_assister_id_fkey(id, full_name, jersey_number)')
           .not('assister_id', 'is', null)
           .inFilter('match_id', matchIds)
           .eq('is_own_goal', false);
@@ -185,7 +184,8 @@ class SupabaseStatsRepository implements StatsRepository {
         if (player != null) {
           final playerId = player['id'].toString();
           if (assistersMap.containsKey(playerId)) {
-            assistersMap[playerId]!['count'] = (assistersMap[playerId]!['count'] as int) + 1;
+            assistersMap[playerId]!['count'] =
+                (assistersMap[playerId]!['count'] as int) + 1;
           } else {
             assistersMap[playerId] = {
               'player_id': player['id'],
@@ -214,16 +214,12 @@ class SupabaseStatsRepository implements StatsRepository {
       final teamIdInt = int.parse(teamId);
 
       // Get all matches with their quarter results
-      final matchesResponse = await _client
-          .from('matches')
-          .select('''
+      final matchesResponse = await _client.from('matches').select('''
             id,
             opponent,
             match_date,
             match_quarter_results(team_goals, opponent_goals)
-          ''')
-          .eq('team_id', teamIdInt)
-          .order('match_date', ascending: false);
+          ''').eq('team_id', teamIdInt).order('match_date', ascending: false);
 
       final summaries = (matchesResponse as List).map((json) {
         // Calculate total goals from quarters
@@ -266,10 +262,38 @@ class SupabaseStatsRepository implements StatsRepository {
 
       // Group by quarter number
       final quarterStats = <int, Map<String, dynamic>>{
-        1: {'quarter_number': 1, 'goals_for': 0, 'goals_against': 0, 'wins': 0, 'draws': 0, 'losses': 0},
-        2: {'quarter_number': 2, 'goals_for': 0, 'goals_against': 0, 'wins': 0, 'draws': 0, 'losses': 0},
-        3: {'quarter_number': 3, 'goals_for': 0, 'goals_against': 0, 'wins': 0, 'draws': 0, 'losses': 0},
-        4: {'quarter_number': 4, 'goals_for': 0, 'goals_against': 0, 'wins': 0, 'draws': 0, 'losses': 0},
+        1: {
+          'quarter_number': 1,
+          'goals_for': 0,
+          'goals_against': 0,
+          'wins': 0,
+          'draws': 0,
+          'losses': 0
+        },
+        2: {
+          'quarter_number': 2,
+          'goals_for': 0,
+          'goals_against': 0,
+          'wins': 0,
+          'draws': 0,
+          'losses': 0
+        },
+        3: {
+          'quarter_number': 3,
+          'goals_for': 0,
+          'goals_against': 0,
+          'wins': 0,
+          'draws': 0,
+          'losses': 0
+        },
+        4: {
+          'quarter_number': 4,
+          'goals_for': 0,
+          'goals_against': 0,
+          'wins': 0,
+          'draws': 0,
+          'losses': 0
+        },
       };
 
       for (final qr in quartersResponse as List) {
@@ -284,11 +308,14 @@ class SupabaseStatsRepository implements StatsRepository {
               (quarterStats[quarterNum]!['goals_against'] as int) + oppGoals;
 
           if (teamGoals > oppGoals) {
-            quarterStats[quarterNum]!['wins'] = (quarterStats[quarterNum]!['wins'] as int) + 1;
+            quarterStats[quarterNum]!['wins'] =
+                (quarterStats[quarterNum]!['wins'] as int) + 1;
           } else if (teamGoals < oppGoals) {
-            quarterStats[quarterNum]!['losses'] = (quarterStats[quarterNum]!['losses'] as int) + 1;
+            quarterStats[quarterNum]!['losses'] =
+                (quarterStats[quarterNum]!['losses'] as int) + 1;
           } else {
-            quarterStats[quarterNum]!['draws'] = (quarterStats[quarterNum]!['draws'] as int) + 1;
+            quarterStats[quarterNum]!['draws'] =
+                (quarterStats[quarterNum]!['draws'] as int) + 1;
           }
         }
       }
@@ -303,6 +330,126 @@ class SupabaseStatsRepository implements StatsRepository {
   }
 
   @override
+  Future<List<PlayerQuarterStats>> getPlayerQuarterStats(String teamId) async {
+    try {
+      final teamIdInt = int.parse(teamId);
+
+      // 1. Get all matches for the team
+      final matchesResponse = await _client
+          .from('matches')
+          .select(
+              'id, match_quarter_results(quarter, team_goals, opponent_goals)')
+          .eq('team_id', teamIdInt);
+
+      final matchIds =
+          (matchesResponse as List).map((m) => m['id'] as int).toList();
+
+      if (matchIds.isEmpty) {
+        return [];
+      }
+
+      // 2. Identify Result for each Quarter
+      // Map<MatchId, Map<QuarterNumber, Result>>
+      // Result: 1 (Win), -1 (Loss), 0 (Draw)
+      final matchQuarterResults = <int, Map<int, int>>{};
+
+      for (final match in matchesResponse) {
+        final matchId = match['id'] as int;
+        final quarters = match['match_quarter_results'] as List?;
+        final quarterMap = <int, int>{};
+
+        if (quarters != null) {
+          for (final q in quarters) {
+            final qNum = (q['quarter'] as num).toInt();
+            final tGoals = (q['team_goals'] as num?)?.toInt() ?? 0;
+            final oGoals = (q['opponent_goals'] as num?)?.toInt() ?? 0;
+
+            if (tGoals > oGoals) {
+              quarterMap[qNum] = 1; // Win
+            } else if (tGoals < oGoals) {
+              quarterMap[qNum] = -1; // Loss
+            } else {
+              quarterMap[qNum] = 0; // Draw
+            }
+          }
+        }
+        matchQuarterResults[matchId] = quarterMap;
+      }
+
+      // 3. Get Player Participation (Periods)
+      final periodsResponse = await _client
+          .from('match_player_periods')
+          .select(
+              'player_id, match_id, period, players!inner(id, full_name, jersey_number)')
+          .inFilter('match_id', matchIds);
+
+      // 4. Aggregate Stats per Player
+      final playerStatsMap = <String, Map<String, dynamic>>{};
+
+      for (final period in periodsResponse as List) {
+        final playerId = period['player_id'].toString();
+        final matchId = period['match_id'] as int;
+        final periodNum = (period['period'] as num).toInt();
+        final player = period['players'];
+
+        // Get result for this specific quarter
+        final quarterResult = matchQuarterResults[matchId]?[periodNum];
+
+        // If we don't have a result for this quarter (e.g. data missing in match_quarter_results), skip or treat as draw?
+        // Let's assume valid data exists. If null, we might count as played but unknown result, or ignore.
+        // For now, let's treat null as 0 (Draw/Unknown) to avoid crashes, but strictly we need result.
+        // Actually, if result is missing, it means the quarter wasn't recorded in match_quarter_results.
+        // We should validly count it as "Played", but won/loss will depend on data availability.
+
+        final resultStub = quarterResult ?? 0; // Default to draw if unknown
+
+        if (!playerStatsMap.containsKey(playerId)) {
+          playerStatsMap[playerId] = {
+            'player': player, // Store player info to create entity later
+            'played': 0,
+            'won': 0,
+            'lost': 0,
+            'drawn': 0,
+          };
+        }
+
+        final stats = playerStatsMap[playerId]!;
+        stats['played'] = (stats['played'] as int) + 1;
+
+        if (resultStub == 1) {
+          stats['won'] = (stats['won'] as int) + 1;
+        } else if (resultStub == -1) {
+          stats['lost'] = (stats['lost'] as int) + 1;
+        } else {
+          stats['drawn'] = (stats['drawn'] as int) + 1;
+        }
+      }
+
+      // 5. Convert to List<PlayerQuarterStats>
+      final statsList = playerStatsMap.entries.map((entry) {
+        final data = entry.value;
+        final player = data['player'];
+        return PlayerQuarterStats(
+          playerId: entry.key,
+          playerName: player['full_name'] ?? 'Unknown',
+          jerseyNumber: player['jersey_number']?.toString() ?? '-',
+          quartersPlayed: data['played'],
+          quartersWon: data['won'],
+          quartersLost: data['lost'],
+          quartersDrawn: data['drawn'],
+        );
+      }).toList();
+
+      // Sort by Quarters Played (descending) as default
+      statsList.sort((a, b) => b.quartersPlayed.compareTo(a.quartersPlayed));
+
+      return statsList;
+    } catch (e) {
+      throw Exception('Failed to get player quarter statistics: $e');
+    }
+  }
+
+  @override
   Future<double> getTeamTrainingAttendance(String teamId) async {
     try {
       final teamIdInt = int.parse(teamId);
@@ -313,9 +460,8 @@ class SupabaseStatsRepository implements StatsRepository {
           .select('id')
           .eq('team_id', teamIdInt);
 
-      final trainingIds = (trainingsResponse as List)
-          .map((t) => t['id'] as int)
-          .toList();
+      final trainingIds =
+          (trainingsResponse as List).map((t) => t['id'] as int).toList();
 
       if (trainingIds.isEmpty) {
         return 0.0;

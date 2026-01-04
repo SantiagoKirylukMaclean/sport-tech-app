@@ -405,7 +405,7 @@
   "trainingSessionDetails": "Training Session Details",
 
   "@_STATISTICS": {},
-  "statistics": "Evaluations",
+  "statistics": "Statistics",
   "general": "General",
   "noTrainingAttendanceData": "No training attendance data available",
   "noGoalsOrAssistsData": "No goals or assists data available",

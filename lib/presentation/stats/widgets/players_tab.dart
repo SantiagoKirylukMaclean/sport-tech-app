@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
 import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
+import 'package:sport_tech_app/presentation/stats/utils/stats_color_helpers.dart';
 
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
@@ -15,16 +16,6 @@ class PlayersTab extends ConsumerStatefulWidget {
 class _PlayersTabState extends ConsumerState<PlayersTab> {
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
-
-  Color _getAttendanceColor(double percentage, BuildContext context) {
-    if (percentage >= 90) {
-      return Colors.green;
-    } else if (percentage >= 75) {
-      return Colors.grey;
-    } else {
-      return Theme.of(context).colorScheme.error;
-    }
-  }
 
   void _sort(int columnIndex, bool ascending) {
     setState(() {
@@ -178,13 +169,13 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
                 ),
               ],
               rows: players.map((player) {
-                final trainingColor = _getAttendanceColor(
+                final trainingColor = getStatsPercentageColor(
+                  context,
                   player.trainingAttendancePercentage,
-                  context,
                 );
-                final matchColor = _getAttendanceColor(
-                  player.matchAttendancePercentage,
+                final matchColor = getStatsPercentageColor(
                   context,
+                  player.matchAttendancePercentage,
                 );
 
                 return DataRow(
@@ -269,7 +260,7 @@ class _PlayersTabState extends ConsumerState<PlayersTab> {
                 ),
                 _legendItem(
                   context,
-                  Colors.grey,
+                  Colors.orange,
                   '≥75%',
                   'Good',
                 ),

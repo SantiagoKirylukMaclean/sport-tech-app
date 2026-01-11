@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/domain/stats/entities/player_quarter_stats.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/presentation/stats/utils/stats_color_helpers.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class LineupsTab extends ConsumerStatefulWidget {
@@ -33,10 +34,13 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
           case 2: // Won
             comparison = a.quartersWon.compareTo(b.quartersWon);
             break;
-          case 3: // Lost
+          case 3: // Draws
+            comparison = a.quartersDrawn.compareTo(b.quartersDrawn);
+            break;
+          case 4: // Lost
             comparison = a.quartersLost.compareTo(b.quartersLost);
             break;
-          case 4: // Win %
+          case 5: // Win %
             comparison = a.winPercentage.compareTo(b.winPercentage);
             break;
         }
@@ -63,16 +67,6 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
     );
   }
 
-  Color _getWinRateColor(double percentage, BuildContext context) {
-    if (percentage >= 70) {
-      return Colors.green;
-    } else if (percentage >= 50) {
-      return Colors.orange; // Or a neutral color
-    } else {
-      return Theme.of(context).colorScheme.error;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -96,10 +90,13 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
           case 2: // Won
             comparison = a.quartersWon.compareTo(b.quartersWon);
             break;
-          case 3: // Lost
+          case 3: // Draws
+            comparison = a.quartersDrawn.compareTo(b.quartersDrawn);
+            break;
+          case 4: // Lost
             comparison = a.quartersLost.compareTo(b.quartersLost);
             break;
-          case 4: // Win %
+          case 5: // Win %
             comparison = a.winPercentage.compareTo(b.winPercentage);
             break;
         }
@@ -157,13 +154,19 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
                       _sort(lineups, columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: _buildColumnLabel(l10n.losses, 3),
+                  label: _buildColumnLabel(l10n.draws, 3),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(lineups, columnIndex, ascending),
                 ),
                 DataColumn(
-                  label: _buildColumnLabel(l10n.winPercentage, 4),
+                  label: _buildColumnLabel(l10n.losses, 4),
+                  numeric: true,
+                  onSort: (columnIndex, ascending) =>
+                      _sort(lineups, columnIndex, ascending),
+                ),
+                DataColumn(
+                  label: _buildColumnLabel(l10n.winPercentage, 5),
                   numeric: true,
                   onSort: (columnIndex, ascending) =>
                       _sort(lineups, columnIndex, ascending),
@@ -171,7 +174,7 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
               ],
               rows: lineups.map((stat) {
                 final winRate = stat.winPercentage;
-                final rateColor = _getWinRateColor(winRate, context);
+                final rateColor = getStatsPercentageColor(context, winRate);
 
                 return DataRow(
                   cells: [
@@ -199,6 +202,7 @@ class _LineupsTabState extends ConsumerState<LineupsTab> {
                     ),
                     DataCell(Text(stat.quartersPlayed.toString())),
                     DataCell(Text(stat.quartersWon.toString())),
+                    DataCell(Text(stat.quartersDrawn.toString())),
                     DataCell(Text(stat.quartersLost.toString())),
                     DataCell(
                       Container(

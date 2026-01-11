@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/presentation/stats/utils/stats_color_helpers.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class TrainingTab extends ConsumerWidget {
   const TrainingTab({super.key});
-
-  Color _getAttendanceColor(double percentage, BuildContext context) {
-    if (percentage >= 90) {
-      return Colors.green;
-    } else if (percentage >= 75) {
-      return Colors.grey;
-    } else {
-      return Theme.of(context).colorScheme.error;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,8 +48,10 @@ class TrainingTab extends ConsumerWidget {
         ...players.asMap().entries.map((entry) {
           final index = entry.key;
           final player = entry.value;
-          final color =
-              _getAttendanceColor(player.trainingAttendancePercentage, context);
+          final color = getStatsPercentageColor(
+            context,
+            player.trainingAttendancePercentage,
+          );
 
           return Card(
             margin: const EdgeInsets.only(bottom: 8),
@@ -160,7 +153,7 @@ class TrainingTab extends ConsumerWidget {
                 ),
                 _legendItem(
                   context,
-                  Colors.grey,
+                  Colors.orange,
                   '≥75%',
                   'Good',
                 ),

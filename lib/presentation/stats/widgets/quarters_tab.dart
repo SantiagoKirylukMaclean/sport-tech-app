@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/stats/stats_providers.dart';
+import 'package:sport_tech_app/presentation/stats/utils/stats_color_helpers.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class QuartersTab extends ConsumerStatefulWidget {
@@ -140,9 +141,9 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
                 ),
               ],
               rows: quarters.map((quarter) {
-                final effectivenessColor = _getEffectivenessColor(
-                  quarter.effectiveness,
+                final effectivenessColor = getStatsPercentageColor(
                   context,
+                  quarter.effectiveness,
                 );
 
                 return DataRow(
@@ -325,16 +326,6 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
     }
   }
 
-  Color _getEffectivenessColor(double effectiveness, BuildContext context) {
-    if (effectiveness >= 75) {
-      return Colors.green;
-    } else if (effectiveness >= 50) {
-      return Colors.orange;
-    } else {
-      return Theme.of(context).colorScheme.error;
-    }
-  }
-
   Widget _buildEffectivenessLegend(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Card(
@@ -357,12 +348,12 @@ class _QuartersTabState extends ConsumerState<QuartersTab> {
               spacing: 16,
               runSpacing: 8,
               children: [
-                _legendItem(context, Colors.green, '≥75%', 'Excellent'),
-                _legendItem(context, Colors.orange, '≥50%', 'Good'),
+                _legendItem(context, Colors.green, '≥90%', 'Excellent'),
+                _legendItem(context, Colors.orange, '≥75%', 'Good'),
                 _legendItem(
                   context,
                   Theme.of(context).colorScheme.error,
-                  '<50%',
+                  '<75%',
                   l10n.needsWork,
                 ),
               ],

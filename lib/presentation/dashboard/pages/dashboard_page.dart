@@ -26,6 +26,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _hasLoadedStats = false;
+
   @override
   void initState() {
     super.initState();
@@ -72,28 +73,37 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     final isPlayer = authState is AuthStateAuthenticated &&
         authState.profile.role == UserRole.player;
 
-    // Load player dashboard for players on first build
-    if (isPlayer && !_hasLoadedStats) {
-      _hasLoadedStats = true;
-      final userId = authState.profile.userId;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
+    // Listen to team changes and reload dashboard/stats
+    ref.listen(activeTeamNotifierProvider, (previous, next) {
+      if (next.activeTeam != null &&
+          (previous?.activeTeam?.id != next.activeTeam?.id)) {
+
+        if (isPlayer) {
           ref
               .read(playerDashboardNotifierProvider.notifier)
-              .loadPlayerDashboard(userId);
-        }
-      });
-    }
-
-    // Load stats on first build when we have a team and user is coach
-    if (isCoach && !_hasLoadedStats && activeTeamState.activeTeam != null) {
-      _hasLoadedStats = true;
-      // Use addPostFrameCallback to load after build is complete
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
+              .loadPlayerDashboard(authState.profile.userId, teamId: next.activeTeam!.id);
+        } else if (isCoach) {
           ref
               .read(statsNotifierProvider.notifier)
-              .loadTeamStats(activeTeamState.activeTeam!.id);
+              .loadTeamStats(next.activeTeam!.id);
+        }
+      }
+    });
+
+    // Initial load logic (run once when active team is available)
+    if (!_hasLoadedStats && activeTeamState.activeTeam != null) {
+      _hasLoadedStats = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          if (isPlayer) {
+            ref
+                .read(playerDashboardNotifierProvider.notifier)
+                .loadPlayerDashboard(authState.profile.userId, teamId: activeTeamState.activeTeam!.id);
+          } else if (isCoach) {
+            ref
+                .read(statsNotifierProvider.notifier)
+                .loadTeamStats(activeTeamState.activeTeam!.id);
+          }
         }
       });
     }
@@ -129,7 +139,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
-                  ref.read(playerDashboardNotifierProvider.notifier).refresh();
+                  if (activeTeamState.activeTeam != null) {
+                     ref.read(playerDashboardNotifierProvider.notifier).loadPlayerDashboard(
+                       authState.profile.userId,
+                       teamId: activeTeamState.activeTeam!.id
+                     );
+                  } else {
+                     ref.read(playerDashboardNotifierProvider.notifier).refresh();
+                  }
                 },
                 icon: const Icon(Icons.refresh),
                 label: Text(l10n.retry),
@@ -322,6 +339,10 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                   style: const TextStyle(color: Colors.red),
                 )
               else if (activeTeamState.teams.isNotEmpty) ...[
+                // This section is only shown if not a player (handled above) and not a coach (handled above)
+                // OR if they are a coach/player but something went wrong with logic above.
+                // However, since we want Players to be able to switch teams, we rely on AppScaffold for that.
+                // This fallback UI is fine.
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

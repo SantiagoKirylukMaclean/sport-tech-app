@@ -14,10 +14,14 @@ abstract class PlayersRepository {
   /// Returns [Player] on success, [Failure] on error
   Future<Result<Player>> getPlayerById(String id);
 
-  /// Get a player by user ID (for authenticated players)
-  /// Returns [Player] on success, [Failure] on error
-  /// Returns null if no player is linked to the user ID
-  Future<Result<Player?>> getPlayerByUserId(String userId);
+  /// Get players by user ID (for authenticated players)
+  /// Returns List<Player> on success, [Failure] on error
+  /// Returns empty list if no player is linked to the user ID
+  Future<Result<List<Player>>> getPlayersByUserId(String userId);
+
+  /// Get player by user ID and Team ID
+  /// Returns [Player] on success (if found), [Failure] on error
+  Future<Result<Player?>> getPlayerByUserIdAndTeamId(String userId, String teamId);
 
   /// Create a new player
   /// Returns created [Player] on success, [Failure] on error

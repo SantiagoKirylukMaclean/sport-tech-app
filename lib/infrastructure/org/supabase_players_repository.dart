@@ -57,12 +57,35 @@ class SupabasePlayersRepository implements PlayersRepository {
   }
 
   @override
-  Future<Result<Player?>> getPlayerByUserId(String userId) async {
+  Future<Result<List<Player>>> getPlayersByUserId(String userId) async {
     try {
       final response = await _client
           .from('players')
           .select()
+          .eq('user_id', userId);
+
+      final players = (response as List)
+          .map((json) => PlayerMapper.fromJson(json as Map<String, dynamic>))
+          .toList();
+
+      return Success(players);
+    } on PostgrestException catch (e) {
+      return Failed(ServerFailure(e.message, code: e.code));
+    } catch (e) {
+      return Failed(ServerFailure('Error getting players by user ID: $e'));
+    }
+  }
+
+  @override
+  Future<Result<Player?>> getPlayerByUserIdAndTeamId(String userId, String teamId) async {
+    try {
+      final parsedTeamId = int.tryParse(teamId) ?? teamId;
+
+      final response = await _client
+          .from('players')
+          .select()
           .eq('user_id', userId)
+          .eq('team_id', parsedTeamId)
           .maybeSingle();
 
       if (response == null) {
@@ -73,7 +96,7 @@ class SupabasePlayersRepository implements PlayersRepository {
     } on PostgrestException catch (e) {
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
-      return Failed(ServerFailure('Error getting player by user ID: $e'));
+      return Failed(ServerFailure('Error getting player by user ID and team ID: $e'));
     }
   }
 

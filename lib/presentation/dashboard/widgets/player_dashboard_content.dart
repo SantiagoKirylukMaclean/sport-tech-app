@@ -6,6 +6,7 @@ import 'package:sport_tech_app/domain/stats/entities/match_summary.dart';
 import 'package:sport_tech_app/presentation/dashboard/widgets/player_stats_overview.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
+import 'package:sport_tech_app/domain/org/entities/team.dart';
 
 /// Widget displaying the complete player dashboard with all sections
 class PlayerDashboardContent extends StatelessWidget {
@@ -15,6 +16,9 @@ class PlayerDashboardContent extends StatelessWidget {
   final double teamTrainingAttendance;
   final String playerName;
   final String teamName;
+  final List<Team> availableTeams;
+  final String? activeTeamId;
+  final Function(String)? onTeamSelected;
 
   const PlayerDashboardContent({
     required this.playerStats,
@@ -23,6 +27,9 @@ class PlayerDashboardContent extends StatelessWidget {
     required this.teamTrainingAttendance,
     required this.playerName,
     required this.teamName,
+    this.availableTeams = const [],
+    this.activeTeamId,
+    this.onTeamSelected,
     super.key,
   });
 
@@ -33,6 +40,89 @@ class PlayerDashboardContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Team Selector (if multiple teams available)
+          if (availableTeams.length > 1 &&
+              activeTeamId != null &&
+              onTeamSelected != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Card(
+                elevation: 0,
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest
+                    .withValues(alpha: 0.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.groups_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.selectTeam,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .labelSmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                            ),
+                            DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: activeTeamId,
+                                isExpanded: true,
+                                isDense: true,
+                                icon: const Icon(Icons.keyboard_arrow_down),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                items: availableTeams.map((team) {
+                                  return DropdownMenuItem<String>(
+                                    value: team.id,
+                                    child: Text(
+                                      team.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    onTeamSelected!(value);
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
           // Section 1: Player Personal Statistics
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),

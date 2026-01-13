@@ -44,9 +44,9 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
 
     // Load players for the active team
     await ref.read(playersNotifierProvider.notifier).loadPlayersByTeam(
-      activeTeamState.activeTeam!.id,
-      '1', // TODO: Get sport ID from team
-    );
+          activeTeamState.activeTeam!.id,
+          '1', // TODO: Get sport ID from team
+        );
 
     // Load evaluation counts for all players
     await _loadEvaluationCounts();
@@ -107,10 +107,11 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
           if (context.mounted) {
             // Get the player record using the user ID
             final playersRepo = ref.read(playersRepositoryProvider);
-            final playerResult = await playersRepo.getPlayerByUserId(user.id);
+            final playerResult = await playersRepo.getPlayersByUserId(user.id);
 
-            if (playerResult is Success && (playerResult as Success).data != null) {
-              final player = (playerResult as Success).data!;
+            if (playerResult is Success &&
+                (playerResult as Success).data.isNotEmpty) {
+              final player = (playerResult as Success).data.first;
               if (context.mounted) {
                 context.replace(
                   '/evaluations/player/${player.id}',
@@ -174,7 +175,10 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
               Icon(
                 Icons.people_outline,
                 size: 80,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.3),
               ),
               const SizedBox(height: 16),
               Text(
@@ -210,7 +214,8 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     final player = sortedPlayers[index];
-                    final evaluationCount = _playerEvaluationCounts[player.id] ?? 0;
+                    final evaluationCount =
+                        _playerEvaluationCounts[player.id] ?? 0;
 
                     return Card(
                       elevation: 0,
@@ -236,15 +241,22 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                                 width: 56,
                                 height: 56,
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primaryContainer,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
                                   borderRadius: BorderRadius.circular(28),
                                 ),
                                 child: Center(
                                   child: Text(
                                     player.jerseyNumber?.toString() ?? '?',
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimaryContainer,
                                         ),
                                   ),
                                 ),
@@ -257,7 +269,10 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                                   children: [
                                     Text(
                                       player.fullName,
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
                                             fontWeight: FontWeight.bold,
                                           ),
                                     ),
@@ -268,7 +283,10 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                                         width: 16,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.5),
                                         ),
                                       )
                                     else
@@ -277,13 +295,23 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                                           Icon(
                                             Icons.assessment_outlined,
                                             size: 16,
-                                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.6),
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
-                                            l10n.evaluationsCount(evaluationCount.toString()),
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                                            l10n.evaluationsCount(
+                                                evaluationCount.toString()),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .onSurface
+                                                      .withValues(alpha: 0.7),
                                                 ),
                                           ),
                                         ],
@@ -294,11 +322,16 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                               // Evaluation count badge
                               if (!_loadingCounts)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: evaluationCount > 0
-                                        ? Theme.of(context).colorScheme.secondaryContainer
-                                        : Theme.of(context).colorScheme.surfaceContainerHighest,
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .secondaryContainer
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
@@ -307,15 +340,23 @@ class _EvaluationsPageState extends ConsumerState<EvaluationsPage> {
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                       color: evaluationCount > 0
-                                          ? Theme.of(context).colorScheme.onSecondaryContainer
-                                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onSecondaryContainer
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.6),
                                     ),
                                   ),
                                 ),
                               const SizedBox(width: 8),
                               Icon(
                                 Icons.chevron_right,
-                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.4),
                               ),
                             ],
                           ),

@@ -47,7 +47,8 @@ class UserTeamRole extends Equatable {
 /// Team-specific roles (coach or admin within a team context)
 enum TeamRole {
   coach('coach'),
-  admin('admin');
+  admin('admin'),
+  player('player');
 
   final String value;
   const TeamRole(this.value);

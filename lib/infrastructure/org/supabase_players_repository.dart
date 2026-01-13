@@ -39,11 +39,8 @@ class SupabasePlayersRepository implements PlayersRepository {
   @override
   Future<Result<Player>> getPlayerById(String id) async {
     try {
-      final response = await _client
-          .from('players')
-          .select()
-          .eq('id', id)
-          .single();
+      final response =
+          await _client.from('players').select().eq('id', id).single();
 
       return Success(PlayerMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -59,10 +56,8 @@ class SupabasePlayersRepository implements PlayersRepository {
   @override
   Future<Result<List<Player>>> getPlayersByUserId(String userId) async {
     try {
-      final response = await _client
-          .from('players')
-          .select()
-          .eq('user_id', userId);
+      final response =
+          await _client.from('players').select().eq('user_id', userId);
 
       final players = (response as List)
           .map((json) => PlayerMapper.fromJson(json as Map<String, dynamic>))
@@ -77,7 +72,8 @@ class SupabasePlayersRepository implements PlayersRepository {
   }
 
   @override
-  Future<Result<Player?>> getPlayerByUserIdAndTeamId(String userId, String teamId) async {
+  Future<Result<Player?>> getPlayerByUserIdAndTeamId(
+      String userId, String teamId) async {
     try {
       final parsedTeamId = int.tryParse(teamId) ?? teamId;
 
@@ -96,7 +92,8 @@ class SupabasePlayersRepository implements PlayersRepository {
     } on PostgrestException catch (e) {
       return Failed(ServerFailure(e.message, code: e.code));
     } catch (e) {
-      return Failed(ServerFailure('Error getting player by user ID and team ID: $e'));
+      return Failed(
+          ServerFailure('Error getting player by user ID and team ID: $e'));
     }
   }
 
@@ -110,12 +107,16 @@ class SupabasePlayersRepository implements PlayersRepository {
     try {
       // Don't specify 'id' - let PostgreSQL's bigserial auto-generate it
       // Don't specify 'created_at' - let PostgreSQL default handle it
-      final response = await _client.from('players').insert({
-        'team_id': int.tryParse(teamId) ?? teamId,
-        'user_id': userId,
-        'full_name': fullName.trim(),
-        'jersey_number': jerseyNumber,
-      }).select().single();
+      final response = await _client
+          .from('players')
+          .insert({
+            'team_id': int.tryParse(teamId) ?? teamId,
+            'user_id': userId,
+            'full_name': fullName.trim(),
+            'jersey_number': jerseyNumber,
+          })
+          .select()
+          .single();
 
       return Success(PlayerMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -218,6 +219,47 @@ class SupabasePlayersRepository implements PlayersRepository {
       );
     } catch (e) {
       return Failed(ServerFailure('Error asignando credenciales: $e'));
+    }
+  }
+
+  @override
+  Future<Result<Player>> importPlayer({
+    required String teamId,
+    required String fullName,
+    int? jerseyNumber,
+    String? userId,
+    String? email,
+  }) async {
+    try {
+      // Call edge function to import player securely
+      final response = await _client.functions.invoke(
+        'import-player',
+        body: {
+          'teamId': int.tryParse(teamId) ?? teamId,
+          'fullName': fullName.trim(),
+          'jerseyNumber': jerseyNumber,
+          'userId': userId,
+          'email': email,
+        },
+      );
+
+      if (response.status != 200) {
+        final errorData = response.data as Map<String, dynamic>?;
+        final errorMessage = errorData?['error'] ?? 'Error desconocido';
+        return Failed(ServerFailure('Error importando jugador: $errorMessage'));
+      }
+
+      final data = response.data as Map<String, dynamic>;
+      final playerData = data['player'] as Map<String, dynamic>;
+
+      return Success(PlayerMapper.fromJson(playerData));
+    } on FunctionException catch (e) {
+      return Failed(
+        ServerFailure(
+            'Error llamando a la función de importación: ${e.details}'),
+      );
+    } catch (e) {
+      return Failed(ServerFailure('Error inesperado al importar: $e'));
     }
   }
 }

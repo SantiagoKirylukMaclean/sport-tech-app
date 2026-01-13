@@ -21,7 +21,8 @@ abstract class PlayersRepository {
 
   /// Get player by user ID and Team ID
   /// Returns [Player] on success (if found), [Failure] on error
-  Future<Result<Player?>> getPlayerByUserIdAndTeamId(String userId, String teamId);
+  Future<Result<Player?>> getPlayerByUserIdAndTeamId(
+      String userId, String teamId);
 
   /// Create a new player
   /// Returns created [Player] on success, [Failure] on error
@@ -51,5 +52,15 @@ abstract class PlayersRepository {
     required String playerId,
     required String email,
     required String password,
+  });
+
+  /// Import an existing player from another team using Edge Function
+  /// Returns imported [Player] on success, [Failure] on error
+  Future<Result<Player>> importPlayer({
+    required String teamId,
+    required String fullName,
+    int? jerseyNumber,
+    String? userId,
+    String? email,
   });
 }

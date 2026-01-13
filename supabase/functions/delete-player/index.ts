@@ -99,19 +99,27 @@ serve(async (req) => {
       )
     }
 
-    // If player has a user_id, delete the auth user first
+    // If player has a user_id, remove their role for this team ONLY
     if (player.user_id) {
-      const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(player.user_id)
+      // Get the team_id from the player record first
+      const { data: playerWithTeam, error: teamError } = await supabaseAdmin
+        .from('players')
+        .select('team_id')
+        .eq('id', playerId)
+        .single()
 
-      if (deleteUserError) {
-        console.error('Failed to delete auth user:', deleteUserError)
-        return new Response(
-          JSON.stringify({ error: `Failed to delete user account: ${deleteUserError.message}` }),
-          {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        )
+      if (playerWithTeam && playerWithTeam.team_id) {
+        const { error: deleteRoleError } = await supabaseAdmin
+          .from('user_team_roles')
+          .delete()
+          .eq('user_id', player.user_id)
+          .eq('team_id', playerWithTeam.team_id)
+          .eq('role', 'player') // Only delete player role
+
+        if (deleteRoleError) {
+          console.error('Failed to delete user_team_role:', deleteRoleError)
+          // Continue anyway to delete the player record
+        }
       }
     }
 

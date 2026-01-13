@@ -59,7 +59,8 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     state = state.copyWith(isLoading: true, error: null);
 
     final playersResult = await _playersRepository.getPlayersByTeam(teamId);
-    final positionsResult = await _positionsRepository.getPositionsBySport(sportId);
+    final positionsResult =
+        await _positionsRepository.getPositionsBySport(sportId);
 
     // Load pending invites for this team
     final teamIdInt = int.tryParse(teamId);
@@ -73,9 +74,10 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
           success: (positions) {
             // Handle invites result
             final invites = invitesResult?.when(
-              success: (invitesList) => invitesList,
-              failure: (_) => <PendingInvite>[],
-            ) ?? <PendingInvite>[];
+                  success: (invitesList) => invitesList,
+                  failure: (_) => <PendingInvite>[],
+                ) ??
+                <PendingInvite>[];
 
             state = state.copyWith(
               players: players,
@@ -128,6 +130,35 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     );
   }
 
+  /// Import an existing player from another team
+  Future<bool> importPlayer({
+    required String teamId,
+    required Player sourcePlayer,
+  }) async {
+    // Note: sourcePlayer object contains userId and email needed for linking
+    final result = await _playersRepository.importPlayer(
+      teamId: teamId,
+      fullName: sourcePlayer.fullName,
+      jerseyNumber: sourcePlayer.jerseyNumber,
+      userId: sourcePlayer.userId,
+      email: sourcePlayer.email,
+    );
+
+    return result.when(
+      success: (player) {
+        // App state update only, actual DB linking handled by Edge Function
+        state = state.copyWith(
+          players: [...state.players, player],
+        );
+        return true;
+      },
+      failure: (failure) {
+        state = state.copyWith(error: failure.message);
+        return false;
+      },
+    );
+  }
+
   /// Update a player
   Future<bool> updatePlayer({
     required String id,
@@ -143,9 +174,8 @@ class PlayersNotifier extends StateNotifier<PlayersState> {
     return result.when(
       success: (updatedPlayer) {
         state = state.copyWith(
-          players: state.players
-              .map((p) => p.id == id ? updatedPlayer : p)
-              .toList(),
+          players:
+              state.players.map((p) => p.id == id ? updatedPlayer : p).toList(),
         );
         return true;
       },

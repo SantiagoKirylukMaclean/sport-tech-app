@@ -49,11 +49,28 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
   }
 
   Future<void> _refresh() async {
+    final authState = ref.read(authNotifierProvider);
     final activeTeamState = ref.read(activeTeamNotifierProvider);
-    if (activeTeamState.activeTeam != null) {
+
+    // Refresh teams list first to catch any new assignments
+    if (authState is AuthStateAuthenticated) {
       await ref
-          .read(statsNotifierProvider.notifier)
-          .refresh(activeTeamState.activeTeam!.id);
+          .read(activeTeamNotifierProvider.notifier)
+          .loadUserTeams(authState.profile.userId);
+    }
+
+    // Then refresh stats for current team
+    if (activeTeamState.activeTeam != null) {
+      // If user is player, refresh player dashboard
+      if (authState is AuthStateAuthenticated &&
+          authState.profile.role == UserRole.player) {
+        await ref.read(playerDashboardNotifierProvider.notifier).refresh();
+      } else {
+        // If coach, refresh team stats
+        await ref
+            .read(statsNotifierProvider.notifier)
+            .refresh(activeTeamState.activeTeam!.id);
+      }
     }
   }
 
@@ -77,11 +94,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     ref.listen(activeTeamNotifierProvider, (previous, next) {
       if (next.activeTeam != null &&
           (previous?.activeTeam?.id != next.activeTeam?.id)) {
-
         if (isPlayer) {
           ref
               .read(playerDashboardNotifierProvider.notifier)
-              .loadPlayerDashboard(authState.profile.userId, teamId: next.activeTeam!.id);
+              .loadPlayerDashboard(authState.profile.userId,
+                  teamId: next.activeTeam!.id);
         } else if (isCoach) {
           ref
               .read(statsNotifierProvider.notifier)
@@ -98,7 +115,8 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           if (isPlayer) {
             ref
                 .read(playerDashboardNotifierProvider.notifier)
-                .loadPlayerDashboard(authState.profile.userId, teamId: activeTeamState.activeTeam!.id);
+                .loadPlayerDashboard(authState.profile.userId,
+                    teamId: activeTeamState.activeTeam!.id);
           } else if (isCoach) {
             ref
                 .read(statsNotifierProvider.notifier)
@@ -140,12 +158,14 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               ElevatedButton.icon(
                 onPressed: () {
                   if (activeTeamState.activeTeam != null) {
-                     ref.read(playerDashboardNotifierProvider.notifier).loadPlayerDashboard(
-                       authState.profile.userId,
-                       teamId: activeTeamState.activeTeam!.id
-                     );
+                    ref
+                        .read(playerDashboardNotifierProvider.notifier)
+                        .loadPlayerDashboard(authState.profile.userId,
+                            teamId: activeTeamState.activeTeam!.id);
                   } else {
-                     ref.read(playerDashboardNotifierProvider.notifier).refresh();
+                    ref
+                        .read(playerDashboardNotifierProvider.notifier)
+                        .refresh();
                   }
                 },
                 icon: const Icon(Icons.refresh),
@@ -201,6 +221,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           teamTrainingAttendance: playerDashboardState.teamTrainingAttendance,
           playerName: playerDashboardState.playerStats!.playerName,
           teamName: teamName,
+          availableTeams: activeTeamState.teams,
+          activeTeamId: activeTeamState.activeTeam?.id,
+          onTeamSelected: (teamId) {
+            ref.read(activeTeamNotifierProvider.notifier).selectTeam(teamId);
+          },
         ),
       );
     }

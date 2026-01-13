@@ -25,14 +25,14 @@ final playerMatchesProvider =
 
     final userId = authState.profile.userId;
     final playersRepo = ref.watch(playersRepositoryProvider);
-    final playerResult = await playersRepo.getPlayerByUserId(userId);
+    final playerResult = await playersRepo.getPlayersByUserId(userId);
 
-    if (playerResult.dataOrNull == null) {
+    if (playerResult.dataOrNull == null || playerResult.dataOrNull!.isEmpty) {
       print('[PlayerMatchesList] No player found for user $userId');
       return [];
     }
 
-    final playerId = playerResult.dataOrNull!.id;
+    final playerId = playerResult.dataOrNull!.first.id;
     print('[PlayerMatchesList] Found player ID: $playerId for user $userId');
 
     final matchesNotifier =

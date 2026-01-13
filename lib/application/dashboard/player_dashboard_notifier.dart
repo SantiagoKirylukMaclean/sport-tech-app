@@ -7,6 +7,7 @@ import 'package:sport_tech_app/domain/org/repositories/players_repository.dart';
 import 'package:sport_tech_app/domain/stats/repositories/stats_repository.dart';
 import 'package:sport_tech_app/domain/stats/entities/player_statistics.dart';
 import 'package:sport_tech_app/domain/evaluations/repositories/player_evaluations_repository.dart';
+import 'package:sport_tech_app/domain/org/entities/player.dart';
 
 /// Notifier for managing player dashboard state
 class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
@@ -21,22 +22,40 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
   ) : super(const PlayerDashboardState());
 
   /// Load dashboard data for the authenticated player
-  Future<void> loadPlayerDashboard(String userId) async {
+  Future<void> loadPlayerDashboard(String userId, {String? teamId}) async {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      // 1. Get player record from userId
-      final playerResult = await _playersRepository.getPlayerByUserId(userId);
+      Player? player;
 
-      if (playerResult is! Success || (playerResult as Success).data == null) {
+      if (teamId != null) {
+        // Get specific player record for this team
+        final playerResult = await _playersRepository.getPlayerByUserIdAndTeamId(userId, teamId);
+
+        if (playerResult is Success && (playerResult as Success).data != null) {
+          player = (playerResult as Success).data;
+        }
+      } else {
+        // Fallback: get all player records and pick the first one
+        // This is mainly for initial load if no team is selected,
+        // though ActiveTeamNotifier should handle team selection.
+        final playersResult = await _playersRepository.getPlayersByUserId(userId);
+
+        if (playersResult is Success) {
+          final players = (playersResult as Success).data as List<Player>;
+          if (players.isNotEmpty) {
+            player = players.first;
+          }
+        }
+      }
+
+      if (player == null) {
         state = state.copyWith(
           isLoading: false,
           error: 'No se encontró un registro de jugador para esta cuenta',
         );
         return;
       }
-
-      final player = (playerResult as Success).data!;
 
       // 2. Load all data in parallel
       final results = await Future.wait([
@@ -109,7 +128,8 @@ class PlayerDashboardNotifier extends StateNotifier<PlayerDashboardState> {
     if (state.player != null) {
       // Use the player's user_id if available, otherwise reload by player ID
       if (state.player!.userId != null) {
-        await loadPlayerDashboard(state.player!.userId!);
+        // Pass the current team ID to ensure we reload the correct context
+        await loadPlayerDashboard(state.player!.userId!, teamId: state.player!.teamId);
       } else {
         await loadPlayerDashboardById(state.player!.id, state.player!.teamId);
       }

@@ -30,6 +30,12 @@ class AppScaffold extends ConsumerWidget {
     // Get navigation items based on user role
     final navigationItems = _getNavigationItems(authState, context);
 
+    // Check if user should see team selector (Coach, SuperAdmin, OR Player)
+    final canSwitchTeams = authState is AuthStateAuthenticated &&
+        (authState.profile.role == UserRole.coach ||
+         authState.profile.role.isSuperAdmin ||
+         authState.profile.role == UserRole.player);
+
     if (isWideScreen) {
       return Scaffold(
         body: Row(
@@ -48,10 +54,8 @@ class AppScaffold extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 16),
-                  // Team selector for coaches in wide screen
-                  if (authState is AuthStateAuthenticated &&
-                      (authState.profile.role == UserRole.coach ||
-                          authState.profile.role.isSuperAdmin))
+                  // Team selector for users in wide screen
+                  if (canSwitchTeams)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 8),
@@ -148,19 +152,15 @@ class AppScaffold extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(_getPageTitle(currentLocation, context)),
-                if (authState is AuthStateAuthenticated &&
-                    (authState.profile.role == UserRole.coach ||
-                        authState.profile.role.isSuperAdmin))
+                if (canSwitchTeams)
                   _ActiveTeamSubtitle(),
               ],
             ),
           ],
         ),
         actions: [
-          // Team selector button for coaches
-          if (authState is AuthStateAuthenticated &&
-              (authState.profile.role == UserRole.coach ||
-                  authState.profile.role.isSuperAdmin))
+          // Team selector button
+          if (canSwitchTeams)
             _TeamSelectorButton(),
           // Language toggle
           IconButton(

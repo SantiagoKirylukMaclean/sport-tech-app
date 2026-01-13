@@ -11,6 +11,7 @@ import 'package:sport_tech_app/presentation/org/widgets/player_form_dialog.dart'
 import 'package:sport_tech_app/presentation/org/widgets/invite_player_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/assign_credentials_dialog.dart';
 import 'package:sport_tech_app/presentation/org/widgets/user_credentials_dialog.dart';
+import 'package:sport_tech_app/presentation/org/widgets/import_player_dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
@@ -48,6 +49,11 @@ class _TeamPlayersPageState extends ConsumerState<TeamPlayersPage> {
       appBar: AppBar(
         title: const Text('Team Players'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.cloud_download),
+            tooltip: 'Import Player',
+            onPressed: () => _showImportDialog(context),
+          ),
           IconButton(
             icon: const Icon(Icons.person_add),
             tooltip: 'Invite Player',
@@ -118,7 +124,9 @@ class _TeamPlayersPageState extends ConsumerState<TeamPlayersPage> {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.playerAddedSuccessfully)),
+              SnackBar(
+                  content: Text(
+                      AppLocalizations.of(context)!.playerAddedSuccessfully)),
             );
           }
         },
@@ -136,6 +144,20 @@ class _TeamPlayersPageState extends ConsumerState<TeamPlayersPage> {
         positions: positions,
       ),
     );
+  }
+
+  void _showImportDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => ImportPlayerDialog(
+        currentTeamId: widget.teamId,
+      ),
+    ).then((changed) {
+      if (changed == true) {
+        // Reload players if needed, but notifiers usually auto-update.
+        // If imports affect the list, the notifier should have updated the state.
+      }
+    });
   }
 }
 
@@ -155,7 +177,8 @@ class _PlayerListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Determine player invite status
-    final inviteStatus = PlayerInviteUtils.getPlayerStatus(player, pendingInvites);
+    final inviteStatus =
+        PlayerInviteUtils.getPlayerStatus(player, pendingInvites);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -199,7 +222,8 @@ class _PlayerListItem extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusBadge(PlayerInviteStatus status, BuildContext context, WidgetRef ref) {
+  Widget _buildStatusBadge(
+      PlayerInviteStatus status, BuildContext context, WidgetRef ref) {
     Color backgroundColor;
     Color textColor;
     IconData icon;
@@ -223,17 +247,21 @@ class _PlayerListItem extends ConsumerWidget {
     }
 
     // Make badge clickable only if player has an account (accepted status)
-    final isClickable = status == PlayerInviteStatus.accepted && player.userId != null;
+    final isClickable =
+        status == PlayerInviteStatus.accepted && player.userId != null;
 
     return InkWell(
-      onTap: isClickable ? () => _showUserCredentialsDialog(context, ref) : null,
+      onTap:
+          isClickable ? () => _showUserCredentialsDialog(context, ref) : null,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(12),
-          border: isClickable ? Border.all(color: textColor.withValues(alpha: 0.3), width: 1.5) : null,
+          border: isClickable
+              ? Border.all(color: textColor.withValues(alpha: 0.3), width: 1.5)
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -275,7 +303,9 @@ class _PlayerListItem extends ConsumerWidget {
           if (success && context.mounted) {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(AppLocalizations.of(context)!.playerUpdatedSuccessfully)),
+              SnackBar(
+                  content: Text(
+                      AppLocalizations.of(context)!.playerUpdatedSuccessfully)),
             );
           }
         },
@@ -361,7 +391,8 @@ class _PlayerListItem extends ConsumerWidget {
 
           if (result.status != 200) {
             final errorData = result.data as Map<String, dynamic>?;
-            throw Exception(errorData?['error'] ?? 'Error al cambiar contraseña');
+            throw Exception(
+                errorData?['error'] ?? 'Error al cambiar contraseña');
           }
         },
       ),
@@ -390,7 +421,8 @@ class _PlayerListItem extends ConsumerWidget {
                 if (success) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text('Player deleted successfully'),),
+                      content: Text('Player deleted successfully'),
+                    ),
                   );
                 }
               }

@@ -38,13 +38,13 @@ final quartersPlayedDataProvider =
 
     final userId = authState.profile.userId;
     final playersRepo = ref.watch(playersRepositoryProvider);
-    final playerResult = await playersRepo.getPlayerByUserId(userId);
+    final playerResult = await playersRepo.getPlayersByUserId(userId);
 
-    if (playerResult.dataOrNull == null) {
+    if (playerResult.dataOrNull == null || playerResult.dataOrNull!.isEmpty) {
       return [];
     }
 
-    final playerId = playerResult.dataOrNull!.id;
+    final playerId = playerResult.dataOrNull!.first.id;
 
     final matchesNotifier =
         ref.watch(matchesNotifierProvider(activeTeam.id).notifier);

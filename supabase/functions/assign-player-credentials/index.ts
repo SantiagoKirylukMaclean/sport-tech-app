@@ -146,10 +146,67 @@ serve(async (req) => {
     const existingUser = existingUsers.users.find(u => u.email?.toLowerCase() === body.email.toLowerCase())
 
     if (existingUser) {
+      // LINK TO EXISTING USER INSTEAD OF ERRORING
+
+      // 1. Link the player to the existing user
+      const { error: updateError } = await supabaseAdmin
+        .from('players')
+        .update({
+          user_id: existingUser.id,
+          email: body.email.toLowerCase().trim()
+        })
+        .eq('id', body.playerId)
+
+      if (updateError) {
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: `Failed to link player to existing user: ${updateError.message}`
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        )
+      }
+
+      // 2. Create user_team_role entry for the existin user and new team
+      const { error: teamRoleError } = await supabaseAdmin
+        .from('user_team_roles')
+        .insert({
+          user_id: existingUser.id,
+          team_id: player.team_id,
+          role: 'player'
+        })
+
+      if (teamRoleError) {
+        // Try to rollback player link if role creation fails
+        await supabaseAdmin
+          .from('players')
+          .update({ user_id: null, email: null })
+          .eq('id', body.playerId)
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: `Failed to assign team role for existing user: ${teamRoleError.message}`
+          }),
+          {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        )
+      }
+
+      // Success for existing user
       return new Response(
-        JSON.stringify({ ok: false, error: 'This email is already in use' }),
+        JSON.stringify({
+          ok: true,
+          message: 'Existing user linked successfully',
+          userId: existingUser.id
+        }),
         {
-          status: 400,
+          status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       )

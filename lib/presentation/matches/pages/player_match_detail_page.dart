@@ -12,8 +12,8 @@ import 'package:sport_tech_app/infrastructure/matches/providers/matches_reposito
 import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
 
 /// Provider to get player's match details
-final playerMatchDetailProvider =
-    FutureProvider.autoDispose.family<PlayerMatchDetail?, String>((ref, matchId) async {
+final playerMatchDetailProvider = FutureProvider.autoDispose
+    .family<PlayerMatchDetail?, String>((ref, matchId) async {
   try {
     final authState = ref.watch(authNotifierProvider);
     if (authState is! AuthStateAuthenticated) {
@@ -41,9 +41,9 @@ final playerMatchDetailProvider =
 
     // Get player.id from user_id
     final playersRepo = ref.watch(playersRepositoryProvider);
-    final playerResult = await playersRepo.getPlayerByUserId(userId);
+    final playerResult = await playersRepo.getPlayersByUserId(userId);
 
-    if (playerResult.dataOrNull == null) {
+    if (playerResult.dataOrNull == null || playerResult.dataOrNull!.isEmpty) {
       print('[PlayerMatchDetail] ❌ No player found for user $userId');
       final failure = playerResult.failureOrNull;
       if (failure != null) {
@@ -51,7 +51,7 @@ final playerMatchDetailProvider =
       }
       return null;
     }
-    final player = playerResult.dataOrNull!;
+    final player = playerResult.dataOrNull!.first;
     final playerId = player.id;
     print('[PlayerMatchDetail] Found player ID: $playerId for user $userId');
 
@@ -67,18 +67,21 @@ final playerMatchDetailProvider =
       print('[PlayerMatchDetail] ❌ ERROR loading periods');
       print('[PlayerMatchDetail] Error message: ${periodsFailure.message}');
       print('[PlayerMatchDetail] Error code: ${periodsFailure.code}');
-      print('[PlayerMatchDetail] Query params - matchId: $matchId (${matchId.runtimeType}), playerId: $playerId (${playerId.runtimeType})');
+      print(
+          '[PlayerMatchDetail] Query params - matchId: $matchId (${matchId.runtimeType}), playerId: $playerId (${playerId.runtimeType})');
     }
     final myPeriods = playerPeriodsResult.dataOrNull ?? [];
     print('[PlayerMatchDetail] Player periods: ${myPeriods.length}');
 
     // Fetch quarter results
     final quarterResultsRepo = ref.watch(matchQuarterResultsRepositoryProvider);
-    final quarterResultsResult = await quarterResultsRepo.getResultsByMatch(matchId);
+    final quarterResultsResult =
+        await quarterResultsRepo.getResultsByMatch(matchId);
 
     final quarterResultsFailure = quarterResultsResult.failureOrNull;
     if (quarterResultsFailure != null) {
-      print('[PlayerMatchDetail] Error loading quarter results: $quarterResultsFailure');
+      print(
+          '[PlayerMatchDetail] Error loading quarter results: $quarterResultsFailure');
     }
     final quarterResults = quarterResultsResult.dataOrNull ?? [];
     print('[PlayerMatchDetail] Quarter results: ${quarterResults.length}');
@@ -97,7 +100,8 @@ final playerMatchDetailProvider =
     // Filter goals and assists by player
     final myGoals = allGoals.where((g) => g.scorerId == playerId).toList();
     final myAssists = allGoals.where((g) => g.assisterId == playerId).toList();
-    print('[PlayerMatchDetail] My goals: ${myGoals.length}, assists: ${myAssists.length}');
+    print(
+        '[PlayerMatchDetail] My goals: ${myGoals.length}, assists: ${myAssists.length}');
 
     final detail = PlayerMatchDetail(
       match: match,
@@ -143,7 +147,8 @@ class PlayerMatchDetail {
     });
   }
 
-  List<int> get quartersPlayedList => playerPeriods.map((p) => p.period).toList()..sort();
+  List<int> get quartersPlayedList =>
+      playerPeriods.map((p) => p.period).toList()..sort();
 
   bool get didPlay => playerPeriods.isNotEmpty;
 }
@@ -234,7 +239,8 @@ class PlayerMatchDetailPage extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(height: 12),
-                  _QuartersPlayedSection(playerPeriods: detail.playerPeriods, l10n: l10n),
+                  _QuartersPlayedSection(
+                      playerPeriods: detail.playerPeriods, l10n: l10n),
                   const SizedBox(height: 24),
 
                   // Match Results Section
@@ -245,7 +251,8 @@ class PlayerMatchDetailPage extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(height: 12),
-                  _QuarterResultsSection(quarterResults: detail.quarterResults, l10n: l10n),
+                  _QuarterResultsSection(
+                      quarterResults: detail.quarterResults, l10n: l10n),
                   const SizedBox(height: 24),
 
                   // Match Goals Section
@@ -320,7 +327,8 @@ class _MatchInfoCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Icon(
                     Icons.sports_soccer,
                     size: 28,
@@ -334,15 +342,18 @@ class _MatchInfoCard extends StatelessWidget {
                     children: [
                       Text(
                         opponent,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         dateFormat.format(matchDate),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                       ),
                     ],
@@ -399,7 +410,8 @@ class _MyPerformanceCard extends StatelessWidget {
             _StatColumn(
               icon: Icons.timer,
               label: l10n.quarters,
-              value: '${detail.quartersPlayed % 1 == 0 ? detail.quartersPlayed.toInt() : detail.quartersPlayed.toStringAsFixed(1)}/4',
+              value:
+                  '${detail.quartersPlayed % 1 == 0 ? detail.quartersPlayed.toInt() : detail.quartersPlayed.toStringAsFixed(1)}/4',
               color: Theme.of(context).colorScheme.primary,
             ),
             _StatColumn(
@@ -493,7 +505,8 @@ class _QuartersPlayedSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, (index) {
                 final quarter = index + 1;
-                final period = playerPeriods.where((p) => p.period == quarter).firstOrNull;
+                final period =
+                    playerPeriods.where((p) => p.period == quarter).firstOrNull;
                 final played = period != null;
                 final isFull = period?.fraction == Fraction.full;
 
@@ -506,7 +519,10 @@ class _QuartersPlayedSection extends StatelessWidget {
                         color: played
                             ? (isFull
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.5))
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.5))
                             : Theme.of(context).colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -518,7 +534,9 @@ class _QuartersPlayedSection extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: played
                                 ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.onSurfaceVariant,
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -526,7 +544,9 @@ class _QuartersPlayedSection extends StatelessWidget {
                     const SizedBox(height: 8),
                     if (played)
                       Icon(
-                        isFull ? Icons.check_circle : Icons.check_circle_outline,
+                        isFull
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
                         color: Theme.of(context).colorScheme.primary,
                         size: 20,
                       ),
@@ -545,7 +565,8 @@ class _QuartersPlayedSection extends StatelessWidget {
                   children: [
                     Container(
                       width: 60,
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 8),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.secondaryContainer,
                         borderRadius: BorderRadius.circular(8),
@@ -555,7 +576,9 @@ class _QuartersPlayedSection extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSecondaryContainer,
                         ),
                       ),
                     ),
@@ -573,9 +596,12 @@ class _QuartersPlayedSection extends StatelessWidget {
                             period.fraction == Fraction.full
                                 ? l10n.fullQuarter
                                 : l10n.halfQuarter,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                           ),
                         ],
                       ),
@@ -687,7 +713,9 @@ class _QuarterResultsSection extends StatelessWidget {
               children: [
                 ...List.generate(4, (index) {
                   final quarter = index + 1;
-                  final result = quarterResults.where((r) => r.quarter == quarter).firstOrNull;
+                  final result = quarterResults
+                      .where((r) => r.quarter == quarter)
+                      .firstOrNull;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8),
@@ -697,7 +725,10 @@ class _QuarterResultsSection extends StatelessWidget {
                           width: 80,
                           child: Text(
                             '${l10n.quarter} $quarter',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
@@ -706,7 +737,10 @@ class _QuarterResultsSection extends StatelessWidget {
                         if (result != null)
                           Text(
                             '${result.teamGoals} - ${result.opponentGoals}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           )
@@ -714,7 +748,9 @@ class _QuarterResultsSection extends StatelessWidget {
                           Text(
                             l10n.noData,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                       ],
@@ -802,7 +838,8 @@ class _ComingSoonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.5),
+      color:
+          Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.5),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(

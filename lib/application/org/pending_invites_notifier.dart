@@ -199,9 +199,8 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
     return result.when(
       success: (updatedInvite) {
         state = state.copyWith(
-          invites: state.invites
-              .map((i) => i.id == id ? updatedInvite : i)
-              .toList(),
+          invites:
+              state.invites.map((i) => i.id == id ? updatedInvite : i).toList(),
         );
         return true;
       },
@@ -223,6 +222,36 @@ class PendingInvitesNotifier extends StateNotifier<PendingInvitesState> {
       failure: (failure) {
         state = state.copyWith(error: failure.message);
         return null;
+      },
+    );
+  }
+
+  /// Create a staff user directly with password
+  Future<bool> createStaffUser({
+    required String email,
+    required String password,
+    required List<int> teamIds,
+    required String role,
+    required String createdBy,
+    String? displayName,
+  }) async {
+    final result = await _repository.createStaffUser(
+      email: email,
+      password: password,
+      teamIds: teamIds,
+      role: role,
+      createdBy: createdBy,
+      displayName: displayName,
+    );
+
+    return result.when(
+      success: (_) {
+        // We don't add to invitations list because it's a direct user creation
+        return true;
+      },
+      failure: (failure) {
+        state = state.copyWith(error: failure.message);
+        return false;
       },
     );
   }

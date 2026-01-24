@@ -2374,6 +2374,18 @@ abstract class AppLocalizations {
   /// **'Enter any notes'**
   String get enterAnyNotes;
 
+  /// No description provided for @numberOfPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Periods'**
+  String get numberOfPeriods;
+
+  /// No description provided for @periodDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Period Duration (minutes)'**
+  String get periodDuration;
+
   /// No description provided for @teamPlayersTitle.
   ///
   /// In en, this message translates to:
@@ -2577,6 +2589,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share this link with {email}:'**
   String shareThisLink(String email);
+
+  /// No description provided for @createUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Create User'**
+  String get createUser;
+
+  /// No description provided for @creationMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation Method'**
+  String get creationMethod;
+
+  /// No description provided for @sendInviteViaEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send link via Email'**
+  String get sendInviteViaEmail;
+
+  /// No description provided for @createUserDirectly.
+  ///
+  /// In en, this message translates to:
+  /// **'Create user directly (w/ password)'**
+  String get createUserDirectly;
+
+  /// No description provided for @userCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'User created successfully'**
+  String get userCreatedSuccessfully;
+
+  /// No description provided for @passwordIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordIsRequired;
 
   /// No description provided for @generalStats.
   ///

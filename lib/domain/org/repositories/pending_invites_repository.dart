@@ -55,4 +55,15 @@ abstract class PendingInvitesRepository {
   /// [sendEmail] if true, sends email automatically. If false, returns magic link for manual sharing
   /// Returns signup URL string or confirmation message on success, [Failure] on error
   Future<Result<String>> resendInvite(int id, {bool sendEmail = true});
+
+  /// Create a staff user directly with password
+  /// Returns userId as String on success, [Failure] on error
+  Future<Result<String>> createStaffUser({
+    required String email,
+    required String password,
+    required List<int> teamIds,
+    required String role,
+    required String createdBy,
+    String? displayName,
+  });
 }

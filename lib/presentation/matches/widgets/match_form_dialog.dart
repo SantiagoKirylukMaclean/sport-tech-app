@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/matches_notifier.dart';
 import 'package:sport_tech_app/domain/matches/entities/match.dart';
+import 'package:sport_tech_app/domain/org/entities/team.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
 class MatchFormDialog extends ConsumerStatefulWidget {
-  final String teamId;
+  final Team team;
   final Match? matchToEdit;
 
   const MatchFormDialog({
-    required this.teamId,
+    required this.team,
     this.matchToEdit,
     super.key,
   });
@@ -25,6 +26,8 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
   late final TextEditingController _opponentController;
   late final TextEditingController _locationController;
   late final TextEditingController _notesController;
+  late final TextEditingController _numberOfPeriodsController;
+  late final TextEditingController _periodDurationController;
   late DateTime _selectedDate;
   bool _isLoading = false;
 
@@ -35,6 +38,10 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
     _opponentController = TextEditingController(text: match?.opponent ?? '');
     _locationController = TextEditingController(text: match?.location ?? '');
     _notesController = TextEditingController(text: match?.notes ?? '');
+    _numberOfPeriodsController =
+        TextEditingController(text: match?.numberOfPeriods?.toString() ?? '4');
+    _periodDurationController =
+        TextEditingController(text: match?.periodDuration?.toString() ?? '10');
     _selectedDate = match?.matchDate ?? DateTime.now();
   }
 
@@ -43,6 +50,8 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
     _opponentController.dispose();
     _locationController.dispose();
     _notesController.dispose();
+    _numberOfPeriodsController.dispose();
+    _periodDurationController.dispose();
     super.dispose();
   }
 
@@ -66,8 +75,9 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
 
     setState(() => _isLoading = true);
 
-    final notifier =
-        ref.read(matchesNotifierProvider(widget.teamId).notifier);
+    setState(() => _isLoading = true);
+
+    final notifier = ref.read(matchesNotifierProvider(widget.team.id).notifier);
 
     if (widget.matchToEdit != null) {
       await notifier.updateMatch(
@@ -80,6 +90,8 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
         notes: _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
+        numberOfPeriods: int.tryParse(_numberOfPeriodsController.text),
+        periodDuration: int.tryParse(_periodDurationController.text),
       );
     } else {
       await notifier.createMatch(
@@ -167,6 +179,68 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
                   ),
                   maxLines: 3,
                 ),
+                if (widget.team.sportName?.toLowerCase().contains('bask') ==
+                        true ||
+                    widget.team.sportName?.toLowerCase().contains('básq') ==
+                        true) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _numberOfPeriodsController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.numberOfPeriods,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _periodDurationController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.periodDuration,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (widget.team.sportName?.toLowerCase().contains('bask') ==
+                        true ||
+                    widget.team.sportName?.toLowerCase().contains('básq') ==
+                        true) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _numberOfPeriodsController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.numberOfPeriods,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _periodDurationController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: l10n.periodDuration,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

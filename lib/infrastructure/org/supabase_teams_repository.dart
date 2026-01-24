@@ -18,7 +18,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
     try {
       final response = await _client
           .from('teams')
-          .select()
+          .select('*, clubs(sport_id, sports(name))')
           .order('name', ascending: true);
 
       final teams = (response as List)
@@ -38,7 +38,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
     try {
       final response = await _client
           .from('teams')
-          .select()
+          .select('*, clubs(sport_id, sports(name))')
           .eq('club_id', int.tryParse(clubId) ?? clubId)
           .order('name', ascending: true);
 
@@ -60,15 +60,13 @@ class SupabaseTeamsRepository implements TeamsRepository {
       // Join with user_team_roles to get teams for a specific user
       final response = await _client
           .from('user_team_roles')
-          .select('team_id, teams(*)')
+          .select('team_id, teams(*, clubs(sport_id, sports(name)))')
           .eq('user_id', userId);
 
-      final teams = (response as List)
-          .map((json) {
-            final teamData = json['teams'] as Map<String, dynamic>;
-            return TeamMapper.fromJson(teamData);
-          })
-          .toList();
+      final teams = (response as List).map((json) {
+        final teamData = json['teams'] as Map<String, dynamic>;
+        return TeamMapper.fromJson(teamData);
+      }).toList();
 
       return Success(teams);
     } on PostgrestException catch (e) {
@@ -83,7 +81,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
     try {
       final response = await _client
           .from('teams')
-          .select()
+          .select('*, clubs(sport_id, sports(name))')
           .eq('id', int.tryParse(id) ?? id)
           .single();
 
@@ -107,13 +105,17 @@ class SupabaseTeamsRepository implements TeamsRepository {
     String? calendarUrl,
   }) async {
     try {
-      final response = await _client.from('teams').insert({
-        'club_id': clubId,
-        'name': name.trim(),
-        if (standingsUrl != null) 'standings_url': standingsUrl,
-        if (resultsUrl != null) 'results_url': resultsUrl,
-        if (calendarUrl != null) 'calendar_url': calendarUrl,
-      }).select().single();
+      final response = await _client
+          .from('teams')
+          .insert({
+            'club_id': clubId,
+            'name': name.trim(),
+            if (standingsUrl != null) 'standings_url': standingsUrl,
+            if (resultsUrl != null) 'results_url': resultsUrl,
+            if (calendarUrl != null) 'calendar_url': calendarUrl,
+          })
+          .select('*, clubs(sport_id, sports(name))')
+          .single();
 
       return Success(TeamMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -141,7 +143,7 @@ class SupabaseTeamsRepository implements TeamsRepository {
             'calendar_url': calendarUrl,
           })
           .eq('id', int.tryParse(id) ?? id)
-          .select()
+          .select('*, clubs(sport_id, sports(name))')
           .single();
 
       return Success(TeamMapper.fromJson(response));

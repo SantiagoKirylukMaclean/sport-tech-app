@@ -34,11 +34,8 @@ class SupabaseProfilesRepository implements ProfilesRepository {
   @override
   Future<Result<UserProfile>> getProfileById(String userId) async {
     try {
-      final response = await _client
-          .from('profiles')
-          .select()
-          .eq('id', userId)
-          .single();
+      final response =
+          await _client.from('profiles').select().eq('id', userId).single();
 
       return Success(UserProfileMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -62,9 +59,7 @@ class SupabaseProfilesRepository implements ProfilesRepository {
         return const Failed(AuthFailure('No authenticated user'));
       }
 
-      final updates = <String, dynamic>{
-        'updated_at': DateTime.now().toIso8601String(),
-      };
+      final updates = <String, dynamic>{};
 
       if (displayName != null) {
         updates['display_name'] = displayName.trim();
@@ -93,13 +88,16 @@ class SupabaseProfilesRepository implements ProfilesRepository {
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
-      final response = await _client.from('profiles').insert({
-        'id': userId,
-        'display_name': displayName.trim(),
-        'role': role,
-        'created_at': now,
-        'updated_at': now,
-      }).select().single();
+      final response = await _client
+          .from('profiles')
+          .insert({
+            'id': userId,
+            'display_name': displayName.trim(),
+            'role': role,
+            'created_at': now,
+          })
+          .select()
+          .single();
 
       return Success(UserProfileMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -118,7 +116,8 @@ class SupabaseProfilesRepository implements ProfilesRepository {
           .order('created_at', ascending: false);
 
       final profiles = (response as List)
-          .map((json) => UserProfileMapper.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              UserProfileMapper.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(profiles);
@@ -139,7 +138,6 @@ class SupabaseProfilesRepository implements ProfilesRepository {
           .from('profiles')
           .update({
             'role': role,
-            'updated_at': DateTime.now().toIso8601String(),
           })
           .eq('id', userId)
           .select()

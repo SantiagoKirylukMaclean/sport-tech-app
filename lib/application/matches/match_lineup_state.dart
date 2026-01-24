@@ -1,5 +1,6 @@
 // lib/application/matches/match_lineup_state.dart
 
+import 'package:sport_tech_app/domain/matches/entities/basketball_match_stat.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_call_up.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_goal.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
@@ -13,6 +14,8 @@ class MatchLineupState {
   final String? error;
   final int currentQuarter; // 1-4
   final bool substitutionMode;
+  final bool statsMode;
+  final String? statsSelectedPlayerId;
 
   // Call-ups (convocatoria)
   final List<MatchCallUp> callUps;
@@ -20,7 +23,8 @@ class MatchLineupState {
 
   // Periods (players in field per quarter)
   final List<MatchPlayerPeriod> allPeriods; // All periods for the match
-  final List<MatchPlayerPeriod> currentQuarterPeriods; // Periods for current quarter
+  final List<MatchPlayerPeriod>
+      currentQuarterPeriods; // Periods for current quarter
 
   // Quarter results
   final List<MatchQuarterResult> quarterResults;
@@ -41,6 +45,10 @@ class MatchLineupState {
   // All team players (for selection in call-up)
   final List<Player> teamPlayers;
 
+  // Basketball stats
+  final List<BasketballMatchStat> basketballStats;
+  final List<BasketballMatchStat> currentQuarterBasketballStats;
+
   const MatchLineupState({
     this.isLoading = false,
     this.error,
@@ -59,6 +67,10 @@ class MatchLineupState {
     this.selectedPlayerOut,
     this.selectedPlayerIn,
     this.teamPlayers = const [],
+    this.statsMode = false,
+    this.statsSelectedPlayerId,
+    this.basketballStats = const [],
+    this.currentQuarterBasketballStats = const [],
   });
 
   /// Check if minimum call-ups requirement is met (7 players)
@@ -67,9 +79,7 @@ class MatchLineupState {
   /// Get players currently on field for current quarter
   List<Player> get fieldPlayers {
     final fieldPlayerIds = currentQuarterPeriods.map((p) => p.playerId).toSet();
-    return calledUpPlayers
-        .where((p) => fieldPlayerIds.contains(p.id))
-        .toList();
+    return calledUpPlayers.where((p) => fieldPlayerIds.contains(p.id)).toList();
   }
 
   /// Get players on bench (called up but not in current quarter)
@@ -89,6 +99,9 @@ class MatchLineupState {
     bool clearError = false,
     int? currentQuarter,
     bool? substitutionMode,
+    bool? statsMode,
+    String? statsSelectedPlayerId,
+    bool clearStatsSelectedPlayerId = false,
     List<MatchCallUp>? callUps,
     List<Player>? calledUpPlayers,
     List<MatchPlayerPeriod>? allPeriods,
@@ -105,16 +118,23 @@ class MatchLineupState {
     String? selectedPlayerIn,
     bool clearSelectedPlayerIn = false,
     List<Player>? teamPlayers,
+    List<BasketballMatchStat>? basketballStats,
+    List<BasketballMatchStat>? currentQuarterBasketballStats,
   }) {
     return MatchLineupState(
       isLoading: isLoading ?? this.isLoading,
       error: clearError ? null : (error ?? this.error),
       currentQuarter: currentQuarter ?? this.currentQuarter,
       substitutionMode: substitutionMode ?? this.substitutionMode,
+      statsMode: statsMode ?? this.statsMode,
+      statsSelectedPlayerId: clearStatsSelectedPlayerId
+          ? null
+          : (statsSelectedPlayerId ?? this.statsSelectedPlayerId),
       callUps: callUps ?? this.callUps,
       calledUpPlayers: calledUpPlayers ?? this.calledUpPlayers,
       allPeriods: allPeriods ?? this.allPeriods,
-      currentQuarterPeriods: currentQuarterPeriods ?? this.currentQuarterPeriods,
+      currentQuarterPeriods:
+          currentQuarterPeriods ?? this.currentQuarterPeriods,
       quarterResults: quarterResults ?? this.quarterResults,
       currentQuarterResult: clearCurrentQuarterResult
           ? null
@@ -122,7 +142,8 @@ class MatchLineupState {
       allGoals: allGoals ?? this.allGoals,
       currentQuarterGoals: currentQuarterGoals ?? this.currentQuarterGoals,
       allSubstitutions: allSubstitutions ?? this.allSubstitutions,
-      currentQuarterSubstitutions: currentQuarterSubstitutions ?? this.currentQuarterSubstitutions,
+      currentQuarterSubstitutions:
+          currentQuarterSubstitutions ?? this.currentQuarterSubstitutions,
       selectedPlayerOut: clearSelectedPlayerOut
           ? null
           : (selectedPlayerOut ?? this.selectedPlayerOut),
@@ -130,6 +151,9 @@ class MatchLineupState {
           ? null
           : (selectedPlayerIn ?? this.selectedPlayerIn),
       teamPlayers: teamPlayers ?? this.teamPlayers,
+      basketballStats: basketballStats ?? this.basketballStats,
+      currentQuarterBasketballStats:
+          currentQuarterBasketballStats ?? this.currentQuarterBasketballStats,
     );
   }
 }

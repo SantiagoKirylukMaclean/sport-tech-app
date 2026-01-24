@@ -40,6 +40,8 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
     required DateTime matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
   }) async {
     if (opponent.trim().isEmpty) {
       state = const MatchesStateError('Opponent name cannot be empty');
@@ -52,6 +54,8 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
       matchDate: matchDate,
       location: location,
       notes: notes,
+      numberOfPeriods: numberOfPeriods,
+      periodDuration: periodDuration,
     );
 
     result.when(
@@ -67,6 +71,8 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
     DateTime? matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
   }) async {
     final result = await _repository.updateMatch(
       id: id,
@@ -74,6 +80,8 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
       matchDate: matchDate,
       location: location,
       notes: notes,
+      numberOfPeriods: numberOfPeriods,
+      periodDuration: periodDuration,
     );
 
     result.when(

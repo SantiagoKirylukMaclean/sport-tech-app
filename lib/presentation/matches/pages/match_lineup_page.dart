@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_notifier.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
+import 'package:sport_tech_app/presentation/matches/widgets/basketball_court_widget.dart';
+import 'package:sport_tech_app/presentation/matches/widgets/basketball_lineup_list_widget.dart';
+import 'package:sport_tech_app/presentation/matches/widgets/basketball_stats_summary_widget.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/convocatoria_section.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/draggable_field_widget.dart';
 import 'package:sport_tech_app/presentation/matches/widgets/quarter_results_section.dart';
@@ -22,18 +26,39 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(matchLineupNotifierProvider(widget.matchId).notifier).loadMatchData();
+      ref
+          .read(matchLineupNotifierProvider(widget.matchId).notifier)
+          .loadMatchData();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(matchLineupNotifierProvider(widget.matchId));
+    final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
+    final isBasketball =
+        activeTeam?.sportName?.toLowerCase().contains('bask') == true ||
+            activeTeam?.sportName?.toLowerCase().contains('básq') == true ||
+            activeTeam?.sportName?.toLowerCase().contains('baloncesto') == true;
+    final isPhone = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Match Lineup'),
         actions: [
+          if (state.hasMinimumCallUps && isBasketball)
+            IconButton(
+              icon: Icon(
+                Icons.analytics,
+                color: state.statsMode ? Colors.orange : null,
+              ),
+              onPressed: () {
+                ref
+                    .read(matchLineupNotifierProvider(widget.matchId).notifier)
+                    .toggleStatsMode();
+              },
+              tooltip: state.statsMode ? 'Exit Stats Mode' : 'Enter Stats Mode',
+            ),
           if (state.hasMinimumCallUps)
             PopupMenuButton<int>(
               initialValue: state.currentQuarter,
@@ -49,7 +74,8 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                     child: Text('Quarter $i'),
                     onTap: () {
                       ref
-                          .read(matchLineupNotifierProvider(widget.matchId).notifier)
+                          .read(matchLineupNotifierProvider(widget.matchId)
+                              .notifier)
                           .selectQuarter(i);
                     },
                   ),
@@ -64,7 +90,8 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const Icon(Icons.error_outline,
+                          size: 64, color: Colors.red),
                       const SizedBox(height: 16),
                       Text(
                         state.error!,
@@ -75,7 +102,8 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                       ElevatedButton.icon(
                         onPressed: () {
                           ref
-                              .read(matchLineupNotifierProvider(widget.matchId).notifier)
+                              .read(matchLineupNotifierProvider(widget.matchId)
+                                  .notifier)
                               .loadMatchData();
                         },
                         icon: const Icon(Icons.refresh),
@@ -93,8 +121,14 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                       if (state.hasMinimumCallUps) ...[
                         const Divider(height: 32),
 
-                        // Draggable Field Formation
-                        DraggableFieldWidget(matchId: widget.matchId),
+                        // Field Formation (Conditional)
+                        if (isBasketball)
+                          if (isPhone)
+                            BasketballLineupListWidget(matchId: widget.matchId)
+                          else
+                            BasketballCourtWidget(matchId: widget.matchId)
+                        else
+                          DraggableFieldWidget(matchId: widget.matchId),
 
                         const Divider(height: 32),
 
@@ -103,8 +137,11 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
 
                         const Divider(height: 32),
 
-                        // Quarter Results Section
-                        QuarterResultsSection(matchId: widget.matchId),
+                        // Quarter Results / Stats Section
+                        if (isBasketball)
+                          BasketballStatsSummaryWidget(matchId: widget.matchId)
+                        else
+                          QuarterResultsSection(matchId: widget.matchId),
                       ],
                     ],
                   ),

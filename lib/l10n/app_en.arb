@@ -701,7 +701,10 @@
   "locationOptional": "Location (Optional)",
   "enterMatchLocation": "Enter match location",
   "notesOptional": "Notes (Optional)",
+  "notesOptional": "Notes (Optional)",
   "enterAnyNotes": "Enter any notes",
+  "numberOfPeriods": "Number of Periods",
+  "periodDuration": "Period Duration (minutes)",
 
   "@_TEAM_PLAYERS": {},
   "teamPlayersTitle": "Team Players",
@@ -793,6 +796,13 @@
   },
   "invitationEmailSentTo": "An invitation email has been sent to:",
   "shareThisLink": "Share this link with {email}:",
+  "createUser": "Create User",
+  "creationMethod": "Creation Method",
+  "sendInviteViaEmail": "Send link via Email",
+  "createUserDirectly": "Create user directly (w/ password)",
+  "userCreatedSuccessfully": "User created successfully",
+  "passwordIsRequired": "Password is required"
+,
   "@shareThisLink": {
     "placeholders": {
       "email": {

@@ -1252,6 +1252,12 @@ class AppLocalizationsCa extends AppLocalizations {
   String get enterAnyNotes => 'Introdueix qualsevol nota';
 
   @override
+  String get numberOfPeriods => 'Number of Periods';
+
+  @override
+  String get periodDuration => 'Period Duration (minutes)';
+
+  @override
   String get teamPlayersTitle => 'Jugadors de l\'Equip';
 
   @override
@@ -1371,6 +1377,24 @@ class AppLocalizationsCa extends AppLocalizations {
   String shareThisLink(String email) {
     return 'Comparteix aquest enllaç amb $email:';
   }
+
+  @override
+  String get createUser => 'Create User';
+
+  @override
+  String get creationMethod => 'Creation Method';
+
+  @override
+  String get sendInviteViaEmail => 'Send link via Email';
+
+  @override
+  String get createUserDirectly => 'Create user directly (w/ password)';
+
+  @override
+  String get userCreatedSuccessfully => 'User created successfully';
+
+  @override
+  String get passwordIsRequired => 'Password is required';
 
   @override
   String get generalStats => 'Estadístiques Generals';

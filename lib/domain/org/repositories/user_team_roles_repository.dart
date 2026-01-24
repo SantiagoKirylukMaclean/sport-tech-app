@@ -24,5 +24,9 @@ abstract class UserTeamRolesRepository {
 
   /// Remove a role assignment
   /// Returns void on success, [Failure] on error
-  Future<Result<void>> removeRole(String id);
+  Future<Result<void>> removeRole({
+    required String userId,
+    required String teamId,
+    required TeamRole role,
+  });
 }

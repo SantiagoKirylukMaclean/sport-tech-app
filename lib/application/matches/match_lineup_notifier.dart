@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_state.dart';
 import 'package:sport_tech_app/domain/matches/entities/field_zone.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_player_period.dart';
+import 'package:sport_tech_app/domain/matches/entities/basketball_match_stat.dart';
+import 'package:sport_tech_app/domain/matches/repositories/basketball_match_stats_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_call_ups_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_goals_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_player_periods_repository.dart';
@@ -16,14 +18,15 @@ import 'package:sport_tech_app/infrastructure/matches/providers/matches_reposito
 import 'package:sport_tech_app/infrastructure/org/providers/org_repositories_providers.dart';
 
 /// Provider for match lineup notifier
-final matchLineupNotifierProvider = StateNotifierProvider.family<
-    MatchLineupNotifier, MatchLineupState, String>(
+final matchLineupNotifierProvider =
+    StateNotifierProvider.family<MatchLineupNotifier, MatchLineupState, String>(
   (ref, matchId) {
     final callUpsRepo = ref.watch(matchCallUpsRepositoryProvider);
     final periodsRepo = ref.watch(matchPlayerPeriodsRepositoryProvider);
     final substitutionsRepo = ref.watch(matchSubstitutionsRepositoryProvider);
     final resultsRepo = ref.watch(matchQuarterResultsRepositoryProvider);
     final goalsRepo = ref.watch(matchGoalsRepositoryProvider);
+    final statsRepo = ref.watch(basketballMatchStatsRepositoryProvider);
     final playersRepo = ref.watch(playersRepositoryProvider);
     final matchesRepo = ref.watch(matchesRepositoryProvider);
 
@@ -34,6 +37,7 @@ final matchLineupNotifierProvider = StateNotifierProvider.family<
       substitutionsRepository: substitutionsRepo,
       resultsRepository: resultsRepo,
       goalsRepository: goalsRepo,
+      statsRepository: statsRepo,
       playersRepository: playersRepo,
       matchesRepository: matchesRepo,
     );
@@ -48,6 +52,7 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
   final MatchSubstitutionsRepository _substitutionsRepository;
   final MatchQuarterResultsRepository _resultsRepository;
   final MatchGoalsRepository _goalsRepository;
+  final BasketballMatchStatsRepository _statsRepository;
   final PlayersRepository _playersRepository;
   final MatchesRepository _matchesRepository;
 
@@ -58,6 +63,7 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     required MatchSubstitutionsRepository substitutionsRepository,
     required MatchQuarterResultsRepository resultsRepository,
     required MatchGoalsRepository goalsRepository,
+    required BasketballMatchStatsRepository statsRepository,
     required PlayersRepository playersRepository,
     required MatchesRepository matchesRepository,
   })  : _callUpsRepository = callUpsRepository,
@@ -65,6 +71,7 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
         _substitutionsRepository = substitutionsRepository,
         _resultsRepository = resultsRepository,
         _goalsRepository = goalsRepository,
+        _statsRepository = statsRepository,
         _playersRepository = playersRepository,
         _matchesRepository = matchesRepository,
         super(const MatchLineupState());
@@ -79,22 +86,25 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       if (matchResult.isFailure) {
         state = state.copyWith(
           isLoading: false,
-          error: matchResult.failureOrNull?.message ?? 'Failed to load match details',
+          error: matchResult.failureOrNull?.message ??
+              'Failed to load match details',
         );
         return;
       }
       final match = matchResult.dataOrNull!;
 
       // Load all team players
-      final teamPlayersResult = await _playersRepository.getPlayersByTeam(match.teamId);
+      final teamPlayersResult =
+          await _playersRepository.getPlayersByTeam(match.teamId);
       final teamPlayers = teamPlayersResult.dataOrNull ?? [];
-      
+
       // Load call-ups
       final callUpsResult = await _callUpsRepository.getCallUpsByMatch(matchId);
       if (callUpsResult.isFailure) {
         state = state.copyWith(
           isLoading: false,
-          error: callUpsResult.failureOrNull?.message ?? 'Failed to load call-ups',
+          error:
+              callUpsResult.failureOrNull?.message ?? 'Failed to load call-ups',
         );
         return;
       }
@@ -108,7 +118,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       final calledUpPlayers = <Player>[];
       for (final playerId in playerIds) {
         // First check if player is in teamPlayers to avoid extra API call
-        final existingPlayer = teamPlayers.where((p) => p.id == playerId).firstOrNull;
+        final existingPlayer =
+            teamPlayers.where((p) => p.id == playerId).firstOrNull;
         if (existingPlayer != null) {
           calledUpPlayers.add(existingPlayer);
         } else {
@@ -126,7 +137,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       if (periodsResult.isFailure) {
         state = state.copyWith(
           isLoading: false,
-          error: periodsResult.failureOrNull?.message ?? 'Failed to load periods',
+          error:
+              periodsResult.failureOrNull?.message ?? 'Failed to load periods',
         );
         return;
       }
@@ -134,9 +146,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       final allPeriods = periodsResult.dataOrNull ?? [];
 
       // Filter periods for current quarter
-      final currentQuarterPeriods = allPeriods
-          .where((p) => p.period == state.currentQuarter)
-          .toList();
+      final currentQuarterPeriods =
+          allPeriods.where((p) => p.period == state.currentQuarter).toList();
 
       // Load quarter results
       final resultsResult = await _resultsRepository.getResultsByMatch(matchId);
@@ -154,11 +165,13 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
           allGoals.where((g) => g.quarter == state.currentQuarter).toList();
 
       // Load substitutions
-      final substitutionsResult = await _substitutionsRepository.getSubstitutionsByMatch(matchId);
+      final substitutionsResult =
+          await _substitutionsRepository.getSubstitutionsByMatch(matchId);
       final allSubstitutions = substitutionsResult.dataOrNull ?? [];
 
-      final currentQuarterSubstitutions =
-          allSubstitutions.where((s) => s.period == state.currentQuarter).toList();
+      final currentQuarterSubstitutions = allSubstitutions
+          .where((s) => s.period == state.currentQuarter)
+          .toList();
 
       state = state.copyWith(
         isLoading: false,
@@ -172,7 +185,6 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
         currentQuarterGoals: currentQuarterGoals,
         allSubstitutions: allSubstitutions,
         currentQuarterSubstitutions: currentQuarterSubstitutions,
-
         teamPlayers: teamPlayers,
         clearError: true,
       );
@@ -200,6 +212,9 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     final currentQuarterSubstitutions =
         state.allSubstitutions.where((s) => s.period == quarter).toList();
 
+    final currentQuarterBasketballStats =
+        state.basketballStats.where((s) => s.quarter == quarter).toList();
+
     state = state.copyWith(
       currentQuarter: quarter,
       currentQuarterPeriods: currentQuarterPeriods,
@@ -207,7 +222,9 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
       clearCurrentQuarterResult: currentQuarterResult == null,
       currentQuarterGoals: currentQuarterGoals,
       currentQuarterSubstitutions: currentQuarterSubstitutions,
+      currentQuarterBasketballStats: currentQuarterBasketballStats,
       substitutionMode: false, // Exit substitution mode when changing quarter
+      statsMode: false, // Exit stats mode when changing quarter
       clearSelectedPlayerOut: true,
       clearSelectedPlayerIn: true,
     );
@@ -271,7 +288,8 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
   }
 
   /// Add player to field for current quarter with a specific field zone
-  Future<void> addPlayerToFieldWithZone(String playerId, FieldZone fieldZone) async {
+  Future<void> addPlayerToFieldWithZone(
+      String playerId, FieldZone fieldZone) async {
     if (state.isFieldFull) {
       state = state.copyWith(
         error: 'Field is full (maximum 7 players)',
@@ -408,5 +426,50 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     } else {
       state = state.copyWith(selectedPlayerIn: playerId);
     }
+  }
+
+  // Basketball Stats Methods
+
+  void toggleStatsMode() {
+    state = state.copyWith(
+      statsMode: !state.statsMode,
+      substitutionMode: false, // mutually exclusive
+      clearStatsSelectedPlayerId: true,
+    );
+  }
+
+  void selectStatsPlayer(String playerId) {
+    state = state.copyWith(statsSelectedPlayerId: playerId);
+  }
+
+  void clearStatsSelectedPlayer() {
+    state = state.copyWith(clearStatsSelectedPlayerId: true);
+  }
+
+  Future<void> addBasketballStat(
+      String playerId, BasketballStatType type) async {
+    final result = await _statsRepository.createStat(
+      matchId: matchId,
+      playerId: playerId,
+      quarter: state.currentQuarter,
+      statType: type,
+    );
+
+    result.when(
+      success: (_) {
+        loadMatchData();
+        state = state.copyWith(clearStatsSelectedPlayerId: true);
+      },
+      failure: (failure) => state = state.copyWith(error: failure.message),
+    );
+  }
+
+  Future<void> deleteBasketballStat(String statId) async {
+    final result = await _statsRepository.deleteStat(statId);
+
+    result.when(
+      success: (_) => loadMatchData(),
+      failure: (failure) => state = state.copyWith(error: failure.message),
+    );
   }
 }

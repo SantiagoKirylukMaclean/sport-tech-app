@@ -22,6 +22,8 @@ abstract class MatchesRepository {
     required DateTime matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
   });
 
   /// Update an existing match
@@ -32,6 +34,8 @@ abstract class MatchesRepository {
     DateTime? matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
   });
 
   /// Delete a match

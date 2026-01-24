@@ -10,6 +10,11 @@ class TeamMapper {
       id: json['id'].toString(),
       clubId: json['club_id'].toString(),
       name: json['name'] as String,
+      sportId:
+          json['clubs'] != null ? json['clubs']['sport_id'].toString() : null,
+      sportName: json['clubs'] != null && json['clubs']['sports'] != null
+          ? json['clubs']['sports']['name'] as String
+          : null,
       createdAt: DateTime.parse(json['created_at'] as String),
       standingsUrl: json['standings_url'] as String?,
       resultsUrl: json['results_url'] as String?,
@@ -23,6 +28,8 @@ class TeamMapper {
       'id': team.id,
       'club_id': team.clubId,
       'name': team.name,
+      // 'sport_id' is read-only from clubs
+
       'created_at': team.createdAt.toIso8601String(),
       'standings_url': team.standingsUrl,
       'results_url': team.resultsUrl,

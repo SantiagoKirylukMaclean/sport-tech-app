@@ -11,6 +11,8 @@ class Match extends Equatable {
   final DateTime matchDate;
   final String? location;
   final String? notes;
+  final int? numberOfPeriods;
+  final int? periodDuration;
   final DateTime createdAt;
 
   const Match({
@@ -21,6 +23,8 @@ class Match extends Equatable {
     required this.createdAt,
     this.location,
     this.notes,
+    this.numberOfPeriods,
+    this.periodDuration,
   });
 
   @override
@@ -31,12 +35,14 @@ class Match extends Equatable {
         matchDate,
         location,
         notes,
+        notes,
+        numberOfPeriods,
+        periodDuration,
         createdAt,
       ];
 
   @override
-  String toString() =>
-      'Match(id: $id, opponent: $opponent, date: $matchDate)';
+  String toString() => 'Match(id: $id, opponent: $opponent, date: $matchDate)';
 
   /// Create a copy with updated fields
   Match copyWith({
@@ -46,6 +52,8 @@ class Match extends Equatable {
     DateTime? matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
     DateTime? createdAt,
   }) {
     return Match(
@@ -55,6 +63,8 @@ class Match extends Equatable {
       matchDate: matchDate ?? this.matchDate,
       location: location ?? this.location,
       notes: notes ?? this.notes,
+      numberOfPeriods: numberOfPeriods ?? this.numberOfPeriods,
+      periodDuration: periodDuration ?? this.periodDuration,
       createdAt: createdAt ?? this.createdAt,
     );
   }

@@ -175,6 +175,13 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
 
       // Load basketball stats
       final statsResult = await _statsRepository.getStatsByMatch(matchId);
+      if (statsResult.isFailure) {
+        state = state.copyWith(
+          isLoading: false,
+          error: statsResult.failureOrNull?.message ?? 'Failed to load stats',
+        );
+        return;
+      }
       final basketballStats = statsResult.dataOrNull ?? [];
 
       final currentQuarterBasketballStats = basketballStats

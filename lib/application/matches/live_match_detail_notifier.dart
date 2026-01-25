@@ -51,8 +51,14 @@ class LiveMatchDetailState {
   }
 
   // Computed property for total score
-  int get teamScore =>
-      quarterResults.fold(0, (sum, result) => sum + result.teamGoals);
+  int get teamScore {
+    if (basketballStats.isNotEmpty) {
+      return basketballStats.fold(
+          0, (sum, stat) => sum + stat.statType.pointsValue);
+    }
+    return quarterResults.fold(0, (sum, result) => sum + result.teamGoals);
+  }
+
   int get opponentScore =>
       quarterResults.fold(0, (sum, result) => sum + result.opponentGoals);
 }
@@ -109,8 +115,10 @@ class LiveMatchDetailNotifier extends StateNotifier<LiveMatchDetailState> {
     // Assuming 'Basketball' or similar from DB.
     // Ideally we should use constants or enum, but string matching is common in MVP.
     // Check if sportName contains "Basket" to be safe or matches specific key.
-    final isBasketball =
-        sportName != null && sportName.toLowerCase().contains('basket');
+    final isBasketball = sportName != null &&
+        (sportName.toLowerCase().contains('basket') ||
+            sportName.toLowerCase().contains('básq') ||
+            sportName.toLowerCase().contains('baloncesto'));
 
     if (isBasketball) {
       final statsResult =

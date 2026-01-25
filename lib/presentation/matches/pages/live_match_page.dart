@@ -19,6 +19,7 @@ class LiveMatchPage extends ConsumerStatefulWidget {
 
 class _LiveMatchPageState extends ConsumerState<LiveMatchPage> {
   Timer? _timer;
+  int _remainingSeconds = 30;
 
   @override
   void initState() {
@@ -36,8 +37,18 @@ class _LiveMatchPageState extends ConsumerState<LiveMatchPage> {
   }
 
   void _startPolling() {
-    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
-      _loadData();
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (mounted) {
+        setState(() {
+          if (_remainingSeconds > 0) {
+            _remainingSeconds--;
+          } else {
+            _remainingSeconds = 30;
+            _loadData();
+          }
+        });
+      }
     });
   }
 
@@ -67,6 +78,11 @@ class _LiveMatchPageState extends ConsumerState<LiveMatchPage> {
         body: Center(child: Text(state.error ?? l10n.errorLoadingMatchDetail)),
       );
     }
+
+    final isBasketball = state.sportName != null &&
+        (state.sportName!.toLowerCase().contains('basket') ||
+            state.sportName!.toLowerCase().contains('básq') ||
+            state.sportName!.toLowerCase().contains('baloncesto'));
 
     return Scaffold(
       appBar: AppBar(
@@ -177,91 +193,52 @@ class _LiveMatchPageState extends ConsumerState<LiveMatchPage> {
 
               // Goals / Events Timeline
               Text(
-                (state.sportName != null &&
-                        state.sportName!.toLowerCase().contains('basket'))
-                    ? l10n.matchStatistics
-                    : l10n.matchGoals,
+                isBasketball ? l10n.matchStatistics : l10n.matchGoals,
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge
                     ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              if ((state.sportName != null &&
-                      state.sportName!.toLowerCase().contains('basket'))
+              if (isBasketball
                   ? state.basketballStats.isEmpty
                   : state.goals.isEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32.0),
                     child: Text(
-                        (state.sportName != null &&
-                                state.sportName!
-                                    .toLowerCase()
-                                    .contains('basket'))
+                        isBasketball
                             ? l10n.noStatisticsRecorded
                             : l10n.noGoalsRecorded,
                         style: const TextStyle(color: Colors.grey)),
                   ),
                 )
-              else if (state.sportName != null &&
-                  state.sportName!.toLowerCase().contains('basket'))
-                ListView.builder(
+              else if (isBasketball)
+                ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: state.basketballStats.length,
+                  separatorBuilder: (context, index) =>
+                      const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final stat = state.basketballStats[index];
-                    String titleText;
-                    if (stat.statType.pointsValue > 0) {
-                      final pointLabel =
-                          l10n.statPoint(stat.statType.pointsValue);
-                      titleText =
-                          '${stat.statType.pointsValue} $pointLabel ${stat.playerName ?? ''}';
-                    } else {
-                      String statName = stat.statType.displayName;
-                      switch (stat.statType) {
-                        case BasketballStatType.reboundOff:
-                          statName = l10n.reboundOff;
-                          break;
-                        case BasketballStatType.reboundDef:
-                          statName = l10n.reboundDef;
-                          break;
-                        case BasketballStatType.assist:
-                          statName = l10n.assistStat;
-                          break;
-                        case BasketballStatType.block:
-                          statName = l10n.block;
-                          break;
-                        case BasketballStatType.steal:
-                          statName = l10n.steal;
-                          break;
-                        case BasketballStatType.turnover:
-                          statName = l10n.turnover;
-                          break;
-                        case BasketballStatType.foul:
-                          statName = l10n.foul;
-                          break;
-                        default:
-                          break;
-                      }
-                      titleText = '$statName ${stat.playerName ?? ''}';
-                    }
-
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.orange.shade100,
+                        backgroundColor:
+                            colorScheme.primary, // Blue-ish usually
+                        foregroundColor: colorScheme.onPrimary,
                         child: Text(
-                          '${stat.quarter}Q',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange.shade900,
-                          ),
+                          stat.playerJerseyNumber?.toString() ??
+                              stat.playerId.substring(0, 1),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      title: Text(titleText),
-                      trailing: const Icon(Icons.sports_basketball),
+                      title: Text(stat.playerName ?? 'Player ${stat.playerId}'),
+                      subtitle: Text(stat.statType.displayName),
+                      trailing: Icon(Icons.sports_basketball,
+                          color: stat.statType.pointsValue > 0
+                              ? Colors.green
+                              : Colors.orange),
                     );
                   },
                 )
@@ -294,23 +271,26 @@ class _LiveMatchPageState extends ConsumerState<LiveMatchPage> {
                 ),
 
               const SizedBox(height: 32),
-              // Auto-refresh indicator text
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                        width: 12,
-                        height: 12,
-                        child: CircularProgressIndicator(strokeWidth: 2)),
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        value: _remainingSeconds / 30,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Text(
-                      'Live updates active', // TODO: Localize
+                      'Live updates in $_remainingSeconds s', // TODO: Localize
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

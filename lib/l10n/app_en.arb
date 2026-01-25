@@ -794,6 +794,16 @@
       }
     }
   },
+  "matchStatistics": "Match Statistics",
+  "noStatisticsRecorded": "No statistics recorded",
+  "statPoint": "{count, plural, =1{point} other{points}}",
+  "reboundOff": "Offensive Rebound",
+  "reboundDef": "Defensive Rebound",
+  "assistStat": "Assist",
+  "block": "Block",
+  "steal": "Steal",
+  "turnover": "Turnover",
+  "foul": "Foul",
   "matchLive": "Match Live",
   "matchScheduled": "Scheduled",
   "matchFinished": "Finished",

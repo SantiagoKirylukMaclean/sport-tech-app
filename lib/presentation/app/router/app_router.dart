@@ -14,6 +14,7 @@ import 'package:sport_tech_app/presentation/matches/pages/matches_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_lineup_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/matches_list_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/match_detail_page.dart';
+import 'package:sport_tech_app/presentation/matches/pages/live_match_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/player_matches_list_page.dart';
 import 'package:sport_tech_app/presentation/matches/pages/player_match_detail_page.dart';
 import 'package:sport_tech_app/presentation/dashboard/pages/quarters_played_chart_page.dart';
@@ -417,6 +418,17 @@ final routerProvider = Provider<GoRouter>((ref) {
                   return MaterialPage(
                     key: state.pageKey,
                     child: MatchDetailPage(matchId: matchId),
+                  );
+                },
+              ),
+              GoRoute(
+                path: '/live-match/:matchId',
+                name: 'live-match',
+                pageBuilder: (context, state) {
+                  final matchId = state.pathParameters['matchId'] ?? '';
+                  return MaterialPage(
+                    key: state.pageKey,
+                    child: LiveMatchPage(matchId: matchId),
                   );
                 },
               ),

@@ -30,6 +30,7 @@ class BasketballMatchStat extends Equatable {
   final String id;
   final String matchId;
   final String playerId;
+  final String? playerName;
   final int quarter;
   final BasketballStatType statType;
   final DateTime createdAt;
@@ -38,6 +39,7 @@ class BasketballMatchStat extends Equatable {
     required this.id,
     required this.matchId,
     required this.playerId,
+    this.playerName,
     required this.quarter,
     required this.statType,
     required this.createdAt,
@@ -45,12 +47,13 @@ class BasketballMatchStat extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, matchId, playerId, quarter, statType, createdAt];
+      [id, matchId, playerId, playerName, quarter, statType, createdAt];
 
   BasketballMatchStat copyWith({
     String? id,
     String? matchId,
     String? playerId,
+    String? playerName,
     int? quarter,
     BasketballStatType? statType,
     DateTime? createdAt,
@@ -59,6 +62,7 @@ class BasketballMatchStat extends Equatable {
       id: id ?? this.id,
       matchId: matchId ?? this.matchId,
       playerId: playerId ?? this.playerId,
+      playerName: playerName ?? this.playerName,
       quarter: quarter ?? this.quarter,
       statType: statType ?? this.statType,
       createdAt: createdAt ?? this.createdAt,

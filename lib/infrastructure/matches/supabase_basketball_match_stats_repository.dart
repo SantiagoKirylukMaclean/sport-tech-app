@@ -17,7 +17,7 @@ class SupabaseBasketballMatchStatsRepository
     try {
       final response = await _client
           .from('basketball_match_stats')
-          .select()
+          .select('*, player:players(name)')
           .eq('match_id', int.parse(matchId))
           .order('created_at', ascending: false);
 

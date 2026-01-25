@@ -1371,6 +1371,44 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
+  String get matchStatistics => 'Match Statistics';
+
+  @override
+  String get noStatisticsRecorded => 'No statistics recorded';
+
+  @override
+  String statPoint(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'points',
+      one: 'point',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reboundOff => 'Offensive Rebound';
+
+  @override
+  String get reboundDef => 'Defensive Rebound';
+
+  @override
+  String get assistStat => 'Assist';
+
+  @override
+  String get block => 'Block';
+
+  @override
+  String get steal => 'Steal';
+
+  @override
+  String get turnover => 'Turnover';
+
+  @override
+  String get foul => 'Foul';
+
+  @override
   String get matchLive => 'Partit en Joc';
 
   @override

@@ -2578,6 +2578,66 @@ abstract class AppLocalizations {
   /// **'Player ID: {playerId}'**
   String playerIdLabel(String playerId);
 
+  /// No description provided for @matchStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Statistics'**
+  String get matchStatistics;
+
+  /// No description provided for @noStatisticsRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics recorded'**
+  String get noStatisticsRecorded;
+
+  /// No description provided for @statPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{point} other{points}}'**
+  String statPoint(num count);
+
+  /// No description provided for @reboundOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Offensive Rebound'**
+  String get reboundOff;
+
+  /// No description provided for @reboundDef.
+  ///
+  /// In en, this message translates to:
+  /// **'Defensive Rebound'**
+  String get reboundDef;
+
+  /// No description provided for @assistStat.
+  ///
+  /// In en, this message translates to:
+  /// **'Assist'**
+  String get assistStat;
+
+  /// No description provided for @block.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get block;
+
+  /// No description provided for @steal.
+  ///
+  /// In en, this message translates to:
+  /// **'Steal'**
+  String get steal;
+
+  /// No description provided for @turnover.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnover'**
+  String get turnover;
+
+  /// No description provided for @foul.
+  ///
+  /// In en, this message translates to:
+  /// **'Foul'**
+  String get foul;
+
   /// No description provided for @matchLive.
   ///
   /// In en, this message translates to:

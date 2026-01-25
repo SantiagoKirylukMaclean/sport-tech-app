@@ -1374,6 +1374,44 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get matchStatistics => 'Estadísticas del Partido';
+
+  @override
+  String get noStatisticsRecorded => 'No hay estadísticas registradas';
+
+  @override
+  String statPoint(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'puntos',
+      one: 'punto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reboundOff => 'Rebote Ofensivo';
+
+  @override
+  String get reboundDef => 'Rebote Defensivo';
+
+  @override
+  String get assistStat => 'Asistencia';
+
+  @override
+  String get block => 'Tapón';
+
+  @override
+  String get steal => 'Robo';
+
+  @override
+  String get turnover => 'Pérdida';
+
+  @override
+  String get foul => 'Falta';
+
+  @override
   String get matchLive => 'Partido en Juego';
 
   @override

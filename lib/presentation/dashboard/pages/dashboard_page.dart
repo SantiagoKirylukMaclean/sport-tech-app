@@ -14,6 +14,8 @@ import 'package:sport_tech_app/presentation/stats/widgets/training_tab.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/team_stats_overview.dart';
 import 'package:sport_tech_app/presentation/dashboard/widgets/player_dashboard_content.dart';
 import 'package:sport_tech_app/presentation/stats/widgets/lineups_tab.dart';
+import 'package:sport_tech_app/presentation/dashboard/widgets/active_match_banner.dart';
+import 'package:sport_tech_app/application/matches/match_providers.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -94,6 +96,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     ref.listen(activeTeamNotifierProvider, (previous, next) {
       if (next.activeTeam != null &&
           (previous?.activeTeam?.id != next.activeTeam?.id)) {
+        // Always check for live match when team changes
+        ref
+            .read(liveMatchNotifierProvider.notifier)
+            .checkLiveMatch(next.activeTeam!.id);
+
         if (isPlayer) {
           ref
               .read(playerDashboardNotifierProvider.notifier)
@@ -112,6 +119,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       _hasLoadedStats = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
+          // Always check for live match on init
+          ref
+              .read(liveMatchNotifierProvider.notifier)
+              .checkLiveMatch(activeTeamState.activeTeam!.id);
+
           if (isPlayer) {
             ref
                 .read(playerDashboardNotifierProvider.notifier)
@@ -211,21 +223,40 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
               ?.name ??
           '';
 
+      final liveMatchState = ref.watch(liveMatchNotifierProvider);
+
       return RefreshIndicator(
-        onRefresh: () =>
-            ref.read(playerDashboardNotifierProvider.notifier).refresh(),
-        child: PlayerDashboardContent(
-          playerStats: playerDashboardState.playerStats!,
-          teamMatches: playerDashboardState.teamMatches,
-          evaluationsCount: playerDashboardState.evaluationsCount,
-          teamTrainingAttendance: playerDashboardState.teamTrainingAttendance,
-          playerName: playerDashboardState.playerStats!.playerName,
-          teamName: teamName,
-          availableTeams: activeTeamState.teams,
-          activeTeamId: activeTeamState.activeTeam?.id,
-          onTeamSelected: (teamId) {
-            ref.read(activeTeamNotifierProvider.notifier).selectTeam(teamId);
-          },
+        onRefresh: () async {
+          await ref.read(playerDashboardNotifierProvider.notifier).refresh();
+          if (activeTeamState.activeTeam != null) {
+            await ref
+                .read(liveMatchNotifierProvider.notifier)
+                .checkLiveMatch(activeTeamState.activeTeam!.id);
+          }
+        },
+        child: Column(
+          children: [
+            if (liveMatchState.liveMatch != null)
+              ActiveMatchBanner(match: liveMatchState.liveMatch!),
+            Expanded(
+              child: PlayerDashboardContent(
+                playerStats: playerDashboardState.playerStats!,
+                teamMatches: playerDashboardState.teamMatches,
+                evaluationsCount: playerDashboardState.evaluationsCount,
+                teamTrainingAttendance:
+                    playerDashboardState.teamTrainingAttendance,
+                playerName: playerDashboardState.playerStats!.playerName,
+                teamName: teamName,
+                availableTeams: activeTeamState.teams,
+                activeTeamId: activeTeamState.activeTeam?.id,
+                onTeamSelected: (teamId) {
+                  ref
+                      .read(activeTeamNotifierProvider.notifier)
+                      .selectTeam(teamId);
+                },
+              ),
+            ),
+          ],
         ),
       );
     }

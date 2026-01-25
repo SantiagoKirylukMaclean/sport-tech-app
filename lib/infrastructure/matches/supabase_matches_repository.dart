@@ -37,11 +37,8 @@ class SupabaseMatchesRepository implements MatchesRepository {
   @override
   Future<Result<Match>> getMatchById(String id) async {
     try {
-      final response = await _client
-          .from('matches')
-          .select()
-          .eq('id', id)
-          .single();
+      final response =
+          await _client.from('matches').select().eq('id', id).single();
 
       return Success(MatchMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -61,17 +58,25 @@ class SupabaseMatchesRepository implements MatchesRepository {
     required DateTime matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
-      final response = await _client.from('matches').insert({
-        'team_id': int.parse(teamId),
-        'opponent': opponent.trim(),
-        'match_date': matchDate.toIso8601String().split('T')[0],
-        'location': location?.trim(),
-        'notes': notes?.trim(),
-        'created_at': now,
-      }).select().single();
+      final response = await _client
+          .from('matches')
+          .insert({
+            'team_id': int.parse(teamId),
+            'opponent': opponent.trim(),
+            'match_date': matchDate.toIso8601String().split('T')[0],
+            'location': location?.trim(),
+            'notes': notes?.trim(),
+            'number_of_periods': numberOfPeriods,
+            'period_duration': periodDuration,
+            'created_at': now,
+          })
+          .select()
+          .single();
 
       return Success(MatchMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -88,6 +93,9 @@ class SupabaseMatchesRepository implements MatchesRepository {
     DateTime? matchDate,
     String? location,
     String? notes,
+    int? numberOfPeriods,
+    int? periodDuration,
+    MatchStatus? status,
   }) async {
     try {
       final updates = <String, dynamic>{};
@@ -103,6 +111,15 @@ class SupabaseMatchesRepository implements MatchesRepository {
       }
       if (notes != null) {
         updates['notes'] = notes.trim();
+      }
+      if (numberOfPeriods != null) {
+        updates['number_of_periods'] = numberOfPeriods;
+      }
+      if (periodDuration != null) {
+        updates['period_duration'] = periodDuration;
+      }
+      if (status != null) {
+        updates['status'] = status.name;
       }
 
       final response = await _client

@@ -143,8 +143,9 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                               Theme.of(context).colorScheme.primaryContainer,
                           child: Icon(
                             Icons.sports_soccer,
-                            color:
-                                Theme.of(context).colorScheme.onPrimaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
                           ),
                         ),
                         title: Text(
@@ -183,7 +184,8 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                               onTap: () {
                                 Future.delayed(
                                   Duration.zero,
-                                  () => context.push('/matches/${match.id}/lineup'),
+                                  () => context
+                                      .push('/matches/${match.id}/lineup'),
                                 );
                               },
                             ),
@@ -200,7 +202,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => MatchFormDialog(
-                                      teamId: activeTeam.id,
+                                      team: activeTeam,
                                       matchToEdit: match,
                                     ),
                                   );
@@ -239,7 +241,7 @@ class _MatchesPageState extends ConsumerState<MatchesPage> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (context) => MatchFormDialog(teamId: activeTeam.id),
+            builder: (context) => MatchFormDialog(team: activeTeam),
           );
         },
         icon: const Icon(Icons.add),

@@ -2374,6 +2374,18 @@ abstract class AppLocalizations {
   /// **'Enter any notes'**
   String get enterAnyNotes;
 
+  /// No description provided for @numberOfPeriods.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of Periods'**
+  String get numberOfPeriods;
+
+  /// No description provided for @periodDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Period Duration (minutes)'**
+  String get periodDuration;
+
   /// No description provided for @teamPlayersTitle.
   ///
   /// In en, this message translates to:
@@ -2566,6 +2578,84 @@ abstract class AppLocalizations {
   /// **'Player ID: {playerId}'**
   String playerIdLabel(String playerId);
 
+  /// No description provided for @matchStatistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Statistics'**
+  String get matchStatistics;
+
+  /// No description provided for @noStatisticsRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'No statistics recorded'**
+  String get noStatisticsRecorded;
+
+  /// No description provided for @statPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{point} other{points}}'**
+  String statPoint(num count);
+
+  /// No description provided for @reboundOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Offensive Rebound'**
+  String get reboundOff;
+
+  /// No description provided for @reboundDef.
+  ///
+  /// In en, this message translates to:
+  /// **'Defensive Rebound'**
+  String get reboundDef;
+
+  /// No description provided for @assistStat.
+  ///
+  /// In en, this message translates to:
+  /// **'Assist'**
+  String get assistStat;
+
+  /// No description provided for @block.
+  ///
+  /// In en, this message translates to:
+  /// **'Block'**
+  String get block;
+
+  /// No description provided for @steal.
+  ///
+  /// In en, this message translates to:
+  /// **'Steal'**
+  String get steal;
+
+  /// No description provided for @turnover.
+  ///
+  /// In en, this message translates to:
+  /// **'Turnover'**
+  String get turnover;
+
+  /// No description provided for @foul.
+  ///
+  /// In en, this message translates to:
+  /// **'Foul'**
+  String get foul;
+
+  /// No description provided for @matchLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Live'**
+  String get matchLive;
+
+  /// No description provided for @matchScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get matchScheduled;
+
+  /// No description provided for @matchFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get matchFinished;
+
   /// No description provided for @invitationEmailSentTo.
   ///
   /// In en, this message translates to:
@@ -2577,6 +2667,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share this link with {email}:'**
   String shareThisLink(String email);
+
+  /// No description provided for @createUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Create User'**
+  String get createUser;
+
+  /// No description provided for @creationMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Creation Method'**
+  String get creationMethod;
+
+  /// No description provided for @sendInviteViaEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send link via Email'**
+  String get sendInviteViaEmail;
+
+  /// No description provided for @createUserDirectly.
+  ///
+  /// In en, this message translates to:
+  /// **'Create user directly (w/ password)'**
+  String get createUserDirectly;
+
+  /// No description provided for @userCreatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'User created successfully'**
+  String get userCreatedSuccessfully;
+
+  /// No description provided for @passwordIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordIsRequired;
 
   /// No description provided for @generalStats.
   ///

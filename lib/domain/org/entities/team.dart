@@ -8,6 +8,8 @@ class Team extends Equatable {
   final String id;
   final String clubId;
   final String name;
+  final String? sportId; // Fetched from Club
+  final String? sportName; // Fetched from Club -> Sport
   final DateTime createdAt;
   final String? standingsUrl;
   final String? resultsUrl;
@@ -17,6 +19,8 @@ class Team extends Equatable {
     required this.id,
     required this.clubId,
     required this.name,
+    this.sportId,
+    this.sportName,
     required this.createdAt,
     this.standingsUrl,
     this.resultsUrl,
@@ -24,7 +28,17 @@ class Team extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, clubId, name, createdAt, standingsUrl, resultsUrl, calendarUrl];
+  List<Object?> get props => [
+        id,
+        clubId,
+        name,
+        sportId,
+        sportName,
+        createdAt,
+        standingsUrl,
+        resultsUrl,
+        calendarUrl
+      ];
 
   @override
   String toString() => 'Team(id: $id, name: $name, clubId: $clubId)';
@@ -34,6 +48,8 @@ class Team extends Equatable {
     String? id,
     String? clubId,
     String? name,
+    String? sportId,
+    String? sportName,
     DateTime? createdAt,
     String? standingsUrl,
     String? resultsUrl,
@@ -43,6 +59,8 @@ class Team extends Equatable {
       id: id ?? this.id,
       clubId: clubId ?? this.clubId,
       name: name ?? this.name,
+      sportId: sportId ?? this.sportId,
+      sportName: sportName ?? this.sportName,
       createdAt: createdAt ?? this.createdAt,
       standingsUrl: standingsUrl ?? this.standingsUrl,
       resultsUrl: resultsUrl ?? this.resultsUrl,

@@ -1256,6 +1256,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get enterAnyNotes => 'Ingresa cualquier nota';
 
   @override
+  String get numberOfPeriods => 'Número de Periodos';
+
+  @override
+  String get periodDuration => 'Duración de Periodo (minutos)';
+
+  @override
   String get teamPlayersTitle => 'Jugadores del Equipo';
 
   @override
@@ -1368,12 +1374,77 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get matchStatistics => 'Estadísticas del Partido';
+
+  @override
+  String get noStatisticsRecorded => 'No hay estadísticas registradas';
+
+  @override
+  String statPoint(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'puntos',
+      one: 'punto',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reboundOff => 'Rebote Ofensivo';
+
+  @override
+  String get reboundDef => 'Rebote Defensivo';
+
+  @override
+  String get assistStat => 'Asistencia';
+
+  @override
+  String get block => 'Tapón';
+
+  @override
+  String get steal => 'Robo';
+
+  @override
+  String get turnover => 'Pérdida';
+
+  @override
+  String get foul => 'Falta';
+
+  @override
+  String get matchLive => 'Partido en Juego';
+
+  @override
+  String get matchScheduled => 'Programado';
+
+  @override
+  String get matchFinished => 'Finalizado';
+
+  @override
   String get invitationEmailSentTo => 'Se ha enviado un email de invitación a:';
 
   @override
   String shareThisLink(String email) {
     return 'Comparte este enlace con $email:';
   }
+
+  @override
+  String get createUser => 'Crear Usuario';
+
+  @override
+  String get creationMethod => 'Método de Creación';
+
+  @override
+  String get sendInviteViaEmail => 'Enviar enlace por Email';
+
+  @override
+  String get createUserDirectly => 'Crear usuario directamente (c/ contraseña)';
+
+  @override
+  String get userCreatedSuccessfully => 'Usuario creado exitosamente';
+
+  @override
+  String get passwordIsRequired => 'La contraseña es obligatoria';
 
   @override
   String get generalStats => 'Estadísticas Generales';

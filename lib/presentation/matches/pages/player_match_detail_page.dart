@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
@@ -154,7 +155,7 @@ class PlayerMatchDetail {
 }
 
 /// Page showing player's personal match details
-class PlayerMatchDetailPage extends ConsumerWidget {
+class PlayerMatchDetailPage extends ConsumerStatefulWidget {
   final String matchId;
 
   const PlayerMatchDetailPage({
@@ -163,9 +164,100 @@ class PlayerMatchDetailPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PlayerMatchDetailPage> createState() =>
+      _PlayerMatchDetailPageState();
+}
+
+class _PlayerMatchDetailPageState extends ConsumerState<PlayerMatchDetailPage> {
+  RealtimeChannel? _subscription;
+
+  @override
+  void dispose() {
+    _subscription?.unsubscribe();
+    super.dispose();
+  }
+
+  void _setupRealtimeSubscription(String matchId) {
+    if (_subscription != null) return;
+
+    final supabase = Supabase.instance.client;
+    print('[PlayerMatchDetailPage] Setting up Realtime for match $matchId');
+
+    _subscription = supabase
+        .channel('public:match_detail:$matchId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'match_quarter_results',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'match_id',
+            value: matchId,
+          ),
+          callback: (payload) {
+            print(
+                '[PlayerMatchDetailPage] Quarter result changed: ${payload.eventType}');
+            ref.invalidate(playerMatchDetailProvider(matchId));
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'basketball_match_stats',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'match_id',
+            value: matchId,
+          ),
+          callback: (payload) {
+            print(
+                '[PlayerMatchDetailPage] Basketball stat changed: ${payload.eventType}');
+            ref.invalidate(playerMatchDetailProvider(matchId));
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.update,
+          schema: 'public',
+          table: 'matches',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'id',
+            value: matchId,
+          ),
+          callback: (payload) {
+            print(
+                '[PlayerMatchDetailPage] Match updated: ${payload.eventType}');
+            ref.invalidate(playerMatchDetailProvider(matchId));
+          },
+        )
+        .subscribe();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final detailAsync = ref.watch(playerMatchDetailProvider(matchId));
+    final detailAsync = ref.watch(playerMatchDetailProvider(widget.matchId));
+
+    // Listen to data to setup realtime if needed
+    ref.listen(playerMatchDetailProvider(widget.matchId), (previous, next) {
+      if (next.hasValue && next.value != null) {
+        final match = next.value!.match;
+        if (match.status == MatchStatus.live) {
+          _setupRealtimeSubscription(widget.matchId);
+        } else if (match.status == MatchStatus.finished) {
+          // Optional: unsubscribe if finished? Or keep listening in case adjustments are made.
+          // For now, keep it to allow post-match adjustments.
+        }
+      }
+    });
+
+    // Also try to setup on initial build if data is already there (though listen should cover updates)
+    if (detailAsync.hasValue && detailAsync.value != null) {
+      final match = detailAsync.value!.match;
+      if (match.status == MatchStatus.live) {
+        _setupRealtimeSubscription(widget.matchId);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -187,7 +279,7 @@ class PlayerMatchDetailPage extends ConsumerWidget {
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () {
-                  ref.invalidate(playerMatchDetailProvider(matchId));
+                  ref.invalidate(playerMatchDetailProvider(widget.matchId));
                 },
                 icon: const Icon(Icons.refresh),
                 label: Text(l10n.retry),
@@ -204,7 +296,7 @@ class PlayerMatchDetailPage extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(playerMatchDetailProvider(matchId));
+              ref.invalidate(playerMatchDetailProvider(widget.matchId));
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -217,6 +309,8 @@ class PlayerMatchDetailPage extends ConsumerWidget {
                     opponent: detail.match.opponent,
                     matchDate: detail.match.matchDate,
                     location: detail.match.location,
+                    status: detail.match.status,
+                    l10n: l10n,
                   ),
                   const SizedBox(height: 24),
 
@@ -306,11 +400,15 @@ class _MatchInfoCard extends StatelessWidget {
   final String opponent;
   final DateTime matchDate;
   final String? location;
+  final MatchStatus status;
+  final AppLocalizations l10n;
 
   const _MatchInfoCard({
     required this.opponent,
     required this.matchDate,
     this.location,
+    required this.status,
+    required this.l10n,
   });
 
   @override
@@ -340,12 +438,51 @@ class _MatchInfoCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        opponent,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              opponent,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
+                          if (status == MatchStatus.live) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.red),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.fiber_manual_record,
+                                    size: 10,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    l10n.matchLive.toUpperCase(),
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(

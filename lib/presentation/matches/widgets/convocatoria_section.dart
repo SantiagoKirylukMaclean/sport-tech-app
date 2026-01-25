@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/match_lineup_notifier.dart';
+import 'package:sport_tech_app/application/org/active_team_notifier.dart';
 
 class ConvocatoriaSection extends ConsumerWidget {
   final String matchId;
@@ -12,6 +13,16 @@ class ConvocatoriaSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(matchLineupNotifierProvider(matchId));
+    final activeTeam = ref.watch(activeTeamNotifierProvider).activeTeam;
+
+    // Determine sport
+    final isBasketball =
+        activeTeam?.sportName?.toLowerCase().contains('bask') == true ||
+            activeTeam?.sportName?.toLowerCase().contains('básq') == true ||
+            activeTeam?.sportName?.toLowerCase().contains('baloncesto') == true;
+
+    final minPlayers = isBasketball ? 5 : 7;
+    final hasMinPlayers = state.callUps.length >= minPlayers;
 
     return Card(
       margin: const EdgeInsets.all(16),
@@ -39,14 +50,14 @@ class ConvocatoriaSection extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Chip(
-                  label: Text('${state.callUps.length} / 7 min'),
-                  backgroundColor: state.hasMinimumCallUps
+                  label: Text('${state.callUps.length} / $minPlayers min'),
+                  backgroundColor: hasMinPlayers
                       ? Colors.green.withOpacity(0.2)
                       : Colors.red.withOpacity(0.2),
                 ),
               ],
             ),
-            if (!state.hasMinimumCallUps) ...[
+            if (!hasMinPlayers) ...[
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -55,14 +66,14 @@ class ConvocatoriaSection extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.red.withOpacity(0.3)),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.warning, color: Colors.red, size: 20),
-                    SizedBox(width: 8),
+                    const Icon(Icons.warning, color: Colors.red, size: 20),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Minimum 7 players required to manage lineup',
-                        style: TextStyle(color: Colors.red),
+                        'Minimum $minPlayers players required to manage lineup',
+                        style: const TextStyle(color: Colors.red),
                       ),
                     ),
                   ],

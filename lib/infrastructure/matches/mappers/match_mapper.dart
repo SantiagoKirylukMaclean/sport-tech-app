@@ -13,6 +13,9 @@ class MatchMapper {
       matchDate: DateTime.parse(json['match_date'] as String),
       location: json['location'] as String?,
       notes: json['notes'] as String?,
+      numberOfPeriods: json['number_of_periods'] as int?,
+      periodDuration: json['period_duration'] as int?,
+      status: _parseStatus(json['status'] as String?),
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -26,7 +29,19 @@ class MatchMapper {
       'match_date': match.matchDate.toIso8601String().split('T')[0],
       'location': match.location,
       'notes': match.notes,
+      'number_of_periods': match.numberOfPeriods,
+      'period_duration': match.periodDuration,
+      'status': match.status.name,
       'created_at': match.createdAt.toIso8601String(),
     };
+  }
+
+  static MatchStatus _parseStatus(String? status) {
+    if (status == null) return MatchStatus.scheduled;
+    try {
+      return MatchStatus.values.firstWhere((e) => e.name == status);
+    } catch (_) {
+      return MatchStatus.scheduled;
+    }
   }
 }

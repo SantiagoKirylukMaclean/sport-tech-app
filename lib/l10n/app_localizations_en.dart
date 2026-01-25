@@ -1233,6 +1233,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterAnyNotes => 'Enter any notes';
 
   @override
+  String get numberOfPeriods => 'Number of Periods';
+
+  @override
+  String get periodDuration => 'Period Duration (minutes)';
+
+  @override
   String get teamPlayersTitle => 'Team Players';
 
   @override
@@ -1343,12 +1349,77 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get matchStatistics => 'Match Statistics';
+
+  @override
+  String get noStatisticsRecorded => 'No statistics recorded';
+
+  @override
+  String statPoint(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'points',
+      one: 'point',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reboundOff => 'Offensive Rebound';
+
+  @override
+  String get reboundDef => 'Defensive Rebound';
+
+  @override
+  String get assistStat => 'Assist';
+
+  @override
+  String get block => 'Block';
+
+  @override
+  String get steal => 'Steal';
+
+  @override
+  String get turnover => 'Turnover';
+
+  @override
+  String get foul => 'Foul';
+
+  @override
+  String get matchLive => 'Match Live';
+
+  @override
+  String get matchScheduled => 'Scheduled';
+
+  @override
+  String get matchFinished => 'Finished';
+
+  @override
   String get invitationEmailSentTo => 'An invitation email has been sent to:';
 
   @override
   String shareThisLink(String email) {
     return 'Share this link with $email:';
   }
+
+  @override
+  String get createUser => 'Create User';
+
+  @override
+  String get creationMethod => 'Creation Method';
+
+  @override
+  String get sendInviteViaEmail => 'Send link via Email';
+
+  @override
+  String get createUserDirectly => 'Create user directly (w/ password)';
+
+  @override
+  String get userCreatedSuccessfully => 'User created successfully';
+
+  @override
+  String get passwordIsRequired => 'Password is required';
 
   @override
   String get generalStats => 'General Statistics';

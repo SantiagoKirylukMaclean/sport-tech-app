@@ -2,6 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/config/supabase_config.dart';
+import 'package:sport_tech_app/domain/matches/repositories/basketball_match_stats_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_call_ups_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_goals_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_player_periods_repository.dart';
@@ -9,6 +10,7 @@ import 'package:sport_tech_app/domain/matches/repositories/match_quarter_results
 import 'package:sport_tech_app/domain/matches/repositories/match_substitutions_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_validation_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/matches_repository.dart';
+import 'package:sport_tech_app/infrastructure/matches/supabase_basketball_match_stats_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/supabase_match_call_ups_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/supabase_match_goals_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/supabase_match_player_periods_repository.dart';
@@ -24,8 +26,7 @@ final matchesRepositoryProvider = Provider<MatchesRepository>((ref) {
 });
 
 /// Provider for Match Call-ups Repository
-final matchCallUpsRepositoryProvider =
-    Provider<MatchCallUpsRepository>((ref) {
+final matchCallUpsRepositoryProvider = Provider<MatchCallUpsRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return SupabaseMatchCallUpsRepository(client);
 });
@@ -62,4 +63,11 @@ final matchValidationRepositoryProvider =
     Provider<MatchValidationRepository>((ref) {
   final client = ref.watch(supabaseClientProvider);
   return SupabaseMatchValidationRepository(client);
+});
+
+/// Provider for Basketball Match Stats Repository
+final basketballMatchStatsRepositoryProvider =
+    Provider<BasketballMatchStatsRepository>((ref) {
+  final client = ref.watch(supabaseClientProvider);
+  return SupabaseBasketballMatchStatsRepository(client);
 });

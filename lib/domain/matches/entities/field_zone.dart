@@ -19,7 +19,13 @@ enum FieldZone {
   volanteDerecho('VOLANTE_DERECHO', 'Volante Derecho'),
   delanteroIzquierdo('DELANTERO_IZQUIERDO', 'Delantero Izquierdo'),
   delanteroCentro('DELANTERO_CENTRO', 'Delantero Centro'),
-  delanteroDerecho('DELANTERO_DERECHO', 'Delantero Derecho');
+  delanteroDerecho('DELANTERO_DERECHO', 'Delantero Derecho'),
+  // Basketball Positions
+  base('BASE', 'Base'),
+  escolta('ESCOLTA', 'Escolta'),
+  alero('ALERO', 'Alero'),
+  alaPivot('ALA_PIVOT', 'Ala-Pívot'),
+  pivot('PIVOT', 'Pívot');
 
   const FieldZone(this.value, this.displayName);
   final String value;

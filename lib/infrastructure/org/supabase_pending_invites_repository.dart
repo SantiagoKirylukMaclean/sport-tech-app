@@ -22,7 +22,8 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
           .order('created_at', ascending: false);
 
       final invites = (response as List)
-          .map((json) => PendingInviteMapper.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              PendingInviteMapper.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(invites);
@@ -40,11 +41,11 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
       final response = await _client
           .from('pending_invites')
           .select()
-          .contains('team_ids', [teamId])
-          .order('created_at', ascending: false);
+          .contains('team_ids', [teamId]).order('created_at', ascending: false);
 
       final invites = (response as List)
-          .map((json) => PendingInviteMapper.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              PendingInviteMapper.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(invites);
@@ -89,7 +90,7 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
     bool sendEmail = true,
   }) async {
     try {
-      // Get the team_id from the player record
+      // 0. Get the team_id from the player record (needed for both paths)
       final playerResponse = await _client
           .from('players')
           .select('team_id')
@@ -98,6 +99,38 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
 
       final teamId = playerResponse['team_id'] as int;
 
+      // 1. Try to link existing user first
+      // We call the 'link_existing_user_to_player' RPC
+      try {
+        final linked =
+            await _client.rpc('link_existing_user_to_player', params: {
+          'p_email': email.trim(),
+          'p_player_id': playerId,
+        });
+
+        if (linked == true) {
+          // User was linked successfully!
+          // Return a success result. We construct a PendingInvite with 'accepted' status.
+          return Success(PendingInvite(
+            id: 0, // Placeholder
+            email: email.trim(),
+            role: 'player',
+            teamIds: [teamId],
+            status: 'accepted',
+            createdAt: DateTime.now(),
+            acceptedAt: DateTime.now(),
+            createdBy: createdBy,
+            playerId: playerId,
+            displayName: displayName,
+          ));
+        }
+      } catch (e) {
+        // If RPC fails (e.g. function not found yet), log and continue to standard flow
+        // We catch generically to ensure we don't block the standard invite flow
+        print('Error trying to link existing user: $e');
+      }
+
+      // 2. Standard flow (Edge Function) if not linked
       // Call the Edge Function 'invite-user' which handles user creation and email sending
       // Note: The function expects camelCase field names
       final response = await _client.functions.invoke(
@@ -109,7 +142,8 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
           'teamIds': [teamId],
           'playerId': playerId,
           'sendEmail': sendEmail,
-          'redirectTo': 'sporttech://login-callback', // Deep link for mobile app
+          'redirectTo':
+              'sporttech://login-callback', // Deep link for mobile app
         },
       );
 
@@ -162,14 +196,18 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
         );
       }
 
-      final response = await _client.from('pending_invites').insert({
-        'email': email.trim().toLowerCase(),
-        'display_name': displayName,
-        'role': role,
-        'team_ids': teamIds,
-        'status': 'pending',
-        'created_by': createdBy,
-      }).select().single();
+      final response = await _client
+          .from('pending_invites')
+          .insert({
+            'email': email.trim().toLowerCase(),
+            'display_name': displayName,
+            'role': role,
+            'team_ids': teamIds,
+            'status': 'pending',
+            'created_by': createdBy,
+          })
+          .select()
+          .single();
 
       return Success(PendingInviteMapper.fromJson(response));
     } on PostgrestException catch (e) {
@@ -241,11 +279,8 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
   Future<Result<String>> resendInvite(int id, {bool sendEmail = true}) async {
     try {
       // First, verify the invite exists and is pending
-      final inviteResponse = await _client
-          .from('pending_invites')
-          .select()
-          .eq('id', id)
-          .single();
+      final inviteResponse =
+          await _client.from('pending_invites').select().eq('id', id).single();
 
       if (inviteResponse['status'] != 'pending') {
         return const Failed(
@@ -271,7 +306,8 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
           'playerId': playerId,
           'inviteId': id,
           'sendEmail': sendEmail,
-          'redirectTo': 'sporttech://login-callback', // Deep link for mobile app
+          'redirectTo':
+              'sporttech://login-callback', // Deep link for mobile app
         },
       );
 
@@ -305,6 +341,68 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
       );
     } catch (e) {
       return Failed(ServerFailure('Error resending invite: $e'));
+    }
+  }
+
+  @override
+  Future<Result<String>> createStaffUser({
+    required String email,
+    required String password,
+    required List<int> teamIds,
+    required String role,
+    required String createdBy,
+    String? displayName,
+  }) async {
+    try {
+      if (role != 'coach' && role != 'admin') {
+        return const Failed(
+          ValidationFailure('Invalid role. Must be "coach" or "admin"'),
+        );
+      }
+
+      if (teamIds.isEmpty) {
+        return const Failed(
+          ValidationFailure('At least one team is required'),
+        );
+      }
+
+      final response = await _client.functions.invoke(
+        'create-user',
+        body: {
+          'email': email.trim().toLowerCase(),
+          'password': password,
+          'displayName': displayName,
+          'role': role,
+          'teamIds': teamIds,
+        },
+      );
+
+      if (response.status != 200) {
+        return Failed(
+          ServerFailure(
+            'Error creating user: ${response.data}',
+          ),
+        );
+      }
+
+      final responseData = response.data as Map<String, dynamic>;
+      final userId = responseData['userId'] as String?;
+
+      if (userId == null) {
+        return const Failed(
+          ServerFailure('Failed to get created user ID'),
+        );
+      }
+
+      return Success(userId);
+    } on PostgrestException catch (e) {
+      return Failed(ServerFailure(e.message, code: e.code));
+    } on FunctionException catch (e) {
+      return Failed(
+        ServerFailure('Error calling create-user function: ${e.details}'),
+      );
+    } catch (e) {
+      return Failed(ServerFailure('Error creating staff user: $e'));
     }
   }
 }

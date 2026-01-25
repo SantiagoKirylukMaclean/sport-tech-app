@@ -80,6 +80,11 @@ class TeamsNotifier extends StateNotifier<TeamsState> {
     );
   }
 
+  /// Clear teams list
+  void clearTeams() {
+    state = state.copyWith(teams: []);
+  }
+
   /// Create a new team
   Future<bool> createTeam({
     required String clubId,
@@ -129,9 +134,7 @@ class TeamsNotifier extends StateNotifier<TeamsState> {
     return result.when(
       success: (updatedTeam) {
         state = state.copyWith(
-          teams: state.teams
-              .map((t) => t.id == id ? updatedTeam : t)
-              .toList(),
+          teams: state.teams.map((t) => t.id == id ? updatedTeam : t).toList(),
         );
         return true;
       },

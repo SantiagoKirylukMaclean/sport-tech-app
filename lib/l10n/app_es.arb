@@ -630,5 +630,8 @@
   "effectivenessCalculation": "Cálculo de Efectividad",
   "effectivenessFormula": "Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100",
   "teamSummary": "Resumen de Equipo",
+  "matchLive": "Partido en Juego",
+  "matchScheduled": "Programado",
+  "matchFinished": "Finalizado",
   "needsWork": "Requiere Trabajo"
 }

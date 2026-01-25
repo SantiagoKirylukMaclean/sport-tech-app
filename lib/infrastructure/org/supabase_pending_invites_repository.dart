@@ -90,7 +90,7 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
     bool sendEmail = true,
   }) async {
     try {
-      // Get the team_id from the player record
+      // 0. Get the team_id from the player record (needed for both paths)
       final playerResponse = await _client
           .from('players')
           .select('team_id')
@@ -99,6 +99,38 @@ class SupabasePendingInvitesRepository implements PendingInvitesRepository {
 
       final teamId = playerResponse['team_id'] as int;
 
+      // 1. Try to link existing user first
+      // We call the 'link_existing_user_to_player' RPC
+      try {
+        final linked =
+            await _client.rpc('link_existing_user_to_player', params: {
+          'p_email': email.trim(),
+          'p_player_id': playerId,
+        });
+
+        if (linked == true) {
+          // User was linked successfully!
+          // Return a success result. We construct a PendingInvite with 'accepted' status.
+          return Success(PendingInvite(
+            id: 0, // Placeholder
+            email: email.trim(),
+            role: 'player',
+            teamIds: [teamId],
+            status: 'accepted',
+            createdAt: DateTime.now(),
+            acceptedAt: DateTime.now(),
+            createdBy: createdBy,
+            playerId: playerId,
+            displayName: displayName,
+          ));
+        }
+      } catch (e) {
+        // If RPC fails (e.g. function not found yet), log and continue to standard flow
+        // We catch generically to ensure we don't block the standard invite flow
+        print('Error trying to link existing user: $e');
+      }
+
+      // 2. Standard flow (Edge Function) if not linked
       // Call the Edge Function 'invite-user' which handles user creation and email sending
       // Note: The function expects camelCase field names
       final response = await _client.functions.invoke(

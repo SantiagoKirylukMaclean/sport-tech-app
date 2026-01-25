@@ -27,8 +27,9 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
   late final TextEditingController _locationController;
   late final TextEditingController _notesController;
   late final TextEditingController _numberOfPeriodsController;
-  late final TextEditingController _periodDurationController;
+  late TextEditingController _periodDurationController;
   late DateTime _selectedDate;
+  late MatchStatus _status;
   bool _isLoading = false;
 
   @override
@@ -43,6 +44,7 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
     _periodDurationController =
         TextEditingController(text: match?.periodDuration?.toString() ?? '10');
     _selectedDate = match?.matchDate ?? DateTime.now();
+    _status = match?.status ?? MatchStatus.scheduled;
   }
 
   @override
@@ -92,6 +94,7 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
             : _notesController.text.trim(),
         numberOfPeriods: int.tryParse(_numberOfPeriodsController.text),
         periodDuration: int.tryParse(_periodDurationController.text),
+        status: _status,
       );
     } else {
       await notifier.createMatch(
@@ -210,35 +213,39 @@ class _MatchFormDialogState extends ConsumerState<MatchFormDialog> {
                     ],
                   ),
                 ],
-                if (widget.team.sportName?.toLowerCase().contains('bask') ==
-                        true ||
-                    widget.team.sportName?.toLowerCase().contains('básq') ==
-                        true) ...[
+                if (isEditing) ...[
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _numberOfPeriodsController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.numberOfPeriods,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _periodDurationController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: l10n.periodDuration,
-                            border: const OutlineInputBorder(),
-                          ),
-                        ),
-                      ),
-                    ],
+                  DropdownButtonFormField<MatchStatus>(
+                    value: _status,
+                    decoration: InputDecoration(
+                      labelText: l10n.status,
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: MatchStatus.values.map((status) {
+                      String label;
+                      switch (status) {
+                        case MatchStatus.scheduled:
+                          label = l10n.matchScheduled;
+                          break;
+                        case MatchStatus.live:
+                          label = l10n.matchLive;
+                          break;
+                        case MatchStatus.finished:
+                          label = l10n.matchFinished;
+                          break;
+                      }
+                      return DropdownMenuItem(
+                        value: status,
+                        child: Text(label),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _status = value;
+                        });
+                      }
+                    },
                   ),
                 ],
               ],

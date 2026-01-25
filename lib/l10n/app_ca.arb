@@ -791,6 +791,9 @@
       }
     }
   },
+  "matchLive": "Partit en Joc",
+  "matchScheduled": "Programat",
+  "matchFinished": "Finalitzat",
   "invitationEmailSentTo": "S'ha enviat un correu d'invitació a:",
   "shareThisLink": "Comparteix aquest enllaç amb {email}:",
   "@shareThisLink": {

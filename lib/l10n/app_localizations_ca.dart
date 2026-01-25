@@ -1371,6 +1371,15 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
+  String get matchLive => 'Partit en Joc';
+
+  @override
+  String get matchScheduled => 'Programat';
+
+  @override
+  String get matchFinished => 'Finalitzat';
+
+  @override
   String get invitationEmailSentTo => 'S\'ha enviat un correu d\'invitació a:';
 
   @override

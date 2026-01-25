@@ -2578,6 +2578,24 @@ abstract class AppLocalizations {
   /// **'Player ID: {playerId}'**
   String playerIdLabel(String playerId);
 
+  /// No description provided for @matchLive.
+  ///
+  /// In en, this message translates to:
+  /// **'Match Live'**
+  String get matchLive;
+
+  /// No description provided for @matchScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get matchScheduled;
+
+  /// No description provided for @matchFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get matchFinished;
+
   /// No description provided for @invitationEmailSentTo.
   ///
   /// In en, this message translates to:

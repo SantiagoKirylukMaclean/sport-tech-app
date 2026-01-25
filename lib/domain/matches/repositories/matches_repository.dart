@@ -36,6 +36,7 @@ abstract class MatchesRepository {
     String? notes,
     int? numberOfPeriods,
     int? periodDuration,
+    MatchStatus? status,
   });
 
   /// Delete a match

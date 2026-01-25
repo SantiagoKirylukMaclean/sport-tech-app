@@ -1374,6 +1374,15 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get matchLive => 'Partido en Juego';
+
+  @override
+  String get matchScheduled => 'Programado';
+
+  @override
+  String get matchFinished => 'Finalizado';
+
+  @override
   String get invitationEmailSentTo => 'Se ha enviado un email de invitación a:';
 
   @override

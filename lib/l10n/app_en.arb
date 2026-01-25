@@ -794,6 +794,9 @@
       }
     }
   },
+  "matchLive": "Match Live",
+  "matchScheduled": "Scheduled",
+  "matchFinished": "Finished",
   "invitationEmailSentTo": "An invitation email has been sent to:",
   "shareThisLink": "Share this link with {email}:",
   "createUser": "Create User",

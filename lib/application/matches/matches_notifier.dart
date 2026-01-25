@@ -2,6 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/application/matches/matches_state.dart';
+import 'package:sport_tech_app/domain/matches/entities/match.dart';
 import 'package:sport_tech_app/domain/matches/repositories/matches_repository.dart';
 import 'package:sport_tech_app/infrastructure/matches/providers/matches_repositories_providers.dart';
 
@@ -73,6 +74,7 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
     String? notes,
     int? numberOfPeriods,
     int? periodDuration,
+    MatchStatus? status,
   }) async {
     final result = await _repository.updateMatch(
       id: id,
@@ -82,6 +84,7 @@ class MatchesNotifier extends StateNotifier<MatchesState> {
       notes: notes,
       numberOfPeriods: numberOfPeriods,
       periodDuration: periodDuration,
+      status: status,
     );
 
     result.when(

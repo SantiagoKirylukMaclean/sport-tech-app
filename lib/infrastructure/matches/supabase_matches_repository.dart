@@ -95,6 +95,7 @@ class SupabaseMatchesRepository implements MatchesRepository {
     String? notes,
     int? numberOfPeriods,
     int? periodDuration,
+    MatchStatus? status,
   }) async {
     try {
       final updates = <String, dynamic>{};
@@ -116,6 +117,9 @@ class SupabaseMatchesRepository implements MatchesRepository {
       }
       if (periodDuration != null) {
         updates['period_duration'] = periodDuration;
+      }
+      if (status != null) {
+        updates['status'] = status.name;
       }
 
       final response = await _client

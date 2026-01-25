@@ -8,7 +8,8 @@ import 'package:sport_tech_app/domain/org/entities/player.dart';
 import 'package:sport_tech_app/infrastructure/matches/providers/matches_repositories_providers.dart';
 
 /// Provider to fetch match details by ID
-final matchByIdProvider = FutureProvider.family<Match?, String>((ref, matchId) async {
+final matchByIdProvider =
+    FutureProvider.family<Match?, String>((ref, matchId) async {
   final matchesRepo = ref.watch(matchesRepositoryProvider);
   final result = await matchesRepo.getMatchById(matchId);
   return result.dataOrNull;
@@ -32,7 +33,9 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(matchLineupNotifierProvider(widget.matchId).notifier).loadMatchData();
+      ref
+          .read(matchLineupNotifierProvider(widget.matchId).notifier)
+          .loadMatchData();
     });
   }
 
@@ -52,7 +55,8 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const Icon(Icons.error_outline,
+                          size: 64, color: Colors.red),
                       const SizedBox(height: 16),
                       Text(
                         state.error!,
@@ -63,7 +67,8 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                       ElevatedButton.icon(
                         onPressed: () {
                           ref
-                              .read(matchLineupNotifierProvider(widget.matchId).notifier)
+                              .read(matchLineupNotifierProvider(widget.matchId)
+                                  .notifier)
                               .loadMatchData();
                         },
                         icon: const Icon(Icons.refresh),
@@ -78,7 +83,8 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                       onRefresh: () async {
                         ref.invalidate(matchByIdProvider(widget.matchId));
                         await ref
-                            .read(matchLineupNotifierProvider(widget.matchId).notifier)
+                            .read(matchLineupNotifierProvider(widget.matchId)
+                                .notifier)
                             .loadMatchData();
                       },
                       child: SingleChildScrollView(
@@ -99,20 +105,27 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                             // Quarter Results Section
                             Text(
                               'Resultados por Cuarto',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
                             const SizedBox(height: 12),
                             _QuarterResultsSection(
                               quarterResults: state.quarterResults,
+                              numberOfPeriods: state.numberOfPeriods,
                             ),
                             const SizedBox(height: 24),
 
                             // Goals Section
                             Text(
                               'Goles (${state.allGoals.length})',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -126,7 +139,10 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                             // Players by Quarter Section
                             Text(
                               'Jugadores por Cuarto',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
@@ -134,6 +150,7 @@ class _MatchDetailPageState extends ConsumerState<MatchDetailPage> {
                             _PlayersByQuarterSection(
                               allPeriods: state.allPeriods,
                               players: state.calledUpPlayers,
+                              numberOfPeriods: state.numberOfPeriods,
                             ),
                           ],
                         ),
@@ -171,7 +188,8 @@ class _MatchInfoCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Icon(
                     Icons.sports_soccer,
                     size: 28,
@@ -185,15 +203,18 @@ class _MatchInfoCard extends StatelessWidget {
                     children: [
                       Text(
                         opponent,
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         dateFormat.format(matchDate),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                       ),
                     ],
@@ -252,9 +273,11 @@ class _MatchInfoCard extends StatelessWidget {
 /// Section showing quarter results
 class _QuarterResultsSection extends StatelessWidget {
   final List quarterResults;
+  final int numberOfPeriods;
 
   const _QuarterResultsSection({
     required this.quarterResults,
+    required this.numberOfPeriods,
   });
 
   @override
@@ -315,7 +338,7 @@ class _QuarterResultsSection extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                ...List.generate(4, (index) {
+                ...List.generate(numberOfPeriods, (index) {
                   final quarter = index + 1;
                   final result = quarterResults
                       .where((r) => r.quarter == quarter)
@@ -329,7 +352,10 @@ class _QuarterResultsSection extends StatelessWidget {
                           width: 80,
                           child: Text(
                             'Cuarto $quarter',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
@@ -338,7 +364,10 @@ class _QuarterResultsSection extends StatelessWidget {
                         if (result != null)
                           Text(
                             '${result.teamGoals} - ${result.opponentGoals}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                           )
@@ -346,7 +375,9 @@ class _QuarterResultsSection extends StatelessWidget {
                           Text(
                             'Sin datos',
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                       ],
@@ -411,7 +442,9 @@ class _GoalsSection extends StatelessWidget {
               ),
             ),
             title: Text(
-              goal.isOwnGoal ? 'Autogol del Rival' : _getPlayerName(goal.scorerId),
+              goal.isOwnGoal
+                  ? 'Autogol del Rival'
+                  : _getPlayerName(goal.scorerId),
               style: TextStyle(
                 fontWeight: goal.isOwnGoal ? FontWeight.bold : FontWeight.w600,
               ),
@@ -436,10 +469,12 @@ class _GoalsSection extends StatelessWidget {
 class _PlayersByQuarterSection extends StatelessWidget {
   final List<MatchPlayerPeriod> allPeriods;
   final List<Player> players;
+  final int numberOfPeriods;
 
   const _PlayersByQuarterSection({
     required this.allPeriods,
     required this.players,
+    required this.numberOfPeriods,
   });
 
   String _getPlayerName(String playerId) {
@@ -466,9 +501,10 @@ class _PlayersByQuarterSection extends StatelessWidget {
     }
 
     return Column(
-      children: List.generate(4, (index) {
+      children: List.generate(numberOfPeriods, (index) {
         final quarter = index + 1;
-        final quarterPeriods = allPeriods.where((p) => p.period == quarter).toList();
+        final quarterPeriods =
+            allPeriods.where((p) => p.period == quarter).toList();
 
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
@@ -489,7 +525,8 @@ class _PlayersByQuarterSection extends StatelessWidget {
                   'Cuarto $quarter (${quarterPeriods.length} jugadores)',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                 ),
               ),
@@ -505,7 +542,8 @@ class _PlayersByQuarterSection extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: quarterPeriods.length,
-                  separatorBuilder: (context, index) => const Divider(height: 1),
+                  separatorBuilder: (context, index) =>
+                      const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final period = quarterPeriods[index];
                     return ListTile(
@@ -523,12 +561,15 @@ class _PlayersByQuarterSection extends StatelessWidget {
                           : null,
                       trailing: Chip(
                         label: Text(
-                          period.fraction == Fraction.full ? 'Completo' : 'Medio',
+                          period.fraction == Fraction.full
+                              ? 'Completo'
+                              : 'Medio',
                         ),
-                        backgroundColor:
-                            period.fraction == Fraction.full
-                                ? Theme.of(context).colorScheme.tertiaryContainer
-                                : Theme.of(context).colorScheme.surfaceContainerHighest,
+                        backgroundColor: period.fraction == Fraction.full
+                            ? Theme.of(context).colorScheme.tertiaryContainer
+                            : Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
                       ),
                     );
                   },

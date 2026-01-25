@@ -12,7 +12,8 @@ import 'package:sport_tech_app/domain/org/entities/player.dart';
 class MatchLineupState {
   final bool isLoading;
   final String? error;
-  final int currentQuarter; // 1-4
+  final int currentQuarter; // 1-Total
+  final int numberOfPeriods;
   final bool substitutionMode;
   final bool statsMode;
   final String? statsSelectedPlayerId;
@@ -53,6 +54,7 @@ class MatchLineupState {
     this.isLoading = false,
     this.error,
     this.currentQuarter = 1,
+    this.numberOfPeriods = 4,
     this.substitutionMode = false,
     this.callUps = const [],
     this.calledUpPlayers = const [],
@@ -98,6 +100,7 @@ class MatchLineupState {
     String? error,
     bool clearError = false,
     int? currentQuarter,
+    int? numberOfPeriods,
     bool? substitutionMode,
     bool? statsMode,
     String? statsSelectedPlayerId,
@@ -125,6 +128,7 @@ class MatchLineupState {
       isLoading: isLoading ?? this.isLoading,
       error: clearError ? null : (error ?? this.error),
       currentQuarter: currentQuarter ?? this.currentQuarter,
+      numberOfPeriods: numberOfPeriods ?? this.numberOfPeriods,
       substitutionMode: substitutionMode ?? this.substitutionMode,
       statsMode: statsMode ?? this.statsMode,
       statsSelectedPlayerId: clearStatsSelectedPlayerId

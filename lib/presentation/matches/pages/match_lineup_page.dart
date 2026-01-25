@@ -68,7 +68,7 @@ class _MatchLineupPageState extends ConsumerState<MatchLineupPage> {
                 child: const Icon(Icons.filter_list),
               ),
               itemBuilder: (context) => [
-                for (int i = 1; i <= 4; i++)
+                for (int i = 1; i <= state.numberOfPeriods; i++)
                   PopupMenuItem(
                     value: i,
                     child: Text('Quarter $i'),

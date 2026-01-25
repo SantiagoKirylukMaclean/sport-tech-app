@@ -173,6 +173,14 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
           .where((s) => s.period == state.currentQuarter)
           .toList();
 
+      // Load basketball stats
+      final statsResult = await _statsRepository.getStatsByMatch(matchId);
+      final basketballStats = statsResult.dataOrNull ?? [];
+
+      final currentQuarterBasketballStats = basketballStats
+          .where((s) => s.quarter == state.currentQuarter)
+          .toList();
+
       state = state.copyWith(
         isLoading: false,
         callUps: callUps,
@@ -186,6 +194,9 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
         allSubstitutions: allSubstitutions,
         currentQuarterSubstitutions: currentQuarterSubstitutions,
         teamPlayers: teamPlayers,
+        numberOfPeriods: match.numberOfPeriods ?? 4,
+        basketballStats: basketballStats,
+        currentQuarterBasketballStats: currentQuarterBasketballStats,
         clearError: true,
       );
     } catch (e) {
@@ -196,9 +207,9 @@ class MatchLineupNotifier extends StateNotifier<MatchLineupState> {
     }
   }
 
-  /// Select a quarter (1-4)
+  /// Select a quarter (1-numberOfPeriods)
   void selectQuarter(int quarter) {
-    if (quarter < 1 || quarter > 4) return;
+    if (quarter < 1 || quarter > state.numberOfPeriods) return;
 
     final currentQuarterPeriods =
         state.allPeriods.where((p) => p.period == quarter).toList();

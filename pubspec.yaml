@@ -1,7 +1,7 @@
 name: sport_tech_app
 description: A Flutter app for team sport management with Supabase backend
 publish_to: 'none'
-version: 1.2.0+28
+version: 1.2.1+29
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

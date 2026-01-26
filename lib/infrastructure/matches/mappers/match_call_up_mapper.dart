@@ -10,6 +10,8 @@ class MatchCallUpMapper {
       matchId: json['match_id'].toString(),
       playerId: json['player_id'].toString(),
       createdAt: DateTime.parse(json['created_at'] as String),
+      playerName: json['players']?['full_name'] as String?,
+      playerJerseyNumber: json['players']?['jersey_number'] as int?,
     );
   }
 

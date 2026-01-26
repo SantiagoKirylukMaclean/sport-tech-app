@@ -18,12 +18,13 @@ class SupabaseMatchCallUpsRepository implements MatchCallUpsRepository {
     try {
       final response = await _client
           .from('match_call_ups')
-          .select()
+          .select('*, players(full_name, jersey_number)')
           .eq('match_id', matchId)
           .order('created_at', ascending: true);
 
       final callUps = (response as List)
-          .map((json) => MatchCallUpMapper.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              MatchCallUpMapper.fromJson(json as Map<String, dynamic>))
           .toList();
 
       return Success(callUps);
@@ -41,11 +42,15 @@ class SupabaseMatchCallUpsRepository implements MatchCallUpsRepository {
   }) async {
     try {
       final now = DateTime.now().toIso8601String();
-      final response = await _client.from('match_call_ups').insert({
-        'match_id': int.parse(matchId),
-        'player_id': int.parse(playerId),
-        'created_at': now,
-      }).select().single();
+      final response = await _client
+          .from('match_call_ups')
+          .insert({
+            'match_id': int.parse(matchId),
+            'player_id': int.parse(playerId),
+            'created_at': now,
+          })
+          .select()
+          .single();
 
       return Success(MatchCallUpMapper.fromJson(response));
     } on PostgrestException catch (e) {

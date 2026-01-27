@@ -3,19 +3,34 @@ import 'package:sport_tech_app/domain/matches/entities/basketball_match_stat.dar
 import 'package:sport_tech_app/domain/matches/entities/match_call_up.dart';
 import 'package:sport_tech_app/l10n/app_localizations.dart';
 
-class BasketballStatsTable extends StatelessWidget {
+class BasketballStatsTable extends StatefulWidget {
   final List<MatchCallUp> callUps;
   final List<BasketballMatchStat> stats;
 
   const BasketballStatsTable({
-    super.key,
     required this.callUps,
     required this.stats,
+    super.key,
   });
 
   @override
+  State<BasketballStatsTable> createState() => _BasketballStatsTableState();
+}
+
+class _BasketballStatsTableState extends State<BasketballStatsTable> {
+  int _sortColumnIndex = 0;
+  bool _isAscending = true;
+
+  void _onSort(int columnIndex, bool ascending) {
+    setState(() {
+      _sortColumnIndex = columnIndex;
+      _isAscending = ascending;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (callUps.isEmpty) {
+    if (widget.callUps.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -24,7 +39,7 @@ class BasketballStatsTable extends StatelessWidget {
     // Calculate aggregated stats per player
     final Map<String, Map<String, int>> playerStats = {};
 
-    for (final player in callUps) {
+    for (final player in widget.callUps) {
       playerStats[player.playerId] = {
         'PTS': 0,
         'OR': 0,
@@ -37,9 +52,8 @@ class BasketballStatsTable extends StatelessWidget {
       };
     }
 
-    for (final stat in stats) {
+    for (final stat in widget.stats) {
       if (!playerStats.containsKey(stat.playerId)) {
-        // Should ideally not happen if callUps are in sync, but handle safely
         playerStats[stat.playerId] = {
           'PTS': 0,
           'OR': 0,
@@ -83,51 +97,168 @@ class BasketballStatsTable extends StatelessWidget {
       }
     }
 
+    // Prepare data for sorting
+    final List<Map<String, dynamic>> tableData = widget.callUps.map((player) {
+      final pStats = playerStats[player.playerId] ?? {};
+      return {
+        'player': player,
+        'name': player.playerName ?? 'Player',
+        'number': player.playerJerseyNumber,
+        ...pStats,
+      };
+    }).toList();
+
+    // Sort data
+    tableData.sort((a, b) {
+      int compareResult = 0;
+      switch (_sortColumnIndex) {
+        case 0: // Player Name / Number
+          // Sort by number first if available, then name
+          final numA = a['number'] as int?;
+          final numB = b['number'] as int?;
+          if (numA != null && numB != null) {
+            compareResult = numA.compareTo(numB);
+          } else {
+            compareResult =
+                (a['name'] as String).compareTo(b['name'] as String);
+          }
+          break;
+        case 1: // PTS
+          compareResult = (a['PTS'] as int).compareTo(b['PTS'] as int);
+          break;
+        case 2: // OR
+          compareResult = (a['OR'] as int).compareTo(b['OR'] as int);
+          break;
+        case 3: // DR
+          compareResult = (a['DR'] as int).compareTo(b['DR'] as int);
+          break;
+        case 4: // AST
+          compareResult = (a['AST'] as int).compareTo(b['AST'] as int);
+          break;
+        case 5: // BLK
+          compareResult = (a['BLK'] as int).compareTo(b['BLK'] as int);
+          break;
+        case 6: // STL
+          compareResult = (a['STL'] as int).compareTo(b['STL'] as int);
+          break;
+        case 7: // TO
+          compareResult = (a['TO'] as int).compareTo(b['TO'] as int);
+          break;
+        case 8: // PF
+          compareResult = (a['PF'] as int).compareTo(b['PF'] as int);
+          break;
+      }
+      return _isAscending ? compareResult : -compareResult;
+    });
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints:
-            BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-        child: DataTable(
-          columnSpacing: 10,
-          horizontalMargin: 10,
-          columns: [
-            DataColumn(label: Text(l10n.player)),
-            const DataColumn(label: Text('PTS'), numeric: true),
-            const DataColumn(label: Text('OR'), numeric: true),
-            const DataColumn(label: Text('DR'), numeric: true),
-            const DataColumn(label: Text('AST'), numeric: true),
-            const DataColumn(label: Text('BLK'), numeric: true),
-            const DataColumn(label: Text('STL'), numeric: true),
-            const DataColumn(label: Text('TO'), numeric: true),
-            const DataColumn(label: Text('PF'), numeric: true),
-          ],
-          rows: callUps.map((player) {
-            final pStats = playerStats[player.playerId] ?? {};
-            final names = (player.playerName ?? 'Player').split(' ');
-            final displayName = names.isNotEmpty
-                ? (names.length > 1 ? '${names[0]} ${names[1][0]}.' : names[0])
-                : 'Player';
+      child: DataTable(
+        sortColumnIndex: _sortColumnIndex,
+        sortAscending: _isAscending,
+        columnSpacing: 20,
+        horizontalMargin: 10,
+        columns: [
+          DataColumn(
+            label: Text(l10n.player),
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('PTS'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('OR'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('DR'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('AST'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('BLK'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('STL'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('TO'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+          DataColumn(
+            label: const Text('PF'),
+            numeric: true,
+            onSort: _onSort,
+          ),
+        ],
+        rows: tableData.map((data) {
+          final player = data['player'] as MatchCallUp;
+          final names = (player.playerName ?? 'Player').split(' ');
+          final displayName = names.isNotEmpty
+              ? (names.length > 1 ? '${names[0]} ${names[1][0]}.' : names[0])
+              : 'Player';
 
-            final name = player.playerJerseyNumber != null
-                ? '#${player.playerJerseyNumber} $displayName'
-                : displayName;
-
-            return DataRow(cells: [
-              DataCell(Text(name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12))),
-              DataCell(Text('${pStats['PTS'] ?? 0}')),
-              DataCell(Text('${pStats['OR'] ?? 0}')),
-              DataCell(Text('${pStats['DR'] ?? 0}')),
-              DataCell(Text('${pStats['AST'] ?? 0}')),
-              DataCell(Text('${pStats['BLK'] ?? 0}')),
-              DataCell(Text('${pStats['STL'] ?? 0}')),
-              DataCell(Text('${pStats['TO'] ?? 0}')),
-              DataCell(Text('${pStats['PF'] ?? 0}')),
-            ]);
-          }).toList(),
-        ),
+          return DataRow(
+            cells: [
+              DataCell(
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (player.playerJerseyNumber != null)
+                      Container(
+                        margin: const EdgeInsets.only(right: 12),
+                        child: CircleAvatar(
+                          radius: 14,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primaryContainer,
+                          child: Text(
+                            '${player.playerJerseyNumber}',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(width: 40),
+                    Text(
+                      displayName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              DataCell(Text('${data['PTS']}')),
+              DataCell(Text('${data['OR']}')),
+              DataCell(Text('${data['DR']}')),
+              DataCell(Text('${data['AST']}')),
+              DataCell(Text('${data['BLK']}')),
+              DataCell(Text('${data['STL']}')),
+              DataCell(Text('${data['TO']}')),
+              DataCell(Text('${data['PF']}')),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

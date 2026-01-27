@@ -1349,7 +1349,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get matchStatistics => 'Match Statistics';
+  String get matchStatistics => 'Last Actions';
 
   @override
   String get noStatisticsRecorded => 'No statistics recorded';

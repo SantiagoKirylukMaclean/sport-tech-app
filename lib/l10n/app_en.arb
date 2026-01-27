@@ -794,7 +794,7 @@
       }
     }
   },
-  "matchStatistics": "Match Statistics",
+  "matchStatistics": "Last Actions",
   "noStatisticsRecorded": "No statistics recorded",
   "statPoint": "{count, plural, =1{point} other{points}}",
   "reboundOff": "Offensive Rebound",

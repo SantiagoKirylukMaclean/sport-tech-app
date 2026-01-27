@@ -2581,7 +2581,7 @@ abstract class AppLocalizations {
   /// No description provided for @matchStatistics.
   ///
   /// In en, this message translates to:
-  /// **'Match Statistics'**
+  /// **'Last Actions'**
   String get matchStatistics;
 
   /// No description provided for @noStatisticsRecorded.

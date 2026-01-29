@@ -6,7 +6,9 @@ class BasketballMatchStatMapper {
       id: json['id'].toString(),
       matchId: json['match_id'].toString(),
       playerId: json['player_id'].toString(),
-      playerName: json['player'] != null ? json['player']['name'] : null,
+      playerName: json['player'] != null ? json['player']['full_name'] : null,
+      playerJerseyNumber:
+          json['player'] != null ? json['player']['jersey_number'] : null,
       quarter: json['quarter'] as int,
       statType: BasketballStatType.fromString(json['stat_type'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),

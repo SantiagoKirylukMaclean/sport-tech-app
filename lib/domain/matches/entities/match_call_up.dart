@@ -13,25 +13,34 @@ class MatchCallUp extends Equatable {
     required this.matchId,
     required this.playerId,
     required this.createdAt,
+    this.playerName,
+    this.playerJerseyNumber,
   });
 
-  @override
-  List<Object?> get props => [matchId, playerId, createdAt];
+  final String? playerName;
+  final int? playerJerseyNumber;
 
   @override
-  String toString() =>
-      'MatchCallUp(matchId: $matchId, playerId: $playerId)';
+  List<Object?> get props =>
+      [matchId, playerId, createdAt, playerName, playerJerseyNumber];
+
+  @override
+  String toString() => 'MatchCallUp(matchId: $matchId, playerId: $playerId)';
 
   /// Create a copy with updated fields
   MatchCallUp copyWith({
     String? matchId,
     String? playerId,
     DateTime? createdAt,
+    String? playerName,
+    int? playerJerseyNumber,
   }) {
     return MatchCallUp(
       matchId: matchId ?? this.matchId,
       playerId: playerId ?? this.playerId,
       createdAt: createdAt ?? this.createdAt,
+      playerName: playerName ?? this.playerName,
+      playerJerseyNumber: playerJerseyNumber ?? this.playerJerseyNumber,
     );
   }
 }

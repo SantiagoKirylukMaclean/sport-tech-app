@@ -1374,7 +1374,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get matchStatistics => 'Estadísticas del Partido';
+  String get matchStatistics => 'Últimas Acciones';
 
   @override
   String get noStatisticsRecorded => 'No hay estadísticas registradas';

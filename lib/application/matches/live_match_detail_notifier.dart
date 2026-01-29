@@ -2,9 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sport_tech_app/core/utils/result.dart';
 import 'package:sport_tech_app/domain/matches/entities/basketball_match_stat.dart';
 import 'package:sport_tech_app/domain/matches/entities/match.dart';
+import 'package:sport_tech_app/domain/matches/entities/match_call_up.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_goal.dart';
 import 'package:sport_tech_app/domain/matches/entities/match_quarter_result.dart';
 import 'package:sport_tech_app/domain/matches/repositories/basketball_match_stats_repository.dart';
+import 'package:sport_tech_app/domain/matches/repositories/match_call_ups_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_goals_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/match_quarter_results_repository.dart';
 import 'package:sport_tech_app/domain/matches/repositories/matches_repository.dart';
@@ -17,6 +19,7 @@ class LiveMatchDetailState {
   final List<MatchQuarterResult> quarterResults;
   final List<MatchGoal> goals;
   final List<BasketballMatchStat> basketballStats;
+  final List<MatchCallUp> callUps;
   final String? sportName;
   final String? error;
 
@@ -26,6 +29,7 @@ class LiveMatchDetailState {
     this.quarterResults = const [],
     this.goals = const [],
     this.basketballStats = const [],
+    this.callUps = const [],
     this.sportName,
     this.error,
   });
@@ -36,6 +40,7 @@ class LiveMatchDetailState {
     List<MatchQuarterResult>? quarterResults,
     List<MatchGoal>? goals,
     List<BasketballMatchStat>? basketballStats,
+    List<MatchCallUp>? callUps,
     String? sportName,
     String? error,
   }) {
@@ -45,14 +50,21 @@ class LiveMatchDetailState {
       quarterResults: quarterResults ?? this.quarterResults,
       goals: goals ?? this.goals,
       basketballStats: basketballStats ?? this.basketballStats,
+      callUps: callUps ?? this.callUps,
       sportName: sportName ?? this.sportName,
       error: error ?? this.error,
     );
   }
 
   // Computed property for total score
-  int get teamScore =>
-      quarterResults.fold(0, (sum, result) => sum + result.teamGoals);
+  int get teamScore {
+    if (basketballStats.isNotEmpty) {
+      return basketballStats.fold(
+          0, (sum, stat) => sum + stat.statType.pointsValue);
+    }
+    return quarterResults.fold(0, (sum, result) => sum + result.teamGoals);
+  }
+
   int get opponentScore =>
       quarterResults.fold(0, (sum, result) => sum + result.opponentGoals);
 }
@@ -62,6 +74,7 @@ class LiveMatchDetailNotifier extends StateNotifier<LiveMatchDetailState> {
   final MatchQuarterResultsRepository _quarterResultsRepository;
   final MatchGoalsRepository _goalsRepository;
   final BasketballMatchStatsRepository _basketballStatsRepository;
+  final MatchCallUpsRepository _callUpsRepository;
   final TeamsRepository _teamsRepository;
 
   LiveMatchDetailNotifier(
@@ -69,6 +82,7 @@ class LiveMatchDetailNotifier extends StateNotifier<LiveMatchDetailState> {
     this._quarterResultsRepository,
     this._goalsRepository,
     this._basketballStatsRepository,
+    this._callUpsRepository,
     this._teamsRepository,
   ) : super(const LiveMatchDetailState());
 
@@ -105,18 +119,26 @@ class LiveMatchDetailNotifier extends StateNotifier<LiveMatchDetailState> {
     // 3. Fetch specific stats based on sport
     List<MatchGoal> goals = [];
     List<BasketballMatchStat> basketballStats = [];
+    List<MatchCallUp> callUps = [];
 
     // Assuming 'Basketball' or similar from DB.
     // Ideally we should use constants or enum, but string matching is common in MVP.
     // Check if sportName contains "Basket" to be safe or matches specific key.
-    final isBasketball =
-        sportName != null && sportName.toLowerCase().contains('basket');
+    final isBasketball = sportName != null &&
+        (sportName.toLowerCase().contains('basket') ||
+            sportName.toLowerCase().contains('básq') ||
+            sportName.toLowerCase().contains('baloncesto'));
 
     if (isBasketball) {
       final statsResult =
           await _basketballStatsRepository.getStatsByMatch(matchId);
       if (statsResult is Success<List<BasketballMatchStat>>) {
         basketballStats = statsResult.data;
+      }
+
+      final callUpsResult = await _callUpsRepository.getCallUpsByMatch(matchId);
+      if (callUpsResult is Success<List<MatchCallUp>>) {
+        callUps = callUpsResult.data;
       }
     } else {
       // Default to soccer/goals
@@ -133,6 +155,7 @@ class LiveMatchDetailNotifier extends StateNotifier<LiveMatchDetailState> {
       match: match,
       sportName: sportName,
       basketballStats: basketballStats,
+      callUps: callUps,
       goals: goals,
     );
 

@@ -26,6 +26,7 @@ final liveMatchDetailNotifierProvider = StateNotifierProvider.autoDispose<
   final goalsRepository = ref.watch(matchGoalsRepositoryProvider);
   final basketballStatsRepository =
       ref.watch(basketballMatchStatsRepositoryProvider);
+  final callUpsRepository = ref.watch(matchCallUpsRepositoryProvider);
   final teamsRepository = ref.watch(teamsRepositoryProvider);
 
   return LiveMatchDetailNotifier(
@@ -33,6 +34,7 @@ final liveMatchDetailNotifierProvider = StateNotifierProvider.autoDispose<
     quarterResultsRepository,
     goalsRepository,
     basketballStatsRepository,
+    callUpsRepository,
     teamsRepository,
   );
 });

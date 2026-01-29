@@ -1371,7 +1371,7 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
-  String get matchStatistics => 'Match Statistics';
+  String get matchStatistics => 'Últimes Accions';
 
   @override
   String get noStatisticsRecorded => 'No statistics recorded';
@@ -1409,7 +1409,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get foul => 'Foul';
 
   @override
-  String get matchLive => 'Partit en Joc';
+  String get matchLive => 'Match Live';
 
   @override
   String get matchScheduled => 'Programat';

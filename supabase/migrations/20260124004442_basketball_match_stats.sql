@@ -46,3 +46,8 @@ create policy "bms coach crud" on public.basketball_match_stats
         and public.is_coach_of_team(m.team_id)
     )
   );
+
+-- public/player read access
+drop policy if exists "bms read all" on public.basketball_match_stats;
+create policy "bms read all" on public.basketball_match_stats
+  for select using ( true );

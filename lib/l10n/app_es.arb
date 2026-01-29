@@ -630,7 +630,7 @@
   "effectivenessCalculation": "Cálculo de Efectividad",
   "effectivenessFormula": "Efectividad = (Victorias × 3 + Empates × 1) / (Total Partidos × 3) × 100",
   "teamSummary": "Resumen de Equipo",
-  "matchStatistics": "Estadísticas del Partido",
+  "matchStatistics": "Últimas Acciones",
   "noStatisticsRecorded": "No hay estadísticas registradas",
   "statPoint": "{count, plural, =1{punto} other{puntos}}",
   "reboundOff": "Rebote Ofensivo",
